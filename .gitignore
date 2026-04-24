@@ -20,3 +20,6 @@ outputs/models/
 
 # system
 .DS_Store
+
+# PyCharm
+.idea/
