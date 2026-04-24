@@ -1,0 +1,22 @@
+# venv
+.venv/
+
+# python
+__pycache__/
+*.pyc
+
+# jupyter
+.ipynb_checkpoints/
+
+# data
+data/raw/
+data/processed/
+
+# outputs
+outputs/models/
+
+# env
+.env
+
+# system
+.DS_Store
