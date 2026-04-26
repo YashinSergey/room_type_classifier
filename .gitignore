@@ -17,6 +17,9 @@ data
 # outputs
 outputs/models/
 
+# downloaded model weights
+models/**/*.pt
+
 # env
 .env
 

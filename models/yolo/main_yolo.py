@@ -13,20 +13,23 @@ def main():
     
     start = time.perf_counter()
 
-    local_models = [x for x in os.listdir('./models') if not x.startswith('.')]
-        
-    if local_models:
-        print('Найдены локальные модели:')
-        for s in local_models:
-            if '.' not in s:
-                print(f'\t{s}')
-        model_path = './models/keremberke/yolov8m-scene-classification/best.pt'
+    model_path = Path('models/keremberke/yolov8m-scene-classification/best.pt')
+    hf_token = os.getenv("HF_TOKEN") or os.getenv("HUGGINGFACE_HUB_TOKEN")
+
+    if model_path.exists():
+        local_models = [x for x in os.listdir('./models') if not x.startswith('.')]
+        if local_models:
+            print('Найдены локальные модели:')
+            for s in local_models:
+                if '.' not in s:
+                    print(f'\t{s}')
     else:
         model_path = hf_hub_download(
             repo_id="keremberke/yolov8m-scene-classification",
             filename="best.pt",
             local_dir="./models/keremberke/yolov8m-scene-classification",  # сохраняем в папку models/
-            local_dir_use_symlinks=False  # копируем, а не создаём симлинк
+            local_dir_use_symlinks=False,  # копируем, а не создаём симлинк
+            token=hf_token,
         )
         print(f"Модель загружена и сохранена в: {model_path}")
 
