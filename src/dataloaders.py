@@ -1,20 +1,21 @@
 from torch.utils.data import DataLoader
 
-from src.dataset import ToomTypeDataset, RoomTypeDataset
+from src.dataset import RoomTypeDataset
 from src.transforms import get_train_transforms, get_val_transforms
 
 def create_dataloaders(
-        train_csv_path, # путь к train CSV (разметка)
-        val_csv_path,   # путь к validation CSV
-        image_root,     # папка с изображениями
-        batch_size=32,  # размер батча (сколько изображений за один шаг обучения)
-        num_workers=2   # число процессов для параллельной загрузки данных
+        train_csv_path,   # путь к train CSV (разметка)
+        val_csv_path,     # путь к validation CSV
+        train_image_root, # папка с изображениями (train)
+        val_image_root,   # папка с изображениями (val)
+        batch_size=32,    # размер батча (сколько изображений за один шаг обучения)
+        num_workers=2     # число процессов для параллельной загрузки данных
 ):
     # train dataset
     # Для train используем аугментации
     train_dataset = RoomTypeDataset(
         csv_path=train_csv_path,
-        image_root=image_root,
+        image_root=train_image_root,
         transform=get_train_transforms()
     )
 
@@ -22,7 +23,7 @@ def create_dataloaders(
     # Для validation используем только resize + normalize (без случайных аугментаций)
     val_dataset = RoomTypeDataset(
         csv_path=val_csv_path,
-        image_root=image_root,
+        image_root=val_image_root,
         transform=get_val_transforms()
     )
 

@@ -12,8 +12,7 @@ __pycache__/
 .ipynb_checkpoints/
 
 # data
-data/raw/
-data/processed/
+data
 
 # outputs
 outputs/models/

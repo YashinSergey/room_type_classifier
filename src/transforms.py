@@ -13,7 +13,7 @@ def get_train_transforms():
         # Помогает модели лучше работать с разным освещением на фотографиях
         transforms.ColorJitter(brightness=0.2, contrast=0.2),
         # Преобразуем изображение из PIL/numpy формата в PyTorch tensor
-        transform.ToTensor(),
+        transforms.ToTensor(),
 
         # Нормализуем изображение значениями mean/std от ImageNet
         # Это важно, потому что pretrained модели обычно обучались именно с такой нормализацией

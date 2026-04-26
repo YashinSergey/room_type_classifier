@@ -10,7 +10,6 @@ class RoomTypeDataset(Dataset):
             csv_path,
             image_root,
             transform=None,
-            image_transform=None,
             image_col='image',
             target_col='result'
     ):
