@@ -6,10 +6,13 @@ PYTORCH_PIP := "uv pip"
 default:
     @just --list
 
-# Install uv-managed Python + create venv
+# Install uv-managed Python
 setup:
     uv python install {{PYTHON_VERSION}}
-    uv venv --python {{PYTHON_VERSION}}
+
+# Recreate project virtual environment
+recreate-venv: setup
+    uv venv --python {{PYTHON_VERSION}} --clear
 
 # Install default data pipeline deps
 install: install-data
