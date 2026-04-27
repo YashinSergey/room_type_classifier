@@ -140,13 +140,14 @@ src/             # основной код проекта(Classes.py)
 
 ```
 data/
-  train_df.csv
-  val_df.csv
-  test_df.csv
+  raw/
+    train_df.csv
+    val_df.csv
+    test_df.csv
 
-  train_images/
-  val_images/
-  test_images/
+    train_images/
+    val_images/
+    test_images/
 ```
 
 `train_df.csv` и `val_df.csv` содержат разметку классов в признаке `result`

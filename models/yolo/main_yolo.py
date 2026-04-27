@@ -4,7 +4,7 @@ import os
 import time
 from pathlib import Path
 
-IMAGES_PATH = Path('data/room_type/val_images/val_images')
+IMAGES_PATH = Path('data/raw/val_images')
 LOG_PATH = Path('data/log.txt')
 
 N_IMAGES = 100
