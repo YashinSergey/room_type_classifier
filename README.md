@@ -1,83 +1,102 @@
 ## Установка и запуск проекта
 
-### 1. Клонировать репозиторий
+### 0. Клонировать репозиторий
 
 ```bash
 git clone https://github.com/your_username/room_type_classifier.git
 cd room_type_classifier
 ```
 
----
+### Требования
 
-### 2. Установить uv (если не установлен)
+- Python: **3.12.x** (фиксируется в `.python-version`)
+- Менеджер окружений: **uv**
+- Утилита команд: **just** (используется `justfile` в корне проекта)
+
+### 1. Установить `just` (если не установлен)
+
+**macOS (Homebrew):**
+
+```bash
+brew install just
+```
+
+**Windows (Scoop):**
+
+```powershell
+scoop install just
+```
+
+**Windows (Chocolatey):**
+
+```powershell
+choco install just
+```
+
+### 2. Установить `uv` (если не установлен)
+
+**macOS / Linux:**
 
 ```bash
 curl -Ls https://astral.sh/uv/install.sh | sh
 ```
 
-Добавить в PATH (один раз):
+Если после установки `uv` не находится в терминале, добавьте в `PATH` (один раз на сессию):
 
 ```bash
 export PATH="$HOME/.local/bin:$PATH"
 ```
 
----
+**Windows (PowerShell):**
 
-### 3. Создать виртуальное окружение (в корневой директории проекта)
-
-```bash
-uv venv
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
----
+### 3. Установка зависимостей (только через `uv`)
 
-### 4. Установить зависимости проекта
+Проект использует единый `pyproject.toml`. Установка/запуск автоматизированы через `justfile`.
 
 ```bash
-uv pip install -r requirements.txt
+just install
 ```
 
-Все новые библиотеки должны добавляться в requirements.txt, чтобы у всех участников было одинаковое окружение
+### 3.1. PyTorch (`torch` / `torchvision`): опционально переустановить (CPU / CUDA / PyPI)
 
----
+`torch` и `torchvision` **закреплены** в `pyproject.toml` / `uv.lock` (как “дефолт” для `uv sync`) — обычно достаточно `just install`.
 
-### 5. Установить PyTorch отдельно
+Если вам нужен CPU-репозиторий PyTorch или конкретная CUDA-ветка, после `just install` можно переустановить `torch`/`torchvision` одной из команд ниже.
+
+- **По умолчанию (PyPI):**
 
 ```bash
-uv pip install torch torchvision torchaudio
+just pytorch-pypi
 ```
 
-PyTorch устанавливается отдельно, так как его сборка зависит от операционной системы и оборудования (CPU / GPU / MPS).
-
----
-
-### 6. Проверка установки
+- **CPU wheels из репозитория PyTorch:**
 
 ```bash
-python -c "import torch; print(torch.__version__)"
-```
----
-
-### 7. Активация окружения (при необходимости)
-
-macOS / Linux:
-
-```bash
-source .venv/bin/activate
+just pytorch-cpu
 ```
 
-Windows:
+- **CUDA 13.0 wheels из репозитория PyTorch:**
 
 ```bash
-.venv\Scripts\activate
+just pytorch-cu130
 ```
 
----
+Если команда с CUDA-репозиторием не находит wheel для вашей связки **OS + Python + CUDA**, значит **для вас вариант `cu130` несовместим** — в этом случае ориентируйтесь на “pip install” комбинацию с [официального конфигуратора PyTorch](https://pytorch.org/get-started/locally/) и/или переключитесь на `just pytorch-pypi` / `just pytorch-cpu`.
 
-### 8. Деактивация окружения (при необходимости)
+Проверка:
 
 ```bash
-deactivate
+just run "python -c \"import torch; print(torch.__version__); print('cuda:', torch.cuda.is_available())\""
+```
+
+### 4. Запуск примера (YOLO)
+
+```bash
+just run-yolo
 ```
 
 ---
@@ -87,9 +106,9 @@ deactivate
 Если после создания нового окружения (.venv) Jupyter / PyCharm не видит kernel проекта, выполните:
 
 ```bash
-uv pip install ipykernel
+uv run python -m pip install ipykernel
 
-python -m ipykernel install --user \
+uv run python -m ipykernel install --user \
   --name room_type_classifier \
   --display-name "room_type_classifier"
 ```
@@ -121,13 +140,14 @@ src/             # основной код проекта(Classes.py)
 
 ```
 data/
-  train_df.csv
-  val_df.csv
-  test_df.csv
+  raw/
+    train_df.csv
+    val_df.csv
+    test_df.csv
 
-  train_images/
-  val_images/
-  test_images/
+    train_images/
+    val_images/
+    test_images/
 ```
 
 `train_df.csv` и `val_df.csv` содержат разметку классов в признаке `result`
