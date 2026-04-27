@@ -15,7 +15,7 @@ from PIL import Image, ImageOps
 
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
-YOLO_MODEL_PATH = ROOT_DIR / "models" / "keremberke" / "yolov8m-scene-classification" / "best.pt"
+YOLO_MODEL_PATH = ROOT_DIR / "models" / "yolo" / "keremberke" / "yolov8m-scene-classification" / "best.pt"
 YOLO_REPO_ID = "keremberke/yolov8m-scene-classification"
 YOLO_FILENAME = "best.pt"
 

@@ -46,7 +46,7 @@ file watcher, run-on-save, prompt email и usage stats. Порт можно пе
 использовать локальную модель:
 
 ```text
-models/keremberke/yolov8m-scene-classification/best.pt
+models/yolo/keremberke/yolov8m-scene-classification/best.pt
 ```
 
 Если файла нет, эта модель тоже возвращает моковые ответы. Чтобы разрешить
