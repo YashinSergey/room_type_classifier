@@ -55,7 +55,11 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 
 ### 3. Установка зависимостей (только через `uv`)
 
-Проект использует единый `pyproject.toml`. Установка/запуск автоматизированы через `justfile`.
+Проект использует единый `pyproject.toml`. Зависимости разбиты на группы (могут пересекаться):
+
+- `data` — датасеты, dataloader, transforms, метрики, `torch`/`torchvision`
+- `streamlit` — UI-сервис без модельных зависимостей
+- `yolo` — YOLO demo/inference зависимости
 
 ```bash
 just install
@@ -63,7 +67,7 @@ just install
 
 ### 3.1. PyTorch (`torch` / `torchvision`): опционально переустановить (CPU / CUDA / PyPI)
 
-`torch` и `torchvision` **закреплены** в `pyproject.toml` / `uv.lock` (как “дефолт” для `uv sync`) — обычно достаточно `just install`.
+`torch` и `torchvision` **закреплены** в группе `data` в `pyproject.toml` / `uv.lock` — обычно достаточно `just install`.
 
 Если вам нужен CPU-репозиторий PyTorch или конкретная CUDA-ветка, после `just install` можно переустановить `torch`/`torchvision` одной из команд ниже.
 
