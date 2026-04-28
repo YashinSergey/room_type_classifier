@@ -1,0 +1,89 @@
+{
+  "model": "efficientnet",
+  "variant": "b0",
+  "num_classes": 20,
+  "best_epoch": 9,
+  "best_macro_f1": 0.6445222921106255,
+  "checkpoint": "/Users/karimovdmitry/projects/mephi/room_type_classifier/models/efficientNet/artifacts/efficientnet_b0_best.pt",
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 2.619352862846428,
+      "val_loss": 2.1085457177032216,
+      "macro_f1": 0.4108945413342496
+    },
+    {
+      "epoch": 2,
+      "train_loss": 1.7123930965636394,
+      "val_loss": 1.552722344358512,
+      "macro_f1": 0.5552916925316047
+    },
+    {
+      "epoch": 3,
+      "train_loss": 1.2011884236116255,
+      "val_loss": 1.2741390414207987,
+      "macro_f1": 0.6065286899885634
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.9390353825937913,
+      "val_loss": 1.2621871575369525,
+      "macro_f1": 0.6059697804557815
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.7327198442896433,
+      "val_loss": 1.2788716797058937,
+      "macro_f1": 0.6191501440645208
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.5868621475599357,
+      "val_loss": 1.254558991086308,
+      "macro_f1": 0.6235522485515221
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.4788083340033582,
+      "val_loss": 1.2552529630920921,
+      "macro_f1": 0.6265620190470748
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.3848718338658652,
+      "val_loss": 1.4210673158273757,
+      "macro_f1": 0.6300641167647528
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.3086442652108219,
+      "val_loss": 1.29820275431659,
+      "macro_f1": 0.6445222921106255
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.23445017906930665,
+      "val_loss": 1.4912737340547253,
+      "macro_f1": 0.6301113862840062
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.20768596584051652,
+      "val_loss": 1.521257078622622,
+      "macro_f1": 0.6322711701477702
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.17796309038846445,
+      "val_loss": 1.5694955789817955,
+      "macro_f1": 0.6349125427864053
+    }
+  ],
+  "hyperparameters": {
+    "epochs": 12,
+    "batch_size": 32,
+    "learning_rate": 0.0001,
+    "weight_decay": 0.0001,
+    "class_balance": "loss"
+  }
+}

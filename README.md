@@ -58,6 +58,7 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 Проект использует единый `pyproject.toml`. Зависимости разбиты на группы (могут пересекаться):
 
 - `data` — датасеты, dataloader, transforms, метрики, `torch`/`torchvision`
+- `efficientnet` — обучение EfficientNet baseline на общем pipeline
 - `streamlit` — UI-сервис без модельных зависимостей
 - `yolo` — YOLO demo/inference зависимости
 
@@ -255,10 +256,10 @@ shuffle=False
 
 ```python
 train_loader, val_loader = create_dataloaders(
-    train_csv_path="../data/train_df.csv",
-    val_csv_path="../data/val_df.csv",
-    train_image_root="../data/train_images",
-    val_image_root="../data/val_images",
+    train_csv_path="../data/raw/train_df.csv",
+    val_csv_path="../data/raw/val_df.csv",
+    train_image_root="../data/raw/train_images",
+    val_image_root="../data/raw/val_images",
     batch_size=32,
     num_workers=2
 )

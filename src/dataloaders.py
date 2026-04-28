@@ -9,14 +9,15 @@ def create_dataloaders(
         train_image_root, # папка с изображениями (train)
         val_image_root,   # папка с изображениями (val)
         batch_size=32,    # размер батча (сколько изображений за один шаг обучения)
-        num_workers=2     # число процессов для параллельной загрузки данных
+        num_workers=2,    # число процессов для параллельной загрузки данных
+        image_size=224    # размер стороны изображения после resize
 ):
     # train dataset
     # Для train используем аугментации
     train_dataset = RoomTypeDataset(
         csv_path=train_csv_path,
         image_root=train_image_root,
-        transform=get_train_transforms()
+        transform=get_train_transforms(image_size=image_size)
     )
 
     # validation dataset
@@ -24,7 +25,7 @@ def create_dataloaders(
     val_dataset = RoomTypeDataset(
         csv_path=val_csv_path,
         image_root=val_image_root,
-        transform=get_val_transforms()
+        transform=get_val_transforms(image_size=image_size)
     )
 
     # DataLoader для train

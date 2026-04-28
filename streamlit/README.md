@@ -1,7 +1,6 @@
 # Streamlit service
 
-Сервис загружает одно или несколько изображений, позволяет выбрать модели и выводит
-предсказанный тип комнаты с вероятностью для каждой выбранной модели.
+Сервис загружает одно или несколько изображений, позволяет выбрать модели и выводит предсказанный тип комнаты с вероятностью для каждой выбранной модели.
 
 ## Локальный запуск
 
@@ -12,7 +11,7 @@ uv run streamlit run streamlit/app.py
 
 ## Docker
 
-Dockerfile рассчитан на build context из корня репозитория:
+Dockerfile рассчитан на сборку из корня репозитория (в дальнейшем будет частью docker compose):
 
 ```bash
 docker build -f streamlit/Dockerfile -t room-type-classifier-streamlit .
@@ -30,38 +29,35 @@ services:
     ports:
       - "8501:8501"
     environment:
-      STREAMLIT_ALLOW_MODEL_DOWNLOAD: "0"
+      STREAMLIT_ALLOW_MODEL_DOWNLOAD: "1"
 ```
 
-Docker-образ ставит только dependency group `streamlit`, без `torch` и YOLO
-зависимостей.
+Docker-образ ставит только dependency group `streamlit`, без лишних зависимостей.
 
-Проектная конфигурация Streamlit лежит в `.streamlit/config.toml`: отключены
-file watcher, run-on-save, prompt email и usage stats. Порт можно переопределить
-через переменную окружения `STREAMLIT_SERVER_PORT`.
+Проектная конфигурация Streamlit лежит в `.streamlit/config.toml`: отключены file watcher, run-on-save, prompt email и usage stats. Порт можно переопределить через переменную окружения `STREAMLIT_SERVER_PORT`.
 
-## YOLO
+## Модели
 
-Сейчас сервис работает на моках. Для `YOLO scene classifier` он пытается
-использовать локальную модель:
+Сервис показывает только реальные доступные модели. Если checkpoint или вес не найден, соответствующая модель будет отключена в сайдбаре.
+
+Для `YOLO scene classifier` используется внешний pretrained вес:
 
 ```text
-models/yolo/keremberke/yolov8m-scene-classification/best.pt
+models/yolo/downloads/keremberke/yolov8m-scene-classification/best.pt
 ```
 
-Если файла нет, эта модель тоже возвращает моковые ответы. Чтобы разрешить
-автозагрузку из Hugging Face при старте inference:
+Чтобы разрешить автозагрузку YOLO из Hugging Face при старте inference:
 
 ```bash
 STREAMLIT_ALLOW_MODEL_DOWNLOAD=1 uv run streamlit run streamlit/app.py
 ```
 
-Если нужно запустить Streamlit с реальным YOLO inference:
+Для EfficientNet по умолчанию используются checkpoints:
 
-```bash
-uv sync --group streamlit --group yolo
-STREAMLIT_ALLOW_MODEL_DOWNLOAD=1 uv run --group streamlit --group yolo streamlit run streamlit/app.py
+```text
+models/efficientNet/artifacts/efficientnet_b0_best.pt
+models/efficientNet/artifacts/efficientnet_b1_best.pt
 ```
 
-Для приватного или rate-limited доступа можно дополнительно задать `HF_TOKEN`
-или `HUGGINGFACE_HUB_TOKEN`.
+Пути можно переопределить через `EFFICIENTNET_B0_CHECKPOINT_PATH` и
+`EFFICIENTNET_B1_CHECKPOINT_PATH`.

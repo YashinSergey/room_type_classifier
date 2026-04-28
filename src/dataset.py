@@ -1,4 +1,5 @@
 import os
+import warnings
 
 import pandas as pd
 from PIL import Image
@@ -10,7 +11,8 @@ class RoomTypeDataset(Dataset):
             csv_path,
             image_root,
             transform=None,
-            target_col='result'
+            target_col='result',
+            filter_missing=True
     ):
         # путь к папке с изображениями
         self.image_root = image_root
@@ -20,6 +22,19 @@ class RoomTypeDataset(Dataset):
         self.target_col = target_col
         # Загружаем CSV-файл с описанием датасета
         self.df = pd.read_csv(csv_path)
+        # Фильтруем строки, где изображение не найдено
+        if filter_missing:
+            image_paths = self.df["image_id_ext"].astype(str).map(
+                lambda image_id: os.path.join(self.image_root, f"{image_id}.jpg")
+            )
+            exists_mask = image_paths.map(os.path.exists)
+            missing_count = int((~exists_mask).sum())
+            if missing_count:
+                warnings.warn(
+                    f"Skipped {missing_count} rows from {csv_path}: images not found in {image_root}",
+                    stacklevel=2,
+                )
+                self.df = self.df.loc[exists_mask].reset_index(drop=True)
 
     # количество строк в таблице(объектов в датасете)
     def __len__(self):

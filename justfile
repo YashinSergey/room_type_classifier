@@ -25,6 +25,10 @@ install-data: setup
 install-streamlit: setup
     uv sync --only-group streamlit
 
+# Install EfficientNet training deps
+install-efficientnet: setup
+    uv sync --group efficientnet
+
 # Install YOLO demo deps
 install-yolo: setup
     uv sync --group yolo
@@ -56,13 +60,13 @@ pytorch-cu130:
 run-yolo:
     uv run --group yolo python models/yolo/main_yolo.py
 
-# Run Streamlit service with mock models
-run-streamlit:
-    uv run --only-group streamlit streamlit run streamlit/app.py
+# Train EfficientNet baseline
+train-efficientnet:
+    uv run --group efficientnet python models/efficientNet/train.py
 
-# Run Streamlit service with YOLO dependencies enabled
-run-streamlit-yolo:
-    uv run --group streamlit --group yolo streamlit run streamlit/app.py
+# Run Streamlit service with all model dependencies enabled
+run-streamlit:
+    uv run --group streamlit --group efficientnet --group yolo streamlit run streamlit/app.py
 
 # Run arbitrary command inside the uv env:
 #   just run "python -V"

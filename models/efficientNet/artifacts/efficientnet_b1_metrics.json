@@ -1,0 +1,66 @@
+{
+  "model": "efficientnet",
+  "variant": "b1",
+  "num_classes": 20,
+  "best_epoch": 5,
+  "best_macro_f1": 0.6444455624139609,
+  "checkpoint": "/Users/karimovdmitry/projects/mephi/room_type_classifier/models/efficientNet/artifacts/efficientnet_b1_best.pt",
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 2.611873402087535,
+      "val_loss": 2.0529341932612644,
+      "macro_f1": 0.44465036430345906
+    },
+    {
+      "epoch": 2,
+      "train_loss": 1.5972534494408386,
+      "val_loss": 1.4150156692388922,
+      "macro_f1": 0.5847393914476756
+    },
+    {
+      "epoch": 3,
+      "train_loss": 1.1519405382968313,
+      "val_loss": 1.2317746780203573,
+      "macro_f1": 0.58241410477915
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.9281275123945719,
+      "val_loss": 1.1402590937084622,
+      "macro_f1": 0.6225059649443394
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.7549381142564637,
+      "val_loss": 1.1503279663981631,
+      "macro_f1": 0.6444455624139609
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.6391523190884671,
+      "val_loss": 1.198970031188469,
+      "macro_f1": 0.6275192639355531
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.5422949803497434,
+      "val_loss": 1.2426009018216244,
+      "macro_f1": 0.6359183337861092
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.47392143146451343,
+      "val_loss": 1.2072050149085887,
+      "macro_f1": 0.6378821767052133
+    }
+  ],
+  "hyperparameters": {
+    "epochs": 8,
+    "batch_size": 32,
+    "image_size": 240,
+    "learning_rate": 0.0001,
+    "weight_decay": 0.0001,
+    "class_balance": "loss"
+  }
+}
