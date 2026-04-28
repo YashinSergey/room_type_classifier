@@ -16,6 +16,14 @@ data = [
   "torch==2.5.1",
   "torchvision==0.20.1",
 ]
+efficientnet = [
+  "numpy==2.4.3",
+  "pandas==2.3.3",
+  "pillow==12.1.1",
+  "scikit-learn==1.5.2",
+  "torch==2.5.1",
+  "torchvision==0.20.1",
+]
 streamlit = [
   "pandas==2.3.3",
   "pillow==12.1.1",
