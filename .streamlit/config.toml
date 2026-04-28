@@ -1,0 +1,13 @@
+[server]
+headless = true
+runOnSave = false
+fileWatcherType = "none"
+showEmailPrompt = false
+
+[client]
+showSidebarNavigation = false
+toolbarMode = "minimal"
+showErrorLinks = false
+
+[browser]
+gatherUsageStats = false

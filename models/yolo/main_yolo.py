@@ -13,7 +13,7 @@ def main():
     
     start = time.perf_counter()
 
-    model_path = Path('models/keremberke/yolov8m-scene-classification/best.pt')
+    model_path = Path('models/yolo/keremberke/yolov8m-scene-classification/best.pt')
     hf_token = os.getenv("HF_TOKEN") or os.getenv("HUGGINGFACE_HUB_TOKEN")
 
     if model_path.exists():
@@ -27,7 +27,7 @@ def main():
         model_path = hf_hub_download(
             repo_id="keremberke/yolov8m-scene-classification",
             filename="best.pt",
-            local_dir="./models/keremberke/yolov8m-scene-classification",  # сохраняем в папку models/
+            local_dir=model_path.parent,
             local_dir_use_symlinks=False,  # копируем, а не создаём симлинк
             token=hf_token,
         )
