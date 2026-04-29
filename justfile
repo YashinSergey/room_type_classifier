@@ -29,6 +29,10 @@ install-streamlit: setup
 install-efficientnet: setup
     uv sync --group efficientnet
 
+# Install Grad-CAM / interpretation deps
+install-interpretability: setup
+    uv sync --group efficientnet --group interpretability
+
 # Install YOLO demo deps
 install-yolo: setup
     uv sync --group yolo
@@ -63,6 +67,10 @@ run-yolo:
 # Train EfficientNet baseline
 train-efficientnet:
     uv run --group efficientnet python models/efficientNet/train.py
+
+# Build Grad-CAM visualization for EfficientNet
+grad-cam-efficientnet:
+    uv run --group efficientnet --group interpretability python models/efficientNet/grad_cam.py
 
 # Run Streamlit service with all model dependencies enabled
 run-streamlit:

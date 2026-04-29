@@ -24,6 +24,11 @@ efficientnet = [
   "torch==2.5.1",
   "torchvision==0.20.1",
 ]
+interpretability = [
+  "grad-cam==1.5.5",
+  "matplotlib==3.10.9",
+  "opencv-python==4.11.0.86",
+]
 streamlit = [
   "pandas==2.3.3",
   "pillow==12.1.1",
