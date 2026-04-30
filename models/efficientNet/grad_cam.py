@@ -17,6 +17,7 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 from src.labels import load_label_mapping
+from src.device import get_default_device
 from src.transforms import get_val_transforms
 
 
@@ -43,24 +44,7 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=ROOT_DIR / "models" / "efficientNet" / "artifacts" / "grad_cam",
     )
-    parser.add_argument("--device", choices=["auto", "cpu", "cuda", "mps"], default="auto")
     return parser.parse_args()
-
-
-def get_device(device_name: str) -> torch.device:
-    """Выбираем устройство."""
-    if device_name == "cuda":
-        return torch.device("cuda")
-    if device_name == "mps":
-        return torch.device("mps")
-    if device_name == "cpu":
-        return torch.device("cpu")
-    if torch.cuda.is_available():
-        return torch.device("cuda")
-    if torch.backends.mps.is_available():
-        return torch.device("mps")
-    return torch.device("cpu")
-
 
 def get_default_image_size(variant: str) -> int:
     """Размер картинки по умолчанию для варианта EfficientNet."""
@@ -104,7 +88,7 @@ def main() -> None:
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
     # Загружаем чекпоинт и восстанавливаем модель
-    device = get_device(args.device)
+    device = get_default_device()
     checkpoint = torch.load(args.checkpoint, map_location=device, weights_only=False)
     variant = checkpoint.get("variant", "b0")
     num_classes = int(checkpoint.get("num_classes", 20))
