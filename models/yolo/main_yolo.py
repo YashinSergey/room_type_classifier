@@ -5,7 +5,7 @@ import time
 from pathlib import Path
 
 IMAGES_PATH = Path('data/raw/val_images')
-LOG_PATH = Path('data/log.txt')
+LOG_PATH = Path('models/yolo/artifacts/log.txt')
 
 N_IMAGES = 100
 
@@ -13,7 +13,7 @@ def main():
     
     start = time.perf_counter()
 
-    model_path = Path('models/keremberke/yolov8m-scene-classification/best.pt')
+    model_path = Path('models/yolo/downloads/keremberke/yolov8m-scene-classification/best.pt')
     hf_token = os.getenv("HF_TOKEN") or os.getenv("HUGGINGFACE_HUB_TOKEN")
 
     if model_path.exists():
@@ -27,7 +27,7 @@ def main():
         model_path = hf_hub_download(
             repo_id="keremberke/yolov8m-scene-classification",
             filename="best.pt",
-            local_dir="./models/keremberke/yolov8m-scene-classification",  # сохраняем в папку models/
+            local_dir=model_path.parent,
             local_dir_use_symlinks=False,  # копируем, а не создаём симлинк
             token=hf_token,
         )
@@ -45,6 +45,8 @@ def main():
 
     load_time = time.perf_counter() - start
     print(f'Модель загружена за {load_time:.2f}с')
+
+    LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
 
     with open(LOG_PATH, "w") as f:
         start = time.perf_counter()
@@ -64,6 +66,7 @@ def main():
 
     print(f'\nПредсказание по {N_IMAGES} файлам выполнено за {pred_time:.2f}с')
     print(f'Среднее время на файл: {pred_time / N_IMAGES:.2f}с')
+    print(f'Лог сохранён в: {LOG_PATH}')
 
 if __name__ == '__main__':
     main()

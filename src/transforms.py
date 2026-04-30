@@ -1,9 +1,9 @@
 from torchvision import transforms
 
-def get_train_transforms():
+def get_train_transforms(image_size=224):
     return transforms.Compose([
         # Приводим все изображения к одному размеру
-        transforms.Resize((224, 224)),
+        transforms.Resize((image_size, image_size)),
         # Случайно отражаем изображение по горизонтали
         transforms.RandomHorizontalFlip(),
         # Случайно поворачиваем изображение в пределах 10 градусов
@@ -23,10 +23,10 @@ def get_train_transforms():
         )
     ])
 
-def get_val_transforms():
+def get_val_transforms(image_size=224):
     return transforms.Compose([
         # Приводим validation изображения к тому же размеру, что и train
-        transforms.Resize((224, 224)),
+        transforms.Resize((image_size, image_size)),
         # Преобразуем изображение в PyTorch tensor
         transforms.ToTensor(),
 

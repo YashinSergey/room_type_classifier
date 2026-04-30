@@ -1,4 +1,4 @@
-set dotenv-load := false
+set dotenv-load := true
 
 PYTHON_VERSION := "3.12.8"
 PYTORCH_PIP := "uv pip"
@@ -6,18 +6,43 @@ PYTORCH_PIP := "uv pip"
 default:
     @just --list
 
-# Install uv-managed Python + create venv + sync deps
-install:
+# Install uv-managed Python
+setup:
     uv python install {{PYTHON_VERSION}}
-    uv venv --python {{PYTHON_VERSION}}
-    uv sync
+
+# Recreate project virtual environment
+recreate-venv: setup
+    uv venv --python {{PYTHON_VERSION}} --clear
+
+# Install default data pipeline deps
+install: install-data
+
+# Install data pipeline deps
+install-data: setup
+    uv sync --group data
+
+# Install Streamlit service deps without torch/YOLO deps
+install-streamlit: setup
+    uv sync --only-group streamlit
+
+# Install EfficientNet training deps
+install-efficientnet: setup
+    uv sync --group efficientnet
+
+# Install YOLO demo deps
+install-yolo: setup
+    uv sync --group yolo
+
+# Install all project dependency groups
+install-all: setup
+    uv sync --all-groups
 
 # Update lockfile (optional)
 lock:
     uv lock
 
 # PyTorch: optional install/override of torch wheels (choose ONE variant)
-# Baseline is pinned in `pyproject.toml` + `uv.lock` (installed by `just install` / `uv sync`).
+# Baseline is pinned in `pyproject.toml` + `uv.lock` (installed by `just install` / `uv sync --group data`).
 #
 # - pypi: PyPI wheels for your platform
 # - cpu: https://download.pytorch.org/whl/cpu
@@ -33,7 +58,15 @@ pytorch-cu130:
 
 # Run YOLO demo script
 run-yolo:
-    uv run python models/yolo/main_yolo.py
+    uv run --group yolo python models/yolo/main_yolo.py
+
+# Train EfficientNet baseline
+train-efficientnet:
+    uv run --group efficientnet python models/efficientNet/train.py
+
+# Run Streamlit service with all model dependencies enabled
+run-streamlit:
+    uv run --group streamlit --group efficientnet --group yolo streamlit run streamlit/app.py
 
 # Run arbitrary command inside the uv env:
 #   just run "python -V"
