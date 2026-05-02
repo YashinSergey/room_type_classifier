@@ -40,9 +40,9 @@ def parse_args() -> argparse.Namespace:
     """
     parser = argparse.ArgumentParser(description="Train EfficientNet baseline")
     parser.add_argument("--variant", choices=MODEL_BUILDERS.keys(), default="b0")
-    parser.add_argument("--num-classes", type=int, default=20)
-    parser.add_argument("--train-csv", type=Path, default=ROOT_DIR / "data" / "raw" / "train_df.csv")
-    parser.add_argument("--val-csv", type=Path, default=ROOT_DIR / "data" / "raw" / "val_df.csv")
+    parser.add_argument("--num-classes", type=int, default=19)
+    parser.add_argument("--train-csv", type=Path, default=ROOT_DIR / "data" / "processed" / "train_df.csv")
+    parser.add_argument("--val-csv", type=Path, default=ROOT_DIR / "data" / "processed" / "val_df.csv")
     parser.add_argument("--train-images", type=Path, default=ROOT_DIR / "data" / "raw" / "train_images")
     parser.add_argument("--val-images", type=Path, default=ROOT_DIR / "data" / "raw" / "val_images")
     parser.add_argument("--output-dir", type=Path, default=ROOT_DIR / "models" / "efficientNet" / "artifacts")

@@ -11,8 +11,9 @@ class RoomTypeDataset(Dataset):
             csv_path,
             image_root,
             transform=None,
-            target_col='result',
-            filter_missing=True
+            target_col="result",
+            filter_missing=True,
+            filter_can_predict=False
     ):
         # путь к папке с изображениями
         self.image_root = image_root
@@ -22,6 +23,8 @@ class RoomTypeDataset(Dataset):
         self.target_col = target_col
         # Загружаем CSV-файл с описанием датасета
         self.df = pd.read_csv(csv_path)
+        if filter_can_predict and "can_predict" in self.df.columns:
+            self.df = self.df[self.df["can_predict"]].reset_index(drop=True)
         # Фильтруем строки, где изображение не найдено
         if filter_missing:
             image_paths = self.df["image_id_ext"].astype(str).map(
@@ -31,7 +34,7 @@ class RoomTypeDataset(Dataset):
             missing_count = int((~exists_mask).sum())
             if missing_count:
                 warnings.warn(
-                    f"Skipped {missing_count} rows from {csv_path}: images not found in {image_root}",
+                    f"Пропущено строк без локального изображения: {missing_count}",
                     stacklevel=2,
                 )
                 self.df = self.df.loc[exists_mask].reset_index(drop=True)
@@ -45,7 +48,7 @@ class RoomTypeDataset(Dataset):
         row = self.df.iloc[idx]
 
         # Берём id изображения и формируем имя файла
-        image_id = row["image_id_ext"]
+        image_id = str(row["image_id_ext"])
         image_name = f"{image_id}.jpg"
 
         # Собираем полный путь к изображению
@@ -55,11 +58,14 @@ class RoomTypeDataset(Dataset):
         image = Image.open(image_path).convert("RGB")
 
         # Получаем числовой класс изображения
-        target = int(row[self.target_col])
-
-        # Если transforms переданы, применяем их к изображению
         if self.transform is not None:
             image = self.transform(image)
+
+        if self.target_col is None:
+            item_id = row["item_id"] if "item_id" in row else image_id
+            return image, image_id, item_id
+
+        target = int(row[self.target_col])
 
         # Возвращаем изображение и его класс
         return image, target
