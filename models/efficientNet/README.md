@@ -46,3 +46,24 @@ models/efficientNet/artifacts/model_comparison.csv
 
 `model_comparison.csv` можно использовать как простую таблицу сравнения с
 запусков и моделей, добавляя туда строки с их результатами.
+
+## Grad-CAM
+
+Построить Grad-CAM для первого доступного validation sample:
+
+```bash
+just install-interpretability
+just grad-cam-efficientnet
+```
+
+Для конкретного изображения:
+
+```bash
+uv run --group efficientnet --group interpretability python models/efficientNet/grad_cam.py --checkpoint models/efficientNet/artifacts/efficientnet_b1_best.pt --image data/raw/val_images/14333332896.jpg
+```
+
+Результаты сохраняются в:
+
+```text
+models/efficientNet/artifacts/grad_cam/
+```

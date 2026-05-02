@@ -22,6 +22,7 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 from src.dataloaders import create_dataloaders
+from src.device import get_default_device
 from src.metrics import calculate_macro_f1
 
 
@@ -189,13 +190,8 @@ def main() -> None:
     validate_paths(args)
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
-    device = None
-    if torch.cuda.is_available():
-        device = torch.device("cuda")
-    elif torch.backends.mps.is_available():
-        device = torch.device("mps")
-    else:
-        device = torch.device("cpu")
+    # Автовыбор устройства: CUDA -> MPS -> CPU
+    device = get_default_device()
     print(f"Using device: {device}")
     
     # Готовим общий даталоадер (читает CSV и берёт картинки из папок).
