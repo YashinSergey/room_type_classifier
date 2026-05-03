@@ -66,6 +66,42 @@ def parse_args() -> argparse.Namespace:
         default=0,
         help="Печатать прогресс обучения каждые N батчей (0 = выключено).",
     )
+    parser.add_argument(
+        "--early-stopping-patience",
+        type=int,
+        default=0,
+        help="Сколько эпох без улучшения macro-F1 на val до остановки (0 = выключено).",
+    )
+    parser.add_argument(
+        "--early-stopping-min-delta",
+        type=float,
+        default=1e-4,
+        help="Минимальный прирост macro-F1, чтобы считать эпоху улучшением.",
+    )
+    parser.add_argument(
+        "--lr-scheduler",
+        choices=["none", "plateau"],
+        default="none",
+        help="После эпохи: none или ReduceLROnPlateau по val_loss.",
+    )
+    parser.add_argument(
+        "--plateau-patience",
+        type=int,
+        default=3,
+        help="Параметр patience у ReduceLROnPlateau (эпох без снижения val_loss).",
+    )
+    parser.add_argument(
+        "--plateau-factor",
+        type=float,
+        default=0.1,
+        help="Множитель lr при срабатывании ReduceLROnPlateau.",
+    )
+    parser.add_argument(
+        "--plateau-min-lr",
+        type=float,
+        default=1e-7,
+        help="Нижняя граница lr для ReduceLROnPlateau.",
+    )
     return parser.parse_args()
 
 
@@ -258,12 +294,24 @@ def main() -> None:
         weight_decay=args.weight_decay,
     )
 
+    scheduler = None
+    if args.lr_scheduler == "plateau":
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+            optimizer,
+            mode="min",
+            factor=args.plateau_factor,
+            patience=args.plateau_patience,
+            min_lr=args.plateau_min_lr,
+        )
+
     # Будем хранить лучший результат по macro-F1 и сохранять лучший чекпоинт.
     best_macro_f1 = -1.0
     best_epoch = 0
     best_per_class_f1: list[dict[str, object]] = []
     checkpoint_path = args.output_dir / f"efficientnet_{args.variant}_best.pt"
     history = []
+    epochs_without_improvement = 0
+    stop_reason = "max_epochs"
 
     for epoch in range(1, args.epochs + 1):
         # Обучение и затем проверка на валидации.
@@ -284,6 +332,10 @@ def main() -> None:
             args.num_classes,
         )
         per_class_f1 = add_label_names(per_class_f1, label_mapping)
+        current_lr = optimizer.param_groups[0]["lr"]
+        if scheduler is not None:
+            scheduler.step(val_loss)
+
         history.append(
             {
                 "epoch": epoch,
@@ -291,6 +343,7 @@ def main() -> None:
                 "val_loss": val_loss,
                 "macro_f1": macro_f1,
                 "per_class_f1": per_class_f1,
+                "lr": current_lr,
             }
         )
 
@@ -298,14 +351,17 @@ def main() -> None:
             f"epoch={epoch} "
             f"train_loss={train_loss:.4f} "
             f"val_loss={val_loss:.4f} "
-            f"macro_f1={macro_f1:.4f}"
+            f"macro_f1={macro_f1:.4f} "
+            f"lr={current_lr:.2e}"
         )
 
-        if macro_f1 > best_macro_f1:
+        improved = macro_f1 > best_macro_f1 + args.early_stopping_min_delta
+        if improved:
             # Если стало лучше — обновляем best и сохраняем веса модели.
             best_macro_f1 = macro_f1
             best_epoch = epoch
             best_per_class_f1 = per_class_f1
+            epochs_without_improvement = 0
             torch.save(
                 {
                     "model_state_dict": model.state_dict(),
@@ -319,6 +375,16 @@ def main() -> None:
                 },
                 checkpoint_path,
             )
+        else:
+            epochs_without_improvement += 1
+
+        if args.early_stopping_patience > 0 and epochs_without_improvement >= args.early_stopping_patience:
+            stop_reason = "early_stopping"
+            print(
+                f"Ранняя остановка, т.к. нет улучшения macro-F1 > {best_macro_f1:.4f} "
+                f"на {args.early_stopping_patience} эпох (min_delta={args.early_stopping_min_delta})"
+            )
+            break
 
     # Сохраняем метрики и историю обучения в JSON (чтобы потом можно было анализировать).
     metrics = {
@@ -330,6 +396,7 @@ def main() -> None:
         "best_per_class_f1": best_per_class_f1,
         "checkpoint": str(checkpoint_path),
         "history": history,
+        "stop_reason": stop_reason,
         "hyperparameters": {
             "epochs": args.epochs,
             "batch_size": args.batch_size,
@@ -338,6 +405,12 @@ def main() -> None:
             "weight_decay": args.weight_decay,
             "class_balance": args.class_balance,
             "use_weighted_sampling": args.use_weighted_sampling,
+            "early_stopping_patience": args.early_stopping_patience,
+            "early_stopping_min_delta": args.early_stopping_min_delta,
+            "lr_scheduler": args.lr_scheduler,
+            "plateau_patience": args.plateau_patience,
+            "plateau_factor": args.plateau_factor,
+            "plateau_min_lr": args.plateau_min_lr,
         },
     }
     metrics_path = args.output_dir / f"efficientnet_{args.variant}_metrics.json"
