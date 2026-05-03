@@ -137,12 +137,7 @@ def main() -> None:
     visualization = show_cam_on_image(rgb_image, grayscale_cam, use_rgb=True)
 
     # Загружаем названия классов
-    labels = load_label_mapping(
-        [
-            ROOT_DIR / "data" / "processed" / "train_df.csv",
-            ROOT_DIR / "data" / "processed" / "val_df.csv",
-        ]
-    )
+    labels = load_label_mapping()
     stem = f"{image_path.stem}_{variant}_target_{target_class}"
     output_path = args.output_dir / f"{stem}_grad_cam.jpg"
     metadata_path = args.output_dir / f"{stem}_metadata.json"

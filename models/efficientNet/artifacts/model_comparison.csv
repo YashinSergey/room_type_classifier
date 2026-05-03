@@ -3,3 +3,6 @@ efficientnet,b0,20,1,0.3764654102106332,/Users/karimovdmitry/projects/mephi/room
 efficientnet,b1,20,3,0.5881900228574726,/Users/karimovdmitry/projects/mephi/room_type_classifier/models/efficientNet/artifacts/efficientnet_b1_best.pt
 efficientnet,b0,20,9,0.6445222921106255,/Users/karimovdmitry/projects/mephi/room_type_classifier/models/efficientNet/artifacts/efficientnet_b0_best.pt
 efficientnet,b1,20,5,0.6444455624139609,/Users/karimovdmitry/projects/mephi/room_type_classifier/models/efficientNet/artifacts/efficientnet_b1_best.pt
+efficientnet,b0,19,14,0.6718294209245146,/Users/karimovdmitry/projects/mephi/room_type_classifier/models/efficientNet/artifacts/efficientnet_b0_best.pt
+efficientnet,b1,19,10,0.7140472968537859,/Users/karimovdmitry/projects/mephi/room_type_classifier/models/efficientNet/artifacts/efficientnet_b1_best.pt
+efficientnet,b0,19,21,0.6898661189639728,/Users/karimovdmitry/projects/mephi/room_type_classifier/models/efficientNet/artifacts/efficientnet_b0_best.pt
