@@ -60,8 +60,8 @@ def load_room_type_labels() -> dict[int, str]:
     """Словарь: id класса -> лейбл из csv."""
     return load_label_mapping(
         [
-            ROOT_DIR / "data" / "raw" / "train_df.csv",
-            ROOT_DIR / "data" / "raw" / "val_df.csv",
+            ROOT_DIR / "data" / "processed" / "train_df.csv",
+            ROOT_DIR / "data" / "processed" / "val_df.csv",
         ]
     )
 

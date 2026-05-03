@@ -139,8 +139,8 @@ def main() -> None:
     # Загружаем названия классов
     labels = load_label_mapping(
         [
-            ROOT_DIR / "data" / "raw" / "train_df.csv",
-            ROOT_DIR / "data" / "raw" / "val_df.csv",
+            ROOT_DIR / "data" / "processed" / "train_df.csv",
+            ROOT_DIR / "data" / "processed" / "val_df.csv",
         ]
     )
     stem = f"{image_path.stem}_{variant}_target_{target_class}"

@@ -59,7 +59,7 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 
 - `data` — датасеты, dataloader, transforms, метрики, `torch`/`torchvision`
 - `efficientnet` — обучение EfficientNet baseline на общем pipeline
-- `streamlit` — UI-сервис без модельных зависимостей
+- `streamlit` — UI-сервис проекта
 - `yolo` — YOLO demo/inference зависимости
 
 ```bash
@@ -133,15 +133,16 @@ data/
 
 notebooks/       # эксперименты и EDA
 
-outputs/
-  models/        # сохранённые модели
+models/          # эксперименты и код отдельных моделей
 
-src/             # основной код проекта(Classes.py)
+src/             # общий код проекта: dataset, dataloaders, transforms, metrics, preprocessing
+
+streamlit/       # UI-сервис проекта
 ```
 
 ## Data pipeline
 
-Для работы проекта в папке `data/` должны лежать:
+Для работы pipeline в папке `data/` должны лежать raw-данные:
 
 ```
 data/
@@ -155,16 +156,75 @@ data/
     test_images/
 ```
 
-`train_df.csv` и `val_df.csv` содержат разметку классов в признаке `result`
+`train_df.csv` и `val_df.csv` содержат разметку классов в признаке `result`.
+В `test_df.csv` колонки `result` нет.
 
-`test_df.csv` пока не трогаем
+Изображения берутся не по URL из признака `image`, а из локальных папок:
 
-Изображения берутся не по URL из признака `image`, а из локальных папок `train_images/`, `val_images/`, `test_images/`
+```
+train_images/
+val_images/
+test_images/
+```
 
 Связь между CSV и файлом изображения идёт через признак:
 
 ```
 image_id_ext -> {image_id_ext}.jpg
+```
+
+Перед обучением нужно подготовить CSV:
+
+```bash
+just prepare-data
+```
+
+Команда читает `data/raw/*.csv`, очищает train/val, добавляет флаги для test
+и сохраняет результат в `data/processed/`.
+
+После подготовки используются уже не raw CSV, а обработанные файлы:
+
+```
+data/processed/train_df.csv
+data/processed/val_df.csv
+data/processed/test_df.csv
+```
+
+Для train/val после preprocessing остаются признаки:
+
+```
+image_id_ext
+image
+result
+```
+
+Для test остаются признаки:
+
+```
+image_id_ext
+image
+item_id
+image_exists
+image_is_valid
+can_predict
+```
+
+В test строки не удаляются, чтобы не менять порядок и количество объектов.
+Для предсказаний в `DataLoader` используются только строки `can_predict=True`.
+
+Для train/val применяется единая схема классов:
+
+```text
+старый класс 18 удаляется
+старый класс 19 -> новый класс 18
+```
+
+Поэтому после подготовки модель обучается на 19 классах `0..18`. Для test
+классы не меняются, потому что там нет `result`: строки не удаляются,
+а изображения помечаются флагом `can_predict`. Обратное соответствие классов сохраняется в:
+
+```text
+data/processed/class_mapping.json
 ```
 
 ---
@@ -196,7 +256,13 @@ image, target
 
 ```
 image  — tensor изображения
-target — номер класса от 0 до 19
+target — номер класса от 0 до 18 после подготовки данных
+```
+
+Для test в CSV нет `result`, поэтому `RoomTypeDataset` возвращает:
+
+```python
+image, image_id, item_id
 ```
 
 ---
@@ -243,7 +309,7 @@ train_loader, val_loader
 `train_loader` использует:
 
 ```
-shuffle=True
+shuffle=True или WeightedRandomSampler
 ```
 
 `val_loader` использует:
@@ -256,14 +322,51 @@ shuffle=False
 
 ```python
 train_loader, val_loader = create_dataloaders(
-    train_csv_path="../data/raw/train_df.csv",
-    val_csv_path="../data/raw/val_df.csv",
-    train_image_root="../data/raw/train_images",
-    val_image_root="../data/raw/val_images",
     batch_size=32,
-    num_workers=2
+    num_workers=2,
+    image_size=224
 )
 ```
+
+По умолчанию функция берёт:
+
+```
+data/processed/train_df.csv
+data/processed/val_df.csv
+data/raw/train_images/
+data/raw/val_images/
+```
+
+Если нужно включить балансировку классов для train:
+
+```python
+train_loader, val_loader = create_dataloaders(
+    batch_size=32,
+    num_workers=2,
+    image_size=224,
+    use_weighted_sampling=True
+)
+```
+
+В этом случае для train используется `WeightedRandomSampler`.
+Для validation балансировка не применяется.
+
+Для test используется отдельная функция:
+
+```python
+test_loader = create_test_dataloader(
+    batch_size=32,
+    num_workers=2,
+    image_size=224
+)
+```
+
+`test_loader` возвращает:
+
+```python
+images, image_ids, item_ids
+```
+
 ---
 
 ```python
@@ -289,7 +392,7 @@ torch.Size([32])
 
 ## Контракт для моделей
 
-Любая модель должна работать с:
+Любая модель при обучении и валидации должна работать с:
 
 ```python
 images, targets = batch
@@ -305,8 +408,16 @@ targets — tensor [batch_size]
 Модель должна возвращать:
 
 ```
-outputs — tensor [batch_size, 20]
+outputs — tensor [batch_size, 19]
 ```
+
+Для test используется другой формат batch:
+
+```python
+images, image_ids, item_ids = batch
+```
+
+В test нет `targets`, потому что в `test_df.csv` нет колонки `result`.
 
 ---
 
@@ -318,7 +429,7 @@ from torchvision.models import resnet18, ResNet18_Weights
 
 model = resnet18(weights=ResNet18_Weights.DEFAULT)
 
-num_classes = 20
+num_classes = 19
 in_features = model.fc.in_features
 
 model.fc = nn.Linear(in_features, num_classes)
@@ -331,7 +442,7 @@ print(outputs.shape)
 Ожидаемый результат:
 
 ```
-torch.Size([32, 20])
+torch.Size([32, 19])
 ```
 
 ---
