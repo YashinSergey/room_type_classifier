@@ -46,6 +46,20 @@ install-all: setup
 prepare-data:
     uv run --group data python -m src.preprocess_data
 
+# Запустить preprocessing с рекомендуемыми heuristics: кабинет и гардеробная
+prepare-data-with-heuristics:
+    uv run --group data python -m src.preprocess_data --include-heuristics recommended
+
+# Запустить preprocessing с выбранными heuristics
+# Пример: just prepare-data-heuristics cabinet,dressing_room
+prepare-data-heuristics HEURISTICS:
+    uv run --group data python -m src.preprocess_data --include-heuristics {{HEURISTICS}}
+
+# Запустить preprocessing с выбранными heuristics и лимитом на каждый источник
+# Пример: just prepare-data-heuristics-limited cabinet,dressing_room 500
+prepare-data-heuristics-limited HEURISTICS MAX_ROWS:
+    uv run --group data python -m src.preprocess_data --include-heuristics {{HEURISTICS}} --max-heuristics-per-source {{MAX_ROWS}}
+
 # Обновить lockfile при необходимости
 lock:
     uv lock
