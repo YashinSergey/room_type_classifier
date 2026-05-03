@@ -37,6 +37,12 @@ uv run --group efficientnet python models/efficientNet/train_efficientnet.py
 uv run --group efficientnet python models/efficientNet/train_efficientnet.py --class-balance none
 ```
 
+Можно включить балансировку на уровне DataLoader через `WeightedRandomSampler`:
+
+```bash
+uv run --group efficientnet python models/efficientNet/train_efficientnet.py --use-weighted-sampling --class-balance none
+```
+
 ## Результаты
 
 Скрипт сохраняет:
@@ -48,6 +54,7 @@ models/efficientNet/artifacts/model_comparison.csv
 ```
 
 Основная метрика для ТЗ: `best_macro_f1`.
+В конце обучения будет информация f1 в разрезе каждого класса `best_per_class_f1` внутри metrics JSON.
 
 `model_comparison.csv` можно использовать как простую таблицу сравнения с
 запусков и моделей, добавляя туда строки с их результатами.

@@ -58,12 +58,7 @@ def load_rgb_image(image_bytes: bytes) -> Image.Image:
 @st.cache_data(show_spinner=False)
 def load_room_type_labels() -> dict[int, str]:
     """Словарь: id класса -> лейбл из csv."""
-    return load_label_mapping(
-        [
-            ROOT_DIR / "data" / "processed" / "train_df.csv",
-            ROOT_DIR / "data" / "processed" / "val_df.csv",
-        ]
-    )
+    return load_label_mapping()
 
 
 @st.cache_resource(show_spinner="Загружаем YOLO модель...") # Кэшируем модель YOLO

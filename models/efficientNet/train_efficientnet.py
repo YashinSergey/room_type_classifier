@@ -23,7 +23,8 @@ if str(ROOT_DIR) not in sys.path:
 
 from src.dataloaders import create_dataloaders
 from src.device import get_default_device
-from src.metrics import calculate_macro_f1
+from src.labels import load_label_mapping
+from src.metrics import calculate_macro_f1, calculate_per_class_f1
 
 
 MODEL_BUILDERS = {
@@ -54,6 +55,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--weight-decay", type=float, default=1e-4)
     parser.add_argument("--target-col", default="result")
     parser.add_argument("--class-balance", choices=["loss", "none"], default="loss")
+    parser.add_argument(
+        "--use-weighted-sampling",
+        action="store_true",
+        help="Использовать WeightedRandomSampler для балансировки train DataLoader.",
+    )
     parser.add_argument(
         "--log-every",
         type=int,
@@ -145,7 +151,8 @@ def evaluate(
     loader: torch.utils.data.DataLoader,
     criterion: nn.Module,
     device: torch.device,
-) -> tuple[float, float]:
+    num_classes: int,
+) -> tuple[float, float, list[dict[str, object]]]:
     """Оценка на валидации: считаем loss и macro-F1."""
     model.eval()
     total_loss = 0.0
@@ -168,7 +175,34 @@ def evaluate(
 
     # Для вычисления macro-F1 используем общую функцию из src/metrics.py
     macro_f1 = calculate_macro_f1(y_true, y_pred)
-    return total_loss / len(loader.dataset), macro_f1
+    per_class_f1 = calculate_per_class_f1(y_true, y_pred, num_classes)
+    return total_loss / len(loader.dataset), macro_f1, per_class_f1
+
+
+def add_label_names(
+    per_class_f1: list[dict[str, object]],
+    label_mapping: dict[int, str],
+) -> list[dict[str, object]]:
+    """Добавляем строковое имя класса к per-class метрикам, если оно есть в CSV."""
+    return [
+        {
+            **item,
+            "label": label_mapping.get(int(item["class_id"]), str(item["class_id"])),
+        }
+        for item in per_class_f1
+    ]
+
+
+def print_per_class_f1(per_class_f1: list[dict[str, object]]) -> None:
+    """Печатаем классы от худшего F1 к лучшему, чтобы сразу видеть просадки."""
+    print("per_class_f1:")
+    for item in sorted(per_class_f1, key=lambda row: (float(row["f1"]), int(row["class_id"]))):
+        print(
+            f"  class={item['class_id']:>2} "
+            f"f1={float(item['f1']):.4f} "
+            f"support={item['support']:>4} "
+            f"label={item['label']}"
+        )
 
 
 def save_comparison_row(metrics_path: Path, row: dict[str, object]) -> None:
@@ -193,6 +227,7 @@ def main() -> None:
     # Автовыбор устройства: CUDA -> MPS -> CPU
     device = get_default_device()
     print(f"Using device: {device}")
+    label_mapping = load_label_mapping()
     
     # Готовим общий даталоадер (читает CSV и берёт картинки из папок).
     train_loader, val_loader = create_dataloaders(
@@ -203,6 +238,7 @@ def main() -> None:
         batch_size=args.batch_size,
         num_workers=args.num_workers,
         image_size=args.image_size,
+        use_weighted_sampling=args.use_weighted_sampling,
     )
 
     # Собираем модель и переносим её на нужное устройство.
@@ -225,6 +261,7 @@ def main() -> None:
     # Будем хранить лучший результат по macro-F1 и сохранять лучший чекпоинт.
     best_macro_f1 = -1.0
     best_epoch = 0
+    best_per_class_f1: list[dict[str, object]] = []
     checkpoint_path = args.output_dir / f"efficientnet_{args.variant}_best.pt"
     history = []
 
@@ -239,13 +276,21 @@ def main() -> None:
             epoch=epoch,
             log_every=args.log_every,
         )
-        val_loss, macro_f1 = evaluate(model, val_loader, criterion, device)
+        val_loss, macro_f1, per_class_f1 = evaluate(
+            model,
+            val_loader,
+            criterion,
+            device,
+            args.num_classes,
+        )
+        per_class_f1 = add_label_names(per_class_f1, label_mapping)
         history.append(
             {
                 "epoch": epoch,
                 "train_loss": train_loss,
                 "val_loss": val_loss,
                 "macro_f1": macro_f1,
+                "per_class_f1": per_class_f1,
             }
         )
 
@@ -260,13 +305,16 @@ def main() -> None:
             # Если стало лучше — обновляем best и сохраняем веса модели.
             best_macro_f1 = macro_f1
             best_epoch = epoch
+            best_per_class_f1 = per_class_f1
             torch.save(
                 {
                     "model_state_dict": model.state_dict(),
                     "variant": args.variant,
                     "num_classes": args.num_classes,
                     "image_size": args.image_size,
+                    "use_weighted_sampling": args.use_weighted_sampling,
                     "macro_f1": best_macro_f1,
+                    "per_class_f1": best_per_class_f1,
                     "epoch": best_epoch,
                 },
                 checkpoint_path,
@@ -279,6 +327,7 @@ def main() -> None:
         "num_classes": args.num_classes,
         "best_epoch": best_epoch,
         "best_macro_f1": best_macro_f1,
+        "best_per_class_f1": best_per_class_f1,
         "checkpoint": str(checkpoint_path),
         "history": history,
         "hyperparameters": {
@@ -288,10 +337,11 @@ def main() -> None:
             "learning_rate": args.learning_rate,
             "weight_decay": args.weight_decay,
             "class_balance": args.class_balance,
+            "use_weighted_sampling": args.use_weighted_sampling,
         },
     }
     metrics_path = args.output_dir / f"efficientnet_{args.variant}_metrics.json"
-    metrics_path.write_text(json.dumps(metrics, indent=2), encoding="utf-8")
+    metrics_path.write_text(json.dumps(metrics, indent=2, ensure_ascii=False), encoding="utf-8")
 
     # Также добавляем короткую строку в общий CSV для сравнения экспериментов.
     comparison_path = args.output_dir / "model_comparison.csv"
@@ -308,6 +358,7 @@ def main() -> None:
     )
 
     print(f"best_macro_f1={best_macro_f1:.4f}")
+    print_per_class_f1(best_per_class_f1)
     print(f"checkpoint={checkpoint_path}")
     print(f"metrics={metrics_path}")
 
