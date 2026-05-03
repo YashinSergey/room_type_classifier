@@ -5,6 +5,7 @@ import pandas as pd
 from PIL import Image
 from torch.utils.data import Dataset
 
+
 class RoomTypeDataset(Dataset):
     def __init__(
             self,
@@ -23,13 +24,13 @@ class RoomTypeDataset(Dataset):
         self.target_col = target_col
         # Загружаем CSV-файл с описанием датасета
         self.df = pd.read_csv(csv_path)
+        # Если в CSV есть image_path, считаем его относительно общей raw-папки
+        self.raw_root = os.path.dirname(image_root)
         if filter_can_predict and "can_predict" in self.df.columns:
             self.df = self.df[self.df["can_predict"]].reset_index(drop=True)
         # Фильтруем строки, где изображение не найдено
         if filter_missing:
-            image_paths = self.df["image_id_ext"].astype(str).map(
-                lambda image_id: os.path.join(self.image_root, f"{image_id}.jpg")
-            )
+            image_paths = self.df.apply(self.get_image_path, axis=1)
             exists_mask = image_paths.map(os.path.exists)
             missing_count = int((~exists_mask).sum())
             if missing_count:
@@ -39,6 +40,14 @@ class RoomTypeDataset(Dataset):
                 )
                 self.df = self.df.loc[exists_mask].reset_index(drop=True)
 
+    def get_image_path(self, row):
+        """Собирает путь к изображению из image_path или по схеме image_id_ext.jpg"""
+        if "image_path" in row and pd.notna(row["image_path"]):
+            return os.path.join(self.raw_root, str(row["image_path"]))
+
+        image_id = str(row["image_id_ext"])
+        return os.path.join(self.image_root, f"{image_id}.jpg")
+
     # количество строк в таблице(объектов в датасете)
     def __len__(self):
         return len(self.df)
@@ -47,12 +56,11 @@ class RoomTypeDataset(Dataset):
         # Берём одну строку из таблицы по индексу
         row = self.df.iloc[idx]
 
-        # Берём id изображения и формируем имя файла
+        # Берём id изображения
         image_id = str(row["image_id_ext"])
-        image_name = f"{image_id}.jpg"
 
         # Собираем полный путь к изображению
-        image_path = os.path.join(self.image_root, image_name)
+        image_path = self.get_image_path(row)
 
         # Открываем изображение
         image = Image.open(image_path).convert("RGB")

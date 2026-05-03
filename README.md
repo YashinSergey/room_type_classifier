@@ -150,10 +150,14 @@ data/
     train_df.csv
     val_df.csv
     test_df.csv
+    heuristics_cabinet.csv
+    heuristics_detskaya.csv
+    heuristics_dressing_room.csv
 
     train_images/
     val_images/
     test_images/
+    heuristics_images/
 ```
 
 `train_df.csv` и `val_df.csv` содержат разметку классов в признаке `result`.
@@ -165,6 +169,7 @@ data/
 train_images/
 val_images/
 test_images/
+heuristics_images/
 ```
 
 Связь между CSV и файлом изображения идёт через признак:
@@ -172,6 +177,10 @@ test_images/
 ```
 image_id_ext -> {image_id_ext}.jpg
 ```
+
+После preprocessing в CSV также появляется `image_path`. Для обычного train
+он указывает на `train_images/{image_id_ext}.jpg`, а для heuristics — на
+`heuristics_images/{image_id_ext}.jpg`.
 
 Перед обучением нужно подготовить CSV:
 
@@ -181,6 +190,31 @@ just prepare-data
 
 Команда читает `data/raw/*.csv`, очищает train/val, добавляет флаги для test
 и сохраняет результат в `data/processed/`.
+
+Вспомогательные heuristics-датасеты можно добавить в train опционально:
+
+```bash
+just prepare-data-with-heuristics
+```
+
+Эта команда добавляет рекомендуемый набор: `cabinet` и `dressing_room`.
+`detskaya` остаётся выключенной, потому что в базовом train для неё уже достаточно
+примеров, а качество heuristics-разметки может быть шумным. Heuristics не
+добавляются целиком: preprocessing считает средний размер класса в train и
+добирает только недостающее количество. Дубли удаляются по `image_id_ext` и
+`title`.
+
+Для выборочного добавления:
+
+```bash
+just prepare-data-heuristics cabinet,dressing_room
+```
+
+Можно дополнительно ограничить количество строк из каждого heuristics-датасета:
+
+```bash
+just prepare-data-heuristics-limited cabinet,dressing_room 500
+```
 
 После подготовки используются уже не raw CSV, а обработанные файлы:
 
@@ -196,6 +230,11 @@ data/processed/test_df.csv
 image_id_ext
 image
 result
+label
+title
+source
+is_auxiliary
+image_path
 ```
 
 Для test остаются признаки:
@@ -207,6 +246,9 @@ item_id
 image_exists
 image_is_valid
 can_predict
+source
+is_auxiliary
+image_path
 ```
 
 В test строки не удаляются, чтобы не менять порядок и количество объектов.
@@ -227,6 +269,12 @@ can_predict
 data/processed/class_mapping.json
 ```
 
+Параметры последнего preprocessing сохраняются в:
+
+```text
+data/processed/preprocessing_manifest.json
+```
+
 ---
 
 ## Dataset
@@ -240,9 +288,9 @@ RoomTypeDataset
 Он делает следующее:
 
 1. читает CSV-файл
-2. берёт `image_id_ext`
-3. формирует имя файла вида `{image_id_ext}.jpg`
-4. открывает изображение из локальной папки
+2. берёт `image_path`, если он есть, или `image_id_ext`
+3. формирует путь к локальному изображению
+4. открывает изображение
 5. приводит изображение к RGB
 6. берёт числовой класс из колонки `result`
 7. применяет transforms
@@ -337,6 +385,10 @@ data/raw/train_images/
 data/raw/val_images/
 ```
 
+Если в processed CSV есть колонка `image_path`, `RoomTypeDataset` использует её
+и читает путь относительно `data/raw/`. Поэтому один `train_df.csv` может
+содержать изображения и из `train_images/`, и из `heuristics_images/`.
+
 Если нужно включить балансировку классов для train:
 
 ```python
@@ -350,6 +402,9 @@ train_loader, val_loader = create_dataloaders(
 
 В этом случае для train используется `WeightedRandomSampler`.
 Для validation балансировка не применяется.
+После добавления recommended heuristics классы `кабинет` и `гардеробная`
+добираются до среднего размера, поэтому weighted sampling остаётся опциональным
+экспериментом, а не обязательной частью pipeline.
 
 Для test используется отдельная функция:
 
