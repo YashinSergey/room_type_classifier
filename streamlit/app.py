@@ -11,6 +11,7 @@ import pandas as pd
 import streamlit as st
 from PIL import Image, ImageOps
 
+from src.device import get_default_device
 from src.labels import load_label_mapping
 from src.transforms import get_val_transforms
 
@@ -57,12 +58,7 @@ def load_rgb_image(image_bytes: bytes) -> Image.Image:
 @st.cache_data(show_spinner=False)
 def load_room_type_labels() -> dict[int, str]:
     """Словарь: id класса -> лейбл из csv."""
-    return load_label_mapping(
-        [
-            ROOT_DIR / "data" / "raw" / "train_df.csv",
-            ROOT_DIR / "data" / "raw" / "val_df.csv",
-        ]
-    )
+    return load_label_mapping()
 
 
 @st.cache_resource(show_spinner="Загружаем YOLO модель...") # Кэшируем модель YOLO
@@ -129,17 +125,6 @@ def yolo_predict(image_bytes: bytes) -> tuple[str, float]:
     raise RuntimeError("YOLO model is unavailable. Install yolo dependencies and provide best.pt.")
 
 
-def get_torch_device() -> object:
-    """Выбираем устройство для PyTorch."""
-    import torch
-
-    if torch.cuda.is_available():
-        return torch.device("cuda")
-    if torch.backends.mps.is_available():
-        return torch.device("mps")
-    return torch.device("cpu")
-
-
 def build_efficientnet_model(variant: str, num_classes: int) -> object:
     """Собираем EfficientNet (без предобученных весов) и меняем последний слой под число классов."""
     from torch import nn
@@ -172,7 +157,8 @@ def load_efficientnet_model(checkpoint_path: str) -> tuple[object, object, int] 
     except ImportError:
         return None
 
-    device = get_torch_device()
+    # Автовыбор устройства: CUDA -> MPS -> CPU
+    device = get_default_device()
     # Чекпоинт хранит: веса модели и несколько параметров (variant/num_classes/image_size)
     checkpoint = torch.load(path, map_location=device, weights_only=False)
     variant = checkpoint.get("variant", "b0")
