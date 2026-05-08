@@ -279,7 +279,10 @@ def add_heuristics_to_train(train_df, heuristic_names, raw_dir, image_ext, verif
         return train_df, stats, None
 
     # Heuristics нужны только для добора слабых классов до среднего размера
-    target_count = round(train_df["result"].value_counts().mean())
+    class_counts = train_df["result"].value_counts()
+    if class_counts.empty:
+        raise ValueError("после очистки train не осталось строк")
+    target_count = round(class_counts.mean())
     frames = [train_df]
 
     for name in heuristic_names:
