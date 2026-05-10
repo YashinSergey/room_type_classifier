@@ -3,20 +3,30 @@ from __future__ import annotations
 import io
 import os
 import time
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 
+import torch.nn as nn
+from torchvision import transforms, models
+from torchvision.models import ResNet50_Weights
+from torchvision.transforms import v2
+
 import pandas as pd
 import streamlit as st
 from PIL import Image, ImageOps
+
+ROOT_DIR = Path(__file__).resolve().parents[1]
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+print(ROOT_DIR)
 
 from src.device import get_default_device
 from src.labels import load_label_mapping
 from src.transforms import get_val_transforms
 
 
-ROOT_DIR = Path(__file__).resolve().parents[1]
 # Пути/настройки моделей. Их можно переопределять через переменные окружения
 YOLO_MODEL_PATH = ROOT_DIR / "models" / "yolo" / "downloads" / "keremberke" / "yolov8m-scene-classification" / "best.pt"
 YOLO_REPO_ID = "keremberke/yolov8m-scene-classification"
@@ -33,6 +43,8 @@ EFFICIENTNET_B1_CHECKPOINT_PATH = Path(
         ROOT_DIR / "models" / "efficientNet" / "artifacts" / "efficientnet_b1_best.pt",
     )
 )
+RESNET50_MODEL_PATH = ROOT_DIR / "outputs" / "models" / "best_resnet50_avito.pth"
+RESNET50_FILENAME = "best_resnet50_avito.pth"
 
 
 @dataclass(frozen=True)
@@ -161,6 +173,8 @@ def load_efficientnet_model(checkpoint_path: str) -> tuple[object, object, int] 
     device = get_default_device()
     # Чекпоинт хранит: веса модели и несколько параметров (variant/num_classes/image_size)
     checkpoint = torch.load(path, map_location=device, weights_only=False)
+    print('<<<<<<< checkpoint resnet50')
+    print(checkpoint)
     variant = checkpoint.get("variant", "b0")
     num_classes = int(checkpoint.get("num_classes", 20))
     image_size = int(checkpoint.get("image_size", get_default_image_size(variant)))
@@ -212,6 +226,86 @@ def efficientnet_predict(image_bytes: bytes, checkpoint_path: Path) -> tuple[str
     raise RuntimeError(f"EfficientNet checkpoint is unavailable: {checkpoint_path}")
 
 
+def build_resnet50_model(num_classes):
+    weights = ResNet50_Weights.DEFAULT
+    model = models.resnet50(weights=weights)
+
+    in_features = model.fc.in_features
+    model.fc = nn.Linear(in_features, num_classes)
+
+    return model
+
+@st.cache_resource(show_spinner="Загружаем ResNet50...")
+def load_resnet50_model(checkpoint_path: str) -> tuple[object, object, int] | None:
+    path = Path(checkpoint_path)
+    if not path.exists():
+        return None
+
+    try:
+        import torch
+    except ImportError:
+        return None
+
+    device = get_default_device()
+    checkpoint = torch.load(path, map_location=device, weights_only=False)
+
+    if isinstance(checkpoint, dict) and "model_state_dict" in checkpoint:
+        state_dict = checkpoint["model_state_dict"]
+        num_classes = int(checkpoint.get("num_classes", 20))
+        image_size = int(checkpoint.get("image_size", 224))
+    else:
+        state_dict = checkpoint
+        num_classes = state_dict["fc.weight"].shape[0]
+        image_size = 224
+
+    model = build_resnet50_model(num_classes)
+    model.load_state_dict(state_dict)
+    model.to(device)
+    model.eval()
+    return model, device, image_size
+
+
+@st.cache_data(show_spinner=False)
+def _predict_resnet50_cached(image_bytes: bytes, checkpoint_path: str) -> tuple[str, float] | None:
+    """Предсказание resnet50 с кэшированием.
+
+    Ключ кэша включает путь к чекпоинту, чтобы разные модели не смешивались.
+    """
+    loaded_model = load_resnet50_model(checkpoint_path)
+    if loaded_model is None:
+        return None
+
+    try:
+        import torch
+    except ImportError:
+        return None
+
+    model, device, image_size = loaded_model
+    # Трансформации должны совпадать с теми, что были при обучении/валидации
+    # Берем из общего модуля src/transforms.py
+    preprocess = get_val_transforms(image_size=image_size)
+    image = load_rgb_image(image_bytes)
+    tensor = preprocess(image).unsqueeze(0).to(device)
+
+    with torch.inference_mode():
+        # Softmax превращает logits в вероятности по классам
+        probabilities = torch.softmax(model(tensor), dim=1)[0]
+        probability, class_index = torch.max(probabilities, dim=0)
+
+    labels = load_room_type_labels()
+    class_id = int(class_index.item())
+    prediction = labels.get(class_id, f"class_{class_id}")
+    return prediction, float(probability.item())
+
+
+def resnet50_predict(image_bytes: bytes, checkpoint_path: Path) -> tuple[str, float]:
+    """Враппер: либо возвращаем предсказание, либо сообщаем, что чекпоинт недоступен."""
+    prediction = _predict_resnet50_cached(image_bytes, str(checkpoint_path))
+    if prediction is not None:
+        return prediction
+    raise RuntimeError(f"EfficientNet checkpoint is unavailable: {checkpoint_path}")
+
+
 MODELS = [
     # Список моделей, которые можно включать/выключать в сайдбаре
     ModelConfig(
@@ -234,6 +328,13 @@ MODELS = [
         description="Обученный EfficientNet-B1 checkpoint на локальном датасете.",
         predictor=lambda image_bytes: efficientnet_predict(image_bytes, EFFICIENTNET_B1_CHECKPOINT_PATH),
         is_available=EFFICIENTNET_B1_CHECKPOINT_PATH.exists,
+    ),
+    ModelConfig(
+        key="resnet50",
+        title="ResNet50",
+        description="Обученный ResNet50 checkpoint на локальном датасете.",
+        predictor=lambda image_bytes: resnet50_predict(image_bytes, RESNET50_MODEL_PATH),
+        is_available=RESNET50_MODEL_PATH.exists,
     ),
 ]
 
