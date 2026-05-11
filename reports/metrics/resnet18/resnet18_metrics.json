@@ -178,6 +178,6 @@
       }
     ]
   },
-  "checkpoint": "/Users/user/projects/Python/room_type_classifier/outputs/models/resnet18/resnet18_best.pt",
+  "checkpoint": "outputs/models/resnet18/resnet18_best.pt",
   "stop_reason": "early_stopping"
 }
