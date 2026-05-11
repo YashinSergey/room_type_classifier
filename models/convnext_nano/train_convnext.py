@@ -4,8 +4,7 @@ import torch.optim as optim
 import timm
 from pathlib import Path
 import sys
-import argparse  # Добавлено
-from src.device import get_default_device 
+import argparse
 from sklearn.metrics import f1_score
 import json
 import os
@@ -14,6 +13,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.append(str(PROJECT_ROOT))
 
+from src.device import get_default_device 
 from src.dataloaders import create_dataloaders
 
 def main():
