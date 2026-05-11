@@ -1,5 +1,7 @@
 set dotenv-load := true
 
+set windows-shell := ["powershell.exe", "-NoLogo", "-NoProfile", "-Command"]
+
 PYTHON_VERSION := "3.12.8"
 PYTORCH_PIP := "uv pip"
 
@@ -29,6 +31,10 @@ install-streamlit: setup
 # Установить зависимости для обучения EfficientNet
 install-efficientnet: setup
     uv sync --group efficientnet
+
+# Установить зависимости для обучения ResNet18
+install-resnet18: setup
+    uv sync --group resnet18
 
 # Установить зависимости для EfficientNet и интерпретации результатов
 install-interpretability: setup
@@ -85,7 +91,27 @@ run-yolo:
 
 # Запустить обучение EfficientNet
 train-efficientnet:
-    uv run --group efficientnet python models/efficientNet/train_efficientnet.py
+    uv run --group efficientnet python -m models.efficientNet.train_efficientnet
+
+# Запустить обучение ResNet50
+train-resnet50:
+    uv run --group resnet50 python models/resnet50/resnet50.py
+
+# Запустить обучение ResNet18
+train-resnet18 EPOCHS="30":
+    uv run --group resnet18 python -m models.resnet18.train_resnet18 --epochs {{EPOCHS}}
+
+# Повторить лучший зафиксированный запуск ResNet18: class weights + без weighted sampler
+train-resnet18-best EPOCHS="30" SEED="42":
+    uv run --group resnet18 python -m models.resnet18.train_resnet18 --epochs {{EPOCHS}} --seed {{SEED}} --no-weighted-sampling
+
+# Запустить обучение DenseNet121
+train-densenet121 EPOCHS="30":
+    uv run --group data python -m models.densenet121.train_densenet121 --epochs {{EPOCHS}}
+
+# Запустить обучение ConvNeXt Nano
+train-convnext EPOCHS="30":
+    uv run --group data python -m models.convnext_nano.train_convnext --epochs {{EPOCHS}}
 
 # Построить Grad-CAM для EfficientNet
 grad-cam-efficientnet:
@@ -99,3 +125,39 @@ run-streamlit:
 # Пример: just run "python -V"
 run *ARGS:
     uv run {{ARGS}}
+
+# ──────────────────────────────────────────────
+# Docker — сборка и запуск обучения в контейнере
+# ──────────────────────────────────────────────
+
+# Собрать единый Docker-образ для всех моделей
+docker-build:
+    docker build -t room_type_classifier .
+
+# Проверить что GPU виден внутри контейнера
+docker-check-gpu:
+    docker run --rm --gpus all room_type_classifier         python -c "import torch; print('CUDA:', torch.cuda.is_available()); print('Device:', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'CPU')"
+
+# Запустить обучение DenseNet121 в Docker
+docker-train-densenet121 EPOCHS="30" BATCH="32":
+    docker run --gpus all       -v ./data:/app/data       -v ./outputs:/app/outputs       -v ./reports:/app/reports       room_type_classifier       python -m models.densenet121.train_densenet121         --epochs {{EPOCHS}} --batch-size {{BATCH}}
+
+# Запустить обучение ResNet18 в Docker
+docker-train-resnet18 EPOCHS="30" BATCH="32":
+    docker run --gpus all       -v ./data:/app/data       -v ./outputs:/app/outputs       -v ./reports:/app/reports       room_type_classifier       python -m models.resnet18.train_resnet18         --epochs {{EPOCHS}} --batch-size {{BATCH}}
+
+# Запустить обучение ResNet50 в Docker
+docker-train-resnet50 EPOCHS="30" BATCH="32":
+    docker run --gpus all       -v ./data:/app/data       -v ./outputs:/app/outputs       -v ./reports:/app/reports       room_type_classifier       python models/resnet50/resnet50.py
+
+# Запустить обучение EfficientNet в Docker
+docker-train-efficientnet EPOCHS="30" BATCH="32":
+    docker run --gpus all       -v ./data:/app/data       -v ./outputs:/app/outputs       -v ./reports:/app/reports       room_type_classifier       python -m models.efficientNet.train_efficientnet
+
+# Запустить обучение ConvNeXt Nano в Docker
+docker-train-convnext EPOCHS="30" BATCH="32":
+    docker run --gpus all       -v ./data:/app/data       -v ./outputs:/app/outputs       -v ./reports:/app/reports       room_type_classifier       python -m models.convnext_nano.train_convnext         --epochs {{EPOCHS}} --batch-size {{BATCH}}
+
+# Запустить YOLO inference в Docker
+docker-run-yolo:
+    docker run --gpus all       -v ./data:/app/data       -v ./models/yolo:/app/models/yolo       room_type_classifier       python models/yolo/main_yolo.py
