@@ -114,13 +114,6 @@ train-densenet121 EPOCHS="30":
 train-convnext EPOCHS="30":
     uv run --group data python -m models.convnext_nano.train_convnext --epochs {{EPOCHS}}
 
-# Запустить обучение ResNet50
-train-resnet50:
-    uv run --group resnet50 python models/resnet50/resnet50.py
-
-# Запустить обучение ResNet18
-train-resnet18 EPOCHS="30":
-    uv run --group resnet18 python models/resnet18/train_resnet18.py --epochs {{EPOCHS}}
 
 # Повторить лучший зафиксированный запуск ResNet18: class weights + без weighted sampler
 train-resnet18-best EPOCHS="30" SEED="42":
