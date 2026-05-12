@@ -30,7 +30,7 @@ from models.resnet18.resnet18 import build_resnet18
 
 
 # Пути/настройки моделей. Их можно переопределять через переменные окружения
-YOLO_MODEL_PATH = ROOT_DIR / "outputs" / "models" / "yolo_best.pt"
+YOLO_MODEL_PATH = ROOT_DIR / "models" / "yolo" / "downloads" / "keremberke" / "yolov8m-scene-classification" / "best.pt"
 YOLO_REPO_ID = "keremberke/yolov8m-scene-classification"
 YOLO_FILENAME = "best.pt"
 EFFICIENTNET_B0_CHECKPOINT_PATH = Path(
@@ -46,11 +46,8 @@ EFFICIENTNET_B1_CHECKPOINT_PATH = Path(
     )
 )
 RESNET50_MODEL_PATH = ROOT_DIR / "outputs" / "models" / "best_resnet50_avito.pth"
-RESNET50_FILENAME = "best_resnet50_avito.pth"
-RESNET18_MODEL_PATH = ROOT_DIR / "outputs" / "models" / "resnet18_best.pt"
-RESNET18_FILENAME = "resnet18_best.pt"
+RESNET18_MODEL_PATH = ROOT_DIR / "outputs" / "models" / "resnet18" / "resnet18_best.pt"
 CONVNEXT_NANO_MODEL_PATH = ROOT_DIR / "outputs" / "models" / "best_model_convnext_nano.pth"
-CONVNEXT_NANO_FILENAME = "resnet18_best.pt"
 
 
 @dataclass(frozen=True)
@@ -379,6 +376,18 @@ def resnet18_predict(image_bytes: bytes, checkpoint_path: Path) -> tuple[str, fl
     raise RuntimeError(f"ResNet18 checkpoint is unavailable: {checkpoint_path}")
 
 
+def num_classes_convnext_nano(state_dict: dict) -> int:
+    """Число классов из весов головы timm ConvNeXt (plain state_dict без метаданных)."""
+    if "head.fc.weight" in state_dict:
+        return int(state_dict["head.fc.weight"].shape[0])
+    for key in ("head.weight", "classifier.weight"):
+        if key in state_dict:
+            return int(state_dict[key].shape[0])
+    raise ValueError(
+        "Не удалось определить num_classes: нет ключей head.fc.weight / head.weight / classifier.weight"
+    )
+
+
 @st.cache_resource(show_spinner="Загружаем convnext nano...")
 def load_convnext_nano_model(checkpoint_path: str) -> tuple[object, object, int] | None:
     path = Path(checkpoint_path)
@@ -396,15 +405,20 @@ def load_convnext_nano_model(checkpoint_path: str) -> tuple[object, object, int]
     if isinstance(checkpoint, dict) and "model_state_dict" in checkpoint:
         state_dict = checkpoint["model_state_dict"]
         image_size = int(checkpoint.get("image_size", 224))
+        if "num_classes" in checkpoint:
+            num_classes = int(checkpoint["num_classes"])
+        else:
+            num_classes = num_classes_convnext_nano(state_dict)
     else:
         state_dict = checkpoint
         image_size = 224
+        num_classes = num_classes_convnext_nano(state_dict)
 
     model = timm.create_model(
-        'convnext_nano', 
-        pretrained=True, 
-        num_classes=19, 
-        drop_rate=0.5, 
+        'convnext_nano',
+        pretrained=True,
+        num_classes=num_classes,
+        drop_rate=0.5,
         drop_path_rate=0.3)
     model.load_state_dict(state_dict)
     model.to(device)
@@ -529,6 +543,18 @@ def render_sidebar() -> list[ModelConfig]:
         st.sidebar.success("EfficientNet B1 checkpoint найден")
     else:
         st.sidebar.info("EfficientNet B1 checkpoint не найден")
+    if RESNET50_MODEL_PATH.exists():
+        st.sidebar.success("ResNet50 checkpoint найден")
+    else:
+        st.sidebar.info("ResNet50 checkpoint не найден")
+    if RESNET18_MODEL_PATH.exists():
+        st.sidebar.success("ResNet18 checkpoint найден")
+    else:
+        st.sidebar.info("ResNet18 checkpoint не найден")
+    if CONVNEXT_NANO_MODEL_PATH.exists():
+        st.sidebar.success("ConvNext Nano checkpoint найден")
+    else:
+        st.sidebar.info("ConvNext Nano checkpoint не найден")    
 
     return selected_models
 
