@@ -16,22 +16,24 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 WORKDIR /app
 
-# Копируем файлы зависимостей первыми — для кэширования слоёв
+# Копируем файлы зависимостей первыми для кэширования слоев
 COPY pyproject.toml uv.lock ./
 
-# data покрывает torch/torchvision/numpy/pandas/pillow/sklearn — общие для всех моделей
+# data покрывает torch/torchvision/numpy/pandas/pillow/sklearn общие для всех моделей
 # interpretability добавляет grad-cam, matplotlib, opencv (только уникальные зависимости)
-# yolo исключён — тяжёлый, монтируется отдельно при необходимости
+# yolo исключен, так как тяжелый, монтируется отдельно при необходимости
 RUN uv sync \
     --group data \
     --group interpretability \
-    --no-install-project
+    --group convnext_nano \
+    --no-install-project \
+    --frozen
 
-# Добавляем .venv/bin в PATH — python и все пакеты берутся из виртуального окружения
+# Добавляем .venv/bin в PATH, python и все пакеты берутся из виртуального окружения
 ENV PATH="/app/.venv/bin:$PATH"
 
 # Копируем остальной исходный код
 COPY . .
 
-# Команда по умолчанию — переопределяется аргументами docker run
+# Команда по умолчанию переопределяется аргументами docker run
 CMD ["python", "-m", "models.densenet121.train_densenet121"]

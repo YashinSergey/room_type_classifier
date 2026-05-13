@@ -3,7 +3,7 @@
 .gitignore
 .gitattributes
 
-# Python cache & virtual environments
+# Кэш Python и виртуальные окружения
 __pycache__/
 *.py[cod]
 *.pyo
@@ -13,22 +13,21 @@ __pycache__/
 venv/
 env/
 
-# uv cache
+# Кэш uv
 .uv/
 
 # Jupyter
 .ipynb_checkpoints/
 *.ipynb
 
-# Data — mount as volume at runtime instead
+# Данные монтируются как volume при запуске контейнера
 data/
 *.csv
-*.json
 *.parquet
 *.h5
 *.hdf5
 
-# Model artifacts & outputs — mount as volume at runtime
+# Артефакты моделей и результаты монтируются как volume при запуске
 outputs/
 reports/
 *.pt
@@ -37,14 +36,18 @@ reports/
 *.pkl
 *.joblib
 
-# Logs & metrics
+# Логи и метрики
 *.log
 logs/
 mlruns/
 wandb/
 runs/
 
-# OS
+# JSON-артефакты (метрики, эксперименты), только из папок с результатами
+reports/**/*.json
+outputs/**/*.json
+
+# ОС
 .DS_Store
 Thumbs.db
 
@@ -54,25 +57,24 @@ Thumbs.db
 *.swp
 *.swo
 
-# Tests
+# Тесты
 tests/
 .pytest_cache/
 .coverage
 htmlcov/
 
-# Docs
+# Документация
 docs/
 *.md
 !README.md
 
-# YOLO weights (large, download separately)
-*.pt
+# Веса YOLO (тяжелые, скачиваются отдельно)
 yolov*.yaml
 
 # Streamlit
 .streamlit/
 
-# Docker (no recursive builds)
+# Docker (защита от рекурсивных сборок)
 Dockerfile*
 docker-compose*.yml
 .dockerignore
