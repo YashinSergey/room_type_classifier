@@ -16,6 +16,9 @@ data = [
   "torch==2.5.1",
   "torchvision==0.20.1",
 ]
+tracking = [
+  "mlflow==3.7.0",
+]
 efficientnet = [
   "numpy==2.4.3",
   "pandas==2.3.3",

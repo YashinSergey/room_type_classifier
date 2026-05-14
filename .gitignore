@@ -16,6 +16,10 @@ data/
 
 # model outputs
 outputs/
+mlruns/
+mlflow.db
+mlflow.db-shm
+mlflow.db-wal
 models/**/downloads/
 models/**/artifacts/
 
