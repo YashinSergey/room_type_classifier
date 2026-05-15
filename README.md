@@ -299,12 +299,14 @@ just prepare-data
 Запуски моделей идут через `just`:
 
 ```bash
-just train-resnet18
+just train-resnet18-best
 just train-resnet50
 just train-densenet121
-just train-efficientnet
+just train-efficientnet-b0
+just train-efficientnet-b1
 just train-convnext-nano
 just train-convnext-tiny
+just run-yolo
 ```
 
 MLflow логируется в DagsHub remote tracking. Перед первым обучением нужно
@@ -329,6 +331,24 @@ export DAGSHUB_USER_TOKEN=<token>
 just docker-build
 just docker-train-resnet18
 ```
+
+Docker-команды сначала пробуют запуститься с CUDA через NVIDIA GPU. Если CUDA
+в контейнере недоступна, запуск автоматически переходит на CPU.
+
+Команды Docker для отдельных моделей:
+
+```bash
+just docker-train-resnet18
+just docker-train-resnet50
+just docker-train-densenet121
+just docker-train-efficientnet-b0
+just docker-train-efficientnet-b1
+just docker-train-convnext-nano
+just docker-train-convnext-tiny
+just docker-train-yolo
+```
+
+YOLO запускает готовую модель и логирует inference-run в MLflow/DagsHub
 
 Если нужно временно использовать локальный MLflow без DagsHub, можно запустить
 обучение с переменной:
