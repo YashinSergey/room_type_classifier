@@ -33,7 +33,7 @@ OLD_TO_NEW_CLASS = {
     19: 18,
 }
 
-# Эти heuristics-датасеты можно добавлять в train по отдельности
+# дополнительные csv для слабых классов
 HEURISTICS = {
     "cabinet": {
         "csv": "heuristics_cabinet.csv",
@@ -55,10 +55,6 @@ RECOMMENDED_HEURISTICS = ["cabinet", "dressing_room"]
 
 
 def parse_args():
-    """Читает аргументы командной строки для подготовки данных
-    Returns:
-        Разобранные аргументы командной строки
-    """
     parser = argparse.ArgumentParser(description="Подготовить raw CSV-файлы для обучения модели")
     parser.add_argument("--raw-dir", default=DEFAULT_RAW_DIR)
     parser.add_argument("--processed-dir", default=DEFAULT_PROCESSED_DIR)
@@ -89,13 +85,7 @@ def parse_args():
 
 
 def is_valid_image(image_path):
-    """Проверяет, что файл изображения открывается через PIL
-    Args:
-        image_path: Путь к файлу изображения
-
-    Returns:
-        True, если PIL успешно проверил изображение, иначе False
-    """
+    """PIL image.verify check."""
     try:
         with Image.open(image_path) as image:
             image.verify()
@@ -105,7 +95,6 @@ def is_valid_image(image_path):
 
 
 def choose_heuristics(value):
-    """Возвращает список heuristics-датасетов из CLI-аргумента"""
     value = value.strip()
     if value == "none":
         return []
@@ -122,17 +111,6 @@ def choose_heuristics(value):
 
 
 def check_images(df, image_root, image_ext, verify_images):
-    """Проверяет наличие и валидность локальных изображений
-
-    Args:
-        df: DataFrame с колонкой `image_id_ext`
-        image_root: Папка с изображениями split
-        image_ext: Расширение файла изображения
-        verify_images: Нужно ли открывать изображения через PIL
-
-    Returns:
-        Тот же DataFrame с колонками `image_exists`, `image_is_valid` и `can_predict`
-    """
     image_exists = []
     image_is_valid = []
 
@@ -160,7 +138,6 @@ def check_images(df, image_root, image_ext, verify_images):
 
 
 def add_image_path(df, image_folder, source, is_auxiliary):
-    """Добавляет признаки, по которым Dataset найдёт изображение"""
     df["source"] = source
     df["is_auxiliary"] = is_auxiliary
     df["image_path"] = df["image_id_ext"].map(lambda image_id: f"{image_folder}/{image_id}.jpg")
@@ -168,25 +145,13 @@ def add_image_path(df, image_folder, source, is_auxiliary):
 
 
 def normalize_title(title):
-    """Упрощает title для поиска дублей"""
     if pd.isna(title):
         return None
     return " ".join(str(title).lower().split())
 
 
 def preprocess_train_val(split, raw_dir, processed_dir, image_ext, verify_images):
-    """Очищает train или val и сохраняет CSV для обучения
-
-    Args:
-        split: Название split, `train` или `val`
-        raw_dir: Папка с raw-данными
-        processed_dir: Папка для обработанных CSV
-        image_ext: Расширение файла изображения
-        verify_images: Нужно ли открывать изображения через PIL
-
-    Returns:
-        Количество строк до и после обработки
-    """
+    """Train/val cleanup."""
     csv_path = os.path.join(raw_dir, f"{split}_df.csv")
     image_root = os.path.join(raw_dir, f"{split}_images")
     df = pd.read_csv(csv_path)
@@ -210,11 +175,11 @@ def preprocess_train_val(split, raw_dir, processed_dir, image_ext, verify_images
     df = df[df["can_predict"]].copy()
     df = df.drop(columns=["image_exists", "image_is_valid", "can_predict"])
 
-    # Сначала убираем полностью одинаковые строки, потом повторы одного изображения
+    # exact duplicates, then duplicates by file id
     df = df.drop_duplicates()
     df = df.drop_duplicates(subset=["image_id_ext"], keep="first")
 
-    # После удаления класса 18 переносим старый класс 19 в новый id 18
+    # old class 18 is dropped, old 19 becomes new 18
     df["result"] = df["result"].replace(OLD_TO_NEW_CLASS)
     df = add_image_path(df, f"{split}_images", split, False)
     df = df.reset_index(drop=True)
@@ -225,7 +190,7 @@ def preprocess_train_val(split, raw_dir, processed_dir, image_ext, verify_images
 
 
 def read_heuristic_dataset(name, raw_dir, image_ext, verify_images):
-    """Читает один heuristics-датасет и приводит его к схеме train"""
+    """Heuristic csv -> train-like df."""
     config = HEURISTICS[name]
     csv_path = os.path.join(raw_dir, config["csv"])
     image_root = os.path.join(raw_dir, "heuristics_images")
@@ -244,16 +209,15 @@ def read_heuristic_dataset(name, raw_dir, image_ext, verify_images):
     df = df[df["can_predict"]].copy()
     df = df.drop(columns=["image_exists", "image_is_valid", "can_predict"])
 
-    # Один и тот же файл может попасть в heuristics несколько раз
     df = df.drop_duplicates()
     df = df.drop_duplicates(subset=["image_id_ext"], keep="first")
     rows_after_image_dedup = len(df)
 
-    # В heuristics много дублей с разными картинками, но одинаковым title
+    # title duplicates are common in scraped heuristics
     df["title_for_dedup"] = df["title"].map(normalize_title)
     df_with_title = df[df["title_for_dedup"].notna()].copy()
     df_without_title = df[df["title_for_dedup"].isna()].copy()
-    # Сортировка делает выбор дубля по title воспроизводимым
+    # deterministic duplicate choice
     df_with_title = df_with_title.sort_values("image_id_ext")
     df_with_title = df_with_title.drop_duplicates(subset=["title_for_dedup"], keep="first")
     df = pd.concat([df_with_title, df_without_title], ignore_index=True)
@@ -273,12 +237,10 @@ def read_heuristic_dataset(name, raw_dir, image_ext, verify_images):
 
 
 def add_heuristics_to_train(train_df, heuristic_names, raw_dir, image_ext, verify_images, max_rows, seed):
-    """Добавляет heuristics-датасеты так, чтобы классы дошли до среднего размера"""
     stats = {}
     if not heuristic_names:
         return train_df, stats, None
 
-    # Heuristics нужны только для добора слабых классов до среднего размера
     class_counts = train_df["result"].value_counts()
     if class_counts.empty:
         raise ValueError("после очистки train не осталось строк")
@@ -289,10 +251,8 @@ def add_heuristics_to_train(train_df, heuristic_names, raw_dir, image_ext, verif
         config = HEURISTICS[name]
         class_id = config["result"]
         current_count = int((train_df["result"] == class_id).sum())
-        # Если класс уже не меньше среднего, ничего из heuristics не добавляем
         need_count = max(target_count - current_count, 0)
 
-        # Лимит нужен как дополнительный предохранитель от слишком большого добавления
         if max_rows is not None:
             need_count = min(need_count, max_rows)
 
@@ -317,7 +277,7 @@ def add_heuristics_to_train(train_df, heuristic_names, raw_dir, image_ext, verif
             "added_rows": len(heuristic_df),
         }
 
-    # Основной train стоит первым, чтобы при дублях сохранить исходную разметку
+    # original train wins on duplicated image_id_ext
     train_df = pd.concat(frames, ignore_index=True)
     train_df = train_df.drop_duplicates(subset=["image_id_ext"], keep="first")
     train_df = train_df.reset_index(drop=True)
@@ -325,23 +285,12 @@ def add_heuristics_to_train(train_df, heuristic_names, raw_dir, image_ext, verif
 
 
 def preprocess_test(raw_dir, processed_dir, image_ext, verify_images):
-    """Готовит test без удаления строк
-
-    Args:
-        raw_dir: Папка с raw-данными
-        processed_dir: Папка для обработанных CSV
-        image_ext: Расширение файла изображения
-        verify_images: Нужно ли открывать изображения через PIL
-
-    Returns:
-        Количество строк до обработки, после обработки и количество строк для предсказания
-    """
+    """Test stays the same length."""
     csv_path = os.path.join(raw_dir, "test_df.csv")
     image_root = os.path.join(raw_dir, "test_images")
     df = pd.read_csv(csv_path)
     rows_before = len(df)
 
-    # В test не удаляем строки, чтобы не сломать порядок и количество объектов для проверки
     df = df[["image_id_ext", "image", "item_id"]].copy()
     df["image_id_ext"] = df["image_id_ext"].astype(str).str.strip()
     df["image_id_ext"] = df["image_id_ext"].replace({"": None, "nan": None})
@@ -355,7 +304,6 @@ def preprocess_test(raw_dir, processed_dir, image_ext, verify_images):
 
 
 def save_class_mapping(processed_dir):
-    """Сохраняет mapping классов после удаления старого класса 18"""
     class_mapping = {
         "target_column": "result",
         "removed_old_classes": [REMOVED_CLASS],
@@ -371,7 +319,6 @@ def save_class_mapping(processed_dir):
 
 
 def main():
-    """Запускает подготовку train, val и test split"""
     args = parse_args()
     os.makedirs(args.processed_dir, exist_ok=True)
 
@@ -413,7 +360,6 @@ def main():
 
     class_mapping_path = save_class_mapping(args.processed_dir)
 
-    # Manifest помогает понять, с какими heuristics был собран текущий train
     manifest = {
         "include_heuristics": heuristic_names,
         "heuristics_target_count": target_count,

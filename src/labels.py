@@ -18,12 +18,7 @@ def load_label_mapping(
     csv_paths: list[Path | str] | None = None,
     class_mapping_path: Path | str | None = DEFAULT_CLASS_MAPPING_PATH,
 ) -> dict[int, str]:
-    """Загружаем лейблы классов из CSV-файлов.
-
-    CSV-файлы должны содержать колонки:
-    - result - числовой класс
-    - label - строковое название класса
-    """
+    """result -> label."""
     csv_paths = csv_paths or DEFAULT_LABEL_CSV_PATHS
 
     old_to_new = None
