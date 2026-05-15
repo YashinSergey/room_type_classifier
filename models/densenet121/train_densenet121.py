@@ -21,6 +21,7 @@ from models.densenet121.densenet121 import build_densenet121
 from src.dataloaders import create_dataloaders
 from src.device import get_default_device
 from src.labels import load_label_mapping
+from src.mlflow_utils import end_mlflow_run, log_mlflow_artifacts, log_mlflow_metrics, log_mlflow_params, start_mlflow_run
 from src.metrics import calculate_accuracy, calculate_macro_f1, calculate_per_class_f1
 from src.training_helpers import build_checkpoint, set_seed, to_project_relative_path
 
@@ -384,6 +385,16 @@ def _run_stage(
             f"  macro_f1={macro_f1:.4f}"
             f"  best={best_macro_f1:.4f}{saved_marker}"
         )
+        log_mlflow_metrics(
+            {
+                "train_loss": train_loss,
+                "val_loss": val_loss,
+                "accuracy": accuracy,
+                "macro_f1": macro_f1,
+                "best_macro_f1": best_macro_f1,
+            },
+            step=global_epoch,
+        )
 
         if early_stopping_patience > 0 and epochs_without_improvement >= early_stopping_patience:
             stop_reason = "early_stopping"
@@ -433,6 +444,31 @@ def main() -> None:
         class_weights = get_class_weights(args.train_csv, args.num_classes, device)
 
     criterion = nn.CrossEntropyLoss(weight=class_weights, label_smoothing=args.label_smoothing)
+
+    # В MLflow сохраняем параметры запуска и метрики всех этапов
+    start_mlflow_run(
+        "densenet121",
+        f"densenet121_{run_id}",
+        {
+            "model": "densenet121",
+            "epochs_stage1": args.epochs_stage1,
+            "epochs_stage2": args.epochs_stage2,
+            "epochs_stage3": args.epochs_stage3,
+            "lr_stage1": args.lr_stage1,
+            "lr_stage2": args.lr_stage2,
+            "lr_stage3": args.lr_stage3,
+            "batch_size": args.batch_size,
+            "image_size": args.image_size,
+            "weight_decay": args.weight_decay,
+            "label_smoothing": args.label_smoothing,
+            "seed": args.seed,
+            "pretrained": not args.no_pretrained,
+            "class_weights": not args.no_class_weights,
+            "weighted_sampling": not args.no_weighted_sampling,
+            "early_stopping_patience": args.early_stopping_patience,
+            "early_stopping_min_delta": args.early_stopping_min_delta,
+        },
+    )
 
     # промежуточный чекпоинт после этапа 1 (head-only)
     head_checkpoint = args.output_dir / "densenet121_head_best.pt"
@@ -584,6 +620,30 @@ def main() -> None:
     }
 
     metrics_path, experiments_path = save_metrics_report(metrics, args.metrics_dir)
+    log_mlflow_metrics(
+        {
+            "best_macro_f1": best_macro_f1,
+            "best_accuracy": best_epoch_metrics.get("accuracy"),
+            "best_val_loss": best_epoch_metrics.get("val_loss"),
+        }
+    )
+    log_mlflow_params(
+        {
+            "best_epoch": best_epoch,
+            "checkpoint": None if args.no_save_checkpoint else to_project_relative_path(finetune_checkpoint),
+            "metrics_json": to_project_relative_path(metrics_path),
+        }
+    )
+    log_mlflow_artifacts(
+        [
+            metrics_path,
+            experiments_path,
+            args.metrics_dir / "densenet121_classification_report.json",
+            args.metrics_dir / "densenet121_classification_report.txt",
+            None if args.no_save_checkpoint else finetune_checkpoint,
+        ]
+    )
+    end_mlflow_run()
 
     print(f"\nbest_macro_f1={best_macro_f1:.4f}")
     if args.no_save_checkpoint:

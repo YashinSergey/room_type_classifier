@@ -14,6 +14,7 @@ if str(PROJECT_ROOT) not in sys.path:
 from src.device import get_default_device 
 from src.dataloaders import create_dataloaders
 from src.labels import load_label_mapping
+from src.mlflow_utils import end_mlflow_run, log_mlflow_artifacts, log_mlflow_metrics, log_mlflow_params, start_mlflow_run
 from src.training_helpers import build_checkpoint, save_json, set_seed, to_project_relative_path
 
 
@@ -90,7 +91,27 @@ def main():
     print(f"Начало обучения на {args.epochs} эпох...")
     
     best_macro_f1 = 0.0
+    best_epoch = 0
+    checkpoint_path = args.output_dir / "convnext_nano_best.pt"
+    metrics_path = args.metrics_dir / "convnext_nano_metrics.json"
     idx_to_class = {str(class_id): label for class_id, label in load_label_mapping().items()}
+
+    # В MLflow сохраняем параметры запуска и метрики эпох
+    start_mlflow_run(
+        "convnext_nano",
+        "convnext_nano",
+        {
+            "model": "convnext_nano",
+            "epochs": args.epochs,
+            "batch_size": args.batch_size,
+            "image_size": args.image_size,
+            "learning_rate": args.learning_rate,
+            "weight_decay": args.weight_decay,
+            "seed": args.seed,
+            "pretrained": not args.no_pretrained,
+            "weighted_sampling": not args.no_weighted_sampling,
+        },
+    )
 
     for epoch in range(args.epochs):
         model.train()
@@ -136,7 +157,7 @@ def main():
 
         if macro_f1 > best_macro_f1:
             best_macro_f1 = macro_f1
-            checkpoint_path = args.output_dir / "convnext_nano_best.pt"
+            best_epoch = epoch + 1
             if not args.no_save_checkpoint:
                 torch.save(
                     build_checkpoint(
@@ -175,8 +196,40 @@ def main():
                     "save_checkpoint": not args.no_save_checkpoint,
                 },
             }
-            save_json(metrics, args.metrics_dir / "convnext_nano_metrics.json")
+            save_json(metrics, metrics_path)
             print(f"Найдена лучшая модель (F1: {best_macro_f1:.4f})")
+
+        log_mlflow_metrics(
+            {
+                "train_loss": epoch_train_loss,
+                "val_loss": epoch_val_loss,
+                "accuracy": val_acc / 100,
+                "macro_f1": macro_f1,
+                "best_macro_f1": best_macro_f1,
+            },
+            step=epoch + 1,
+        )
+
+    log_mlflow_metrics(
+        {
+            "best_macro_f1": best_macro_f1,
+            "best_epoch": best_epoch,
+        }
+    )
+    log_mlflow_params(
+        {
+            "best_epoch": best_epoch,
+            "checkpoint": None if args.no_save_checkpoint else to_project_relative_path(checkpoint_path),
+            "metrics_json": to_project_relative_path(metrics_path),
+        }
+    )
+    log_mlflow_artifacts(
+        [
+            metrics_path,
+            None if args.no_save_checkpoint else checkpoint_path,
+        ]
+    )
+    end_mlflow_run()
 
 if __name__ == "__main__":
     main()

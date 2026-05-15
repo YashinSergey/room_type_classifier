@@ -24,6 +24,18 @@ install: install-data
 install-data: setup
     uv sync --group data
 
+# Зависимости для MLflow и DagsHub
+install-tracking: setup
+    uv sync --group tracking
+
+# Авторизоваться в DagsHub для remote MLflow
+dagshub-login:
+    uv run --group tracking dagshub login
+
+# Показать страницу общих экспериментов DagsHub
+dagshub-experiments:
+    @echo "https://dagshub.com/YashinSergey/room_type_classifier/experiments"
+
 # Зависимости для Streamlit-приложения
 install-streamlit: setup
     uv sync --group streamlit --group yolo --group efficientnet --group resnet18 --group resnet50 --group densenet121 --group convnext_nano --group convnext_tiny
@@ -91,6 +103,10 @@ lock:
 check-training-outputs:
     uv run --group data python -m src.validate_training_outputs --allow-empty-checkpoints
 
+# Построить таблицу сравнения моделей из MLflow
+compare-models:
+    uv run --group tracking python -m src.compare_mlflow_models
+
 # Переустановить torch/torchvision из обычного PyPI
 pytorch-pypi:
     {{PYTORCH_PIP}} install --upgrade --reinstall torch torchvision
@@ -105,51 +121,64 @@ pytorch-cu130:
 
 # Запустить YOLO demo/inference
 run-yolo:
-    uv run --group yolo python -m models.yolo.main_yolo
+    uv run --group yolo --group tracking python -m models.yolo.main_yolo
 
 # Локальное обучение
 
-# Обучить EfficientNet
+# Обучить EfficientNet B0
+train-efficientnet-b0 EPOCHS="30" BATCH="32":
+    uv run --group efficientnet --group tracking python -m models.efficientNet.train_efficientnet \
+      --variant b0 --epochs {{EPOCHS}} --batch-size {{BATCH}}
+
+# Обучить EfficientNet B1
+train-efficientnet-b1 EPOCHS="30" BATCH="32":
+    uv run --group efficientnet --group tracking python -m models.efficientNet.train_efficientnet \
+      --variant b1 --epochs {{EPOCHS}} --batch-size {{BATCH}}
+
+# Старое короткое имя для EfficientNet B0
 train-efficientnet EPOCHS="30" BATCH="32":
-    uv run --group efficientnet python -m models.efficientNet.train_efficientnet \
-      --epochs {{EPOCHS}} --batch-size {{BATCH}}
+    just train-efficientnet-b0 {{EPOCHS}} {{BATCH}}
 
 # Обучить ResNet50
 train-resnet50 EPOCHS="15" BATCH="32":
-    uv run --group resnet50 python -m models.resnet50.resnet50 \
+    uv run --group resnet50 --group tracking python -m models.resnet50.resnet50 \
       --epochs {{EPOCHS}} --batch-size {{BATCH}}
 
 # Обучить ResNet18
 train-resnet18 EPOCHS="30":
-    uv run --group resnet18 python -m models.resnet18.train_resnet18 --epochs {{EPOCHS}}
+    uv run --group resnet18 --group tracking python -m models.resnet18.train_resnet18 --epochs {{EPOCHS}}
 
 # Обучить ResNet18 без weighted sampler
 train-resnet18-best EPOCHS="30" SEED="42":
-    uv run --group resnet18 python -m models.resnet18.train_resnet18 --epochs {{EPOCHS}} --seed {{SEED}} --no-weighted-sampling
+    uv run --group resnet18 --group tracking python -m models.resnet18.train_resnet18 --epochs {{EPOCHS}} --seed {{SEED}} --no-weighted-sampling
 
 # Обучить DenseNet121 по трем этапам
 train-densenet121 STAGE1="2" STAGE2="8" STAGE3="5" BATCH="32":
-    uv run --group densenet121 python -m models.densenet121.train_densenet121 \
+    uv run --group densenet121 --group tracking python -m models.densenet121.train_densenet121 \
       --epochs-stage1 {{STAGE1}} --epochs-stage2 {{STAGE2}} --epochs-stage3 {{STAGE3}} --batch-size {{BATCH}}
 
 # Обучить ConvNeXt Nano
 train-convnext-nano EPOCHS="30" BATCH="32":
-    uv run --group convnext_nano python -m models.convnext_nano.train_convnext \
+    uv run --group convnext_nano --group tracking python -m models.convnext_nano.train_convnext \
       --epochs {{EPOCHS}} --batch-size {{BATCH}}
 
 # Старое короткое имя для обучения ConvNeXt Nano
 train-convnext EPOCHS="30" BATCH="32":
-    uv run --group convnext_nano python -m models.convnext_nano.train_convnext \
+    uv run --group convnext_nano --group tracking python -m models.convnext_nano.train_convnext \
       --epochs {{EPOCHS}} --batch-size {{BATCH}}
 
 # Старое имя с подчеркиванием для ConvNeXt Nano
 train-convnext_nano EPOCHS="30" BATCH="32":
-    uv run --group convnext_nano python -m models.convnext_nano.train_convnext \
+    uv run --group convnext_nano --group tracking python -m models.convnext_nano.train_convnext \
       --epochs {{EPOCHS}} --batch-size {{BATCH}}
 
 # Обучить ConvNeXt Tiny по JSON-конфигу
 train-convnext-tiny CONFIG="models/convnext_tiny/train_config.json":
-    uv run --group convnext_tiny python -m models.convnext_tiny.train_convnext_tiny --config {{CONFIG}}
+    uv run --group convnext_tiny --group tracking python -m models.convnext_tiny.train_convnext_tiny --config {{CONFIG}}
+
+# Открыть локальный MLflow UI в fallback-режиме
+mlflow-ui:
+    uv run --group tracking mlflow ui --backend-store-uri sqlite:///mlflow.db
 
 # Построить Grad-CAM для EfficientNet
 grad-cam-efficientnet:

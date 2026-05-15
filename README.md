@@ -307,11 +307,60 @@ just train-convnext-nano
 just train-convnext-tiny
 ```
 
+MLflow логируется в DagsHub remote tracking. Перед первым обучением нужно
+установить зависимости и авторизоваться:
+
+```bash
+just install-tracking
+just dagshub-login
+```
+
+После этого запуски обучения автоматически попадают в DagsHub:
+
+```text
+https://dagshub.com/YashinSergey/room_type_classifier/experiments
+```
+
+Если нужно временно использовать локальный MLflow без DagsHub, можно запустить
+обучение с переменной:
+
+```bash
+RTC_MLFLOW_LOCAL=1 just train-resnet18
+```
+
+Таблица сравнения моделей строится из MLflow:
+
+```bash
+just compare-models
+```
+
+Результат сохраняется в:
+
+```text
+reports/model_comparison.csv
+```
+
+Главная метрика для выбора модели:
+
+```text
+best_macro_f1
+```
+
 Для YOLO обучение не запускается: используется внешний pretrained checkpoint. Для проверки inference:
 
 ```bash
 just run-yolo
 ```
+
+YOLO тоже попадает в MLflow, но у него другая метрика:
+
+```text
+avg_top1_confidence
+```
+
+Ее нельзя напрямую сравнивать с `best_macro_f1` обученных классификаторов,
+поэтому в итоговой таблице для YOLO нужно смотреть поля `metric_name` и
+`best_metric`.
 
 После обучения проверьте метрики и checkpoint-и:
 

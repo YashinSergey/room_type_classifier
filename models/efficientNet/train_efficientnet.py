@@ -24,6 +24,7 @@ if str(ROOT_DIR) not in sys.path:
 from src.dataloaders import create_dataloaders
 from src.device import get_default_device
 from src.labels import load_label_mapping
+from src.mlflow_utils import end_mlflow_run, log_mlflow_artifacts, log_mlflow_metrics, log_mlflow_params, start_mlflow_run
 from src.metrics import calculate_macro_f1, calculate_per_class_f1
 from src.training_helpers import build_checkpoint, to_project_relative_path
 
@@ -299,6 +300,26 @@ def main() -> None:
         weight_decay=args.weight_decay,
     )
 
+    # В MLflow сохраняем параметры запуска и метрики эпох
+    start_mlflow_run(
+        "efficientnet",
+        f"efficientnet_{args.variant}",
+        {
+            "model": "efficientnet",
+            "variant": args.variant,
+            "epochs": args.epochs,
+            "batch_size": args.batch_size,
+            "image_size": args.image_size,
+            "learning_rate": args.learning_rate,
+            "weight_decay": args.weight_decay,
+            "class_balance": args.class_balance,
+            "weighted_sampling": args.use_weighted_sampling,
+            "early_stopping_patience": args.early_stopping_patience,
+            "early_stopping_min_delta": args.early_stopping_min_delta,
+            "lr_scheduler": args.lr_scheduler,
+        },
+    )
+
     scheduler = None
     if args.lr_scheduler == "plateau":
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
@@ -359,7 +380,6 @@ def main() -> None:
             f"macro_f1={macro_f1:.4f} "
             f"lr={current_lr:.2e}"
         )
-
         improved = macro_f1 > best_macro_f1 + args.early_stopping_min_delta
         if improved:
             # Если стало лучше, обновляем best
@@ -389,6 +409,17 @@ def main() -> None:
                 )
         else:
             epochs_without_improvement += 1
+
+        log_mlflow_metrics(
+            {
+                "train_loss": train_loss,
+                "val_loss": val_loss,
+                "macro_f1": macro_f1,
+                "learning_rate": current_lr,
+                "best_macro_f1": best_macro_f1,
+            },
+            step=epoch,
+        )
 
         if args.early_stopping_patience > 0 and epochs_without_improvement >= args.early_stopping_patience:
             stop_reason = "early_stopping"
@@ -442,6 +473,27 @@ def main() -> None:
             "checkpoint": None if args.no_save_checkpoint else to_project_relative_path(checkpoint_path),
         },
     )
+    log_mlflow_metrics(
+        {
+            "best_macro_f1": best_macro_f1,
+            "best_epoch": best_epoch,
+        }
+    )
+    log_mlflow_params(
+        {
+            "best_epoch": best_epoch,
+            "checkpoint": None if args.no_save_checkpoint else to_project_relative_path(checkpoint_path),
+            "metrics_json": to_project_relative_path(metrics_path),
+        }
+    )
+    log_mlflow_artifacts(
+        [
+            metrics_path,
+            comparison_path,
+            None if args.no_save_checkpoint else checkpoint_path,
+        ]
+    )
+    end_mlflow_run()
 
     print(f"best_macro_f1={best_macro_f1:.4f}")
     print_per_class_f1(best_per_class_f1)

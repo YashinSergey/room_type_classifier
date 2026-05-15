@@ -21,6 +21,7 @@ from models.resnet18.resnet18 import build_resnet18
 from src.dataloaders import create_dataloaders
 from src.device import get_default_device
 from src.labels import load_label_mapping
+from src.mlflow_utils import end_mlflow_run, log_mlflow_artifacts, log_mlflow_metrics, log_mlflow_params, start_mlflow_run
 from src.metrics import calculate_accuracy, calculate_macro_f1, calculate_per_class_f1
 from src.training_helpers import build_checkpoint, set_seed, to_project_relative_path
 
@@ -278,6 +279,26 @@ def main() -> None:
         weight_decay=args.weight_decay,
     )
 
+    # В MLflow сохраняем параметры запуска и метрики эпох
+    start_mlflow_run(
+        "resnet18",
+        f"resnet18_{run_id}",
+        {
+            "model": "resnet18",
+            "epochs": args.epochs,
+            "batch_size": args.batch_size,
+            "image_size": args.image_size,
+            "learning_rate": args.learning_rate,
+            "weight_decay": args.weight_decay,
+            "seed": args.seed,
+            "pretrained": not args.no_pretrained,
+            "class_weights": not args.no_class_weights,
+            "weighted_sampling": not args.no_weighted_sampling,
+            "early_stopping_patience": args.early_stopping_patience,
+            "early_stopping_min_delta": args.early_stopping_min_delta,
+        },
+    )
+
     best_macro_f1 = -1.0
     best_epoch = 0
     best_epoch_metrics: dict[str, object] = {}
@@ -353,6 +374,16 @@ def main() -> None:
             f"best_epoch={best_epoch} "
             f"no_improve={epochs_without_improvement}"
         )
+        log_mlflow_metrics(
+            {
+                "train_loss": train_loss,
+                "val_loss": val_loss,
+                "accuracy": accuracy,
+                "macro_f1": macro_f1,
+                "best_macro_f1": best_macro_f1,
+            },
+            step=epoch,
+        )
 
         if args.early_stopping_patience > 0 and epochs_without_improvement >= args.early_stopping_patience:
             stop_reason = "early_stopping"
@@ -386,6 +417,29 @@ def main() -> None:
         "stop_reason": stop_reason,
     }
     metrics_path, experiments_path = save_metrics_report(metrics, args.metrics_dir)
+    log_mlflow_metrics(
+        {
+            "best_macro_f1": best_macro_f1,
+            "best_epoch": best_epoch,
+            "best_accuracy": best_epoch_metrics.get("accuracy"),
+            "best_val_loss": best_epoch_metrics.get("val_loss"),
+        }
+    )
+    log_mlflow_params(
+        {
+            "best_epoch": best_epoch,
+            "checkpoint": None if args.no_save_checkpoint else checkpoint_json_path,
+            "metrics_json": to_project_relative_path(metrics_path),
+        }
+    )
+    log_mlflow_artifacts(
+        [
+            metrics_path,
+            experiments_path,
+            None if args.no_save_checkpoint else checkpoint_path,
+        ]
+    )
+    end_mlflow_run()
 
     print(f"best_macro_f1={best_macro_f1:.4f}")
     if args.no_save_checkpoint:

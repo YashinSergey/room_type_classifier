@@ -27,6 +27,7 @@ from models.convnext_tiny.model import build_convnext_tiny
 from src.dataloaders import create_dataloaders
 from src.device import get_default_device
 from src.labels import load_label_mapping
+from src.mlflow_utils import end_mlflow_run, log_mlflow_artifacts, log_mlflow_metrics, log_mlflow_params, start_mlflow_run
 from src.metrics import calculate_accuracy, calculate_macro_f1, calculate_per_class_f1
 from src.training_helpers import build_checkpoint, to_project_relative_path
 
@@ -561,6 +562,29 @@ def main() -> None:
         print(f"Нечего делать: start_ep={start_ep} > epochs={epochs} (увеличь epochs в JSON)", flush=True)
         return
 
+    # В MLflow сохраняем параметры запуска и метрики эпох
+    start_mlflow_run(
+        model_name,
+        f"{model_name}_{run_id}",
+        {
+            "model": model_name,
+            "config": to_project_relative_path(args.config),
+            "epochs": epochs,
+            "batch_size": batch_size,
+            "image_size": image_size,
+            "learning_rate": lr,
+            "weight_decay": wd,
+            "seed": seed,
+            "pretrained": pretrained,
+            "class_weights": use_class_w,
+            "weighted_sampling": use_wsample,
+            "early_stopping_patience": es_pat,
+            "early_stopping_min_delta": es_delta,
+            "amp": use_amp,
+            "exclude_class_id": excluded,
+        },
+    )
+
     for ep in range(start_ep, epochs + 1):
         t0 = datetime.now(timezone.utc).isoformat(timespec="seconds")
         print(f"--- epoch {ep}/{epochs} start {t0} ---", flush=True)
@@ -636,6 +660,16 @@ def main() -> None:
             f"best={best_f1:.4f} best_ep={best_ep} no_improve={no_improve}",
             flush=True,
         )
+        log_mlflow_metrics(
+            {
+                "train_loss": tl,
+                "val_loss": vl,
+                "accuracy": acc,
+                "macro_f1": macro,
+                "best_macro_f1": best_f1,
+            },
+            step=ep,
+        )
         append_history(met_dir, model_name, run_id, ep, tl, vl, acc, macro, best_f1, best_ep)
 
         if es_pat > 0 and no_improve >= es_pat:
@@ -680,6 +714,31 @@ def main() -> None:
         "stop_reason": stop,
     }
     mp, ep = save_metrics_report(metrics, met_dir, model_name)
+    log_mlflow_metrics(
+        {
+            "best_macro_f1": float(best_f1) if math.isfinite(best_f1) else None,
+            "best_epoch": best_ep,
+            "best_accuracy": best_metrics.get("accuracy"),
+            "best_val_loss": best_metrics.get("val_loss"),
+        }
+    )
+    log_mlflow_params(
+        {
+            "best_epoch": best_ep,
+            "checkpoint": None if not save_ckpt else to_project_relative_path(best_path),
+            "metrics_json": to_project_relative_path(mp),
+        }
+    )
+    log_mlflow_artifacts(
+        [
+            mp,
+            ep,
+            met_dir / f"{model_name}_epoch_history.jsonl",
+            None if not save_ckpt else best_path,
+            None if not save_ckpt or not save_last else last_path,
+        ]
+    )
+    end_mlflow_run()
     print(f"metrics -> {mp}", flush=True)
     print(f"experiments -> {ep}", flush=True)
     if save_ckpt:
