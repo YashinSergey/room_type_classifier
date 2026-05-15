@@ -16,7 +16,6 @@ DEFAULT_RAW_DIR = os.path.join(ROOT_DIR, "data", "raw")
 
 
 def seed_worker(worker_id, base_seed):
-    # Разводим seed по worker-процессам
     worker_seed = base_seed + worker_id
     random.seed(worker_seed)
     np.random.seed(worker_seed)
@@ -24,31 +23,30 @@ def seed_worker(worker_id, base_seed):
 
 
 def create_dataloaders(
-        train_csv_path=None,         # путь к processed train CSV
-        val_csv_path=None,           # путь к processed validation CSV
-        train_image_root=None,       # папка с изображениями train
-        val_image_root=None,         # папка с изображениями val
-        batch_size=32,               # размер батча (сколько изображений за один шаг обучения)
-        num_workers=2,               # число процессов для параллельной загрузки данных
-        image_size=224,              # размер стороны изображения после resize
-        use_weighted_sampling=False, # Делать ли балансировку
-        seed=None,                   # Фиксирует shuffle, sampler и random transforms
-        pin_memory=False,            # True на CUDA - быстрее перенос батча на GPU
-        persistent_workers=False,    # не перезапускать worker между эпохами (только при num_workers>0)
+        train_csv_path=None,
+        val_csv_path=None,
+        train_image_root=None,
+        val_image_root=None,
+        batch_size=32,
+        num_workers=2,
+        image_size=224,
+        use_weighted_sampling=False,
+        seed=None,
+        pin_memory=False,
+        persistent_workers=False,
 ):
     train_csv_path = train_csv_path or os.path.join(DEFAULT_PROCESSED_DIR, "train_df.csv")
     val_csv_path = val_csv_path or os.path.join(DEFAULT_PROCESSED_DIR, "val_df.csv")
     train_image_root = train_image_root or os.path.join(DEFAULT_RAW_DIR, "train_images")
     val_image_root = val_image_root or os.path.join(DEFAULT_RAW_DIR, "val_images")
 
-    # Для train используем аугментации
     train_dataset = RoomTypeDataset(
         csv_path=train_csv_path,
         image_root=train_image_root,
         transform=get_train_transforms(image_size=image_size)
     )
 
-    # Для validation используем только resize + normalize (без случайных аугментаций)
+    # validation без random augmentations
     val_dataset = RoomTypeDataset(
         csv_path=val_csv_path,
         image_root=val_image_root,
@@ -79,11 +77,9 @@ def create_dataloaders(
             generator=generator
         )
 
-    # shuffle=True нужен, чтобы модель не видела данные всегда в одном порядке
     train_loader = DataLoader(
         train_dataset,
         batch_size=batch_size,
-        # sampler нельзя использовать с shuffle совместно
         shuffle=use_weighted_sampling==False,
         sampler=sampler,
         num_workers=num_workers,
@@ -93,7 +89,7 @@ def create_dataloaders(
         persistent_workers=persistent_workers and num_workers > 0,
     )
 
-    # shuffle=False, потому что на валидации порядок не важен и лучше держать его стабильным
+    # stable validation order
     val_loader = DataLoader(
         val_dataset,
         batch_size=batch_size,

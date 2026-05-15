@@ -16,7 +16,6 @@ ARTIFACTS_DIR = PROJECT_ROOT / "mlruns"
 
 
 def _load_mlflow():
-    """Импортирует MLflow только во время обучения"""
     try:
         import mlflow
     except ImportError:
@@ -25,7 +24,6 @@ def _load_mlflow():
 
 
 def _prepare_param(value: Any) -> str | int | float | bool | None:
-    """Приводит параметры к простым значениям для MLflow"""
     if value is None:
         return ""
     if isinstance(value, bool | int | float | str):
@@ -36,7 +34,6 @@ def _prepare_param(value: Any) -> str | int | float | bool | None:
 
 
 def flatten_params(params: dict[str, Any], prefix: str = "") -> dict[str, str | int | float | bool | None]:
-    """Разворачивает вложенные параметры в плоский словарь"""
     flat: dict[str, str | int | float | bool | None] = {}
     for key, value in params.items():
         name = f"{prefix}.{key}" if prefix else str(key)
@@ -50,7 +47,6 @@ def flatten_params(params: dict[str, Any], prefix: str = "") -> dict[str, str | 
 
 
 def numeric_metrics(metrics: dict[str, Any]) -> dict[str, float]:
-    """Оставляет только числовые метрики"""
     out: dict[str, float] = {}
     for key, value in metrics.items():
         if isinstance(value, bool):
@@ -61,7 +57,6 @@ def numeric_metrics(metrics: dict[str, Any]) -> dict[str, float]:
 
 
 def log_mlflow_metrics(metrics: dict[str, Any], step: int | None = None) -> None:
-    """Логирует числовые метрики текущей эпохи или финального результата"""
     mlflow = _load_mlflow()
     if mlflow is None or mlflow.active_run() is None:
         return
@@ -72,7 +67,6 @@ def log_mlflow_metrics(metrics: dict[str, Any], step: int | None = None) -> None
 
 
 def log_mlflow_params(params: dict[str, Any]) -> None:
-    """Логирует дополнительные параметры после обучения"""
     mlflow = _load_mlflow()
     if mlflow is None or mlflow.active_run() is None:
         return
@@ -81,7 +75,6 @@ def log_mlflow_params(params: dict[str, Any]) -> None:
 
 
 def log_mlflow_artifacts(paths: list[Path | str | None]) -> None:
-    """Логирует файлы с метриками и checkpoint как artifacts"""
     mlflow = _load_mlflow()
     if mlflow is None or mlflow.active_run() is None:
         return
@@ -95,7 +88,7 @@ def log_mlflow_artifacts(paths: list[Path | str | None]) -> None:
 
 
 def setup_mlflow_tracking(mlflow: Any) -> None:
-    """Настраивает DagsHub или локальный MLflow"""
+    """DagsHub by default, local sqlite with RTC_MLFLOW_LOCAL=1."""
     if os.getenv("RTC_MLFLOW_LOCAL") == "1":
         ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
         mlflow.set_tracking_uri(f"sqlite:///{TRACKING_DB}")
@@ -115,7 +108,6 @@ def setup_mlflow_tracking(mlflow: Any) -> None:
 
 
 def start_mlflow_run(model_name: str, run_name: str, params: dict[str, Any]) -> Any:
-    """Стартует MLflow run для train-скрипта"""
     mlflow = _load_mlflow()
     if mlflow is None:
         print("MLflow не установлен, логирование пропущено")
@@ -130,7 +122,6 @@ def start_mlflow_run(model_name: str, run_name: str, params: dict[str, Any]) -> 
 
 
 def end_mlflow_run() -> None:
-    """Завершает активный MLflow run"""
     mlflow = _load_mlflow()
     if mlflow is not None and mlflow.active_run() is not None:
         mlflow.end_run()

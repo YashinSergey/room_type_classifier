@@ -56,7 +56,6 @@ def validate_paths(args: argparse.Namespace) -> None:
         raise FileNotFoundError("Не найдены входные файлы/папки:\n" + "\n".join(missing))
 
 
-# загрузка и разбиение
 def load_dataset(args: argparse.Namespace):
     train_loader, val_loader = create_dataloaders(
         train_csv_path=args.train_csv,
@@ -79,8 +78,6 @@ def load_dataset(args: argparse.Namespace):
     )
     return train_loader, val_loader, classes
 
-# создание модели
-# Мы берём pretrained ResNet50 и меняем последний слой под наше число классов.
 def build_model(num_classes):
     weights = ResNet50_Weights.DEFAULT
     model = models.resnet50(weights=weights)
@@ -91,7 +88,6 @@ def build_model(num_classes):
     return model
 
 
-# обучение одной эпохи
 def train_one_epoch(model, loader, criterion, optimizer, device):
     model.train()
     running_loss = 0.0
@@ -121,7 +117,6 @@ def train_one_epoch(model, loader, criterion, optimizer, device):
 
     return epoch_loss, epoch_acc
 
-# Считаем метрики на validation
 @torch.inference_mode()
 def validate(model, loader, criterion, device):
     model.eval()
@@ -152,14 +147,11 @@ def validate(model, loader, criterion, device):
     val_loss = running_loss / running_total
     val_acc = running_correct / running_total
 
-    # macro F1 полезен, когда классы несбалансированы:
-    # каждый класс в среднем имеет одинаковый вес
     val_f1_macro = calculate_macro_f1(all_targets, all_preds)
 
     return val_loss, val_acc, val_f1_macro, all_targets, all_preds
 
 
-# отчет по валидации
 def evaluate_and_print_report(model, loader, criterion, device, classes):
     val_loss, val_acc, val_f1_macro, all_targets, all_preds = validate(
         model, loader, criterion, device
@@ -180,15 +172,13 @@ def evaluate_and_print_report(model, loader, criterion, device, classes):
     )
     print(report)
 
-    # Можно выводить confusion_matrix
+    # оставляю для быстрой ручной проверки
     # print('Confusion matrix:')
     # cm = confusion_matrix(all_targets, all_preds)
     # print(cm)
 
     return val_loss, val_acc, val_f1_macro, report
 
-# Лучшую модель сохраняем по val_f1_macro, а не по accuracy.
-# Это часто лучше для многоклассовой задачи.
 def train_model(
     model,
     train_loader,
@@ -218,7 +208,6 @@ def train_model(
             f'val_loss: {val_loss:.4f} -- val_acc: {val_acc:.4f} -- '
             f'val_f1_macro: {val_f1_macro:.4f}'
         )
-        # Сохраняем лучшую модель по macro F1
         if val_f1_macro > best_val_f1:
             best_val_f1 = val_f1_macro
             best_model_wts = copy.deepcopy(model.state_dict())
@@ -282,17 +271,13 @@ def main():
     for i, cls_name in enumerate(classes):
         print(f'  {i}: {cls_name}')
 
-    # Количество классов берем из train CSV
     model = build_model(num_classes=len(classes))
     model = model.to(device)
 
-    # Class weights тут пока не используем
     criterion = nn.CrossEntropyLoss()
 
-    # Adam оставлен как простой старт
     optimizer = optim.Adam(model.parameters(), lr=args.learning_rate)
 
-    # Уменьшаем learning rate, если val_loss не улучшается
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(
         optimizer,
         mode='min',
@@ -300,7 +285,6 @@ def main():
         patience=2
     )
 
-    # В MLflow сохраняем параметры запуска и метрики эпох
     start_mlflow_run(
         "resnet50",
         "resnet50",

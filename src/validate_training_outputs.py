@@ -22,7 +22,6 @@ CHECKPOINT_KEYS = {
 
 
 def parse_args() -> argparse.Namespace:
-    """Читает настройки проверки из командной строки"""
     parser = argparse.ArgumentParser(description="Check model checkpoints and metric files")
     parser.add_argument("--metrics-dir", type=Path, default=Path("reports/metrics"))
     parser.add_argument("--checkpoints-dir", type=Path, default=Path("outputs/models"))
@@ -32,17 +31,15 @@ def parse_args() -> argparse.Namespace:
 
 
 def is_absolute_path(value: str) -> bool:
-    """Проверяет unix и windows пути"""
+    """Unix or Windows absolute path."""
     return Path(value).is_absolute() or PureWindowsPath(value).is_absolute()
 
 
 def load_json(path: Path) -> dict[str, Any] | list[Any]:
-    """Читает json-файл с метриками"""
     return json.loads(path.read_text(encoding="utf-8"))
 
 
 def find_path_errors(data: Any, source: Path, errors: list[str], name: str = "") -> None:
-    """Ищет абсолютные пути внутри json"""
     if isinstance(data, dict):
         for key, value in data.items():
             child_name = f"{name}.{key}" if name else key
@@ -55,24 +52,20 @@ def find_path_errors(data: Any, source: Path, errors: list[str], name: str = "")
         return
 
     if isinstance(data, str) and is_absolute_path(data):
-        # В метриках должны лежать только относительные пути
         rel_source = source.relative_to(PROJECT_ROOT)
         errors.append(f"{rel_source}: absolute path in {name or '<root>'}: {data}")
 
 
 def validate_metrics(path: Path, errors: list[str]) -> None:
-    """Проверяет один файл с метриками"""
     try:
         data = load_json(path)
     except json.JSONDecodeError as exc:
-        # Битый json
         errors.append(f"{path.relative_to(PROJECT_ROOT)}: bad json: {exc}")
         return
 
     find_path_errors(data, path, errors)
 
     if path.name.endswith("_metrics.json") and isinstance(data, dict):
-        # Новые metrics-файлы могут хранить любую главную метрику
         if "metric_name" in data:
             expected_keys = COMMON_METRIC_KEYS
         else:
@@ -84,7 +77,7 @@ def validate_metrics(path: Path, errors: list[str]) -> None:
 
 
 def load_checkpoint(path: Path) -> dict[str, Any]:
-    """Загружает checkpoint с учетом разных версий torch"""
+    """torch.load wrapper."""
     try:
         return torch.load(path, map_location="cpu", weights_only=False)
     except TypeError:
@@ -92,26 +85,21 @@ def load_checkpoint(path: Path) -> dict[str, Any]:
 
 
 def validate_checkpoint(path: Path, errors: list[str]) -> None:
-    """Проверяет один checkpoint модели"""
     rel_path = path.relative_to(PROJECT_ROOT)
     try:
         checkpoint = load_checkpoint(path)
     except Exception as exc:
-        # Если checkpoint не читается, остальные проверки не имеют смысла
         errors.append(f"{rel_path}: cannot load checkpoint: {exc}")
         return
 
     if not isinstance(checkpoint, dict):
-        # Общий формат checkpoint у нас всегда dict
         errors.append(f"{rel_path}: checkpoint is not a dict")
         return
 
-    # Базовые ключи нужны всем моделям
     missing = sorted(CHECKPOINT_KEYS - checkpoint.keys())
     if missing:
         errors.append(f"{rel_path}: missing keys {missing}")
 
-    # Для macro_f1 храним и общий best_metric, и старое понятное имя
     metric_name = checkpoint.get("metric_name")
     if metric_name == "macro_f1":
         for key in ("macro_f1", "best_macro_f1"):
@@ -120,16 +108,13 @@ def validate_checkpoint(path: Path, errors: list[str]) -> None:
 
     checkpoint_path = checkpoint.get("checkpoint_path")
     if isinstance(checkpoint_path, str) and is_absolute_path(checkpoint_path):
-        # Абсолютный путь в checkpoint ломает перенос проекта на другом устройстве
         errors.append(f"{rel_path}: checkpoint_path is absolute: {checkpoint_path}")
 
     if "model_state_dict" in checkpoint and not isinstance(checkpoint["model_state_dict"], dict):
-        # Веса модели должны лежать отдельным словарем
         errors.append(f"{rel_path}: model_state_dict is not a dict")
 
 
 def collect_checkpoints(checkpoints_dir: Path, extra_paths: list[Path]) -> list[Path]:
-    """Собирает checkpoint-файлы из папки и аргументов"""
     paths: list[Path] = []
     if checkpoints_dir.exists():
         paths.extend(sorted(checkpoints_dir.rglob("*.pt")))
@@ -144,20 +129,17 @@ def collect_checkpoints(checkpoints_dir: Path, extra_paths: list[Path]) -> list[
 
 
 def main() -> int:
-    """Запускает все проверки и печатает результат"""
     args = parse_args()
     metrics_dir = resolve_project_path(args.metrics_dir)
     checkpoints_dir = resolve_project_path(args.checkpoints_dir)
     errors: list[str] = []
 
-    # проверяем json-метрики
     if metrics_dir is None or not metrics_dir.exists():
         errors.append(f"metrics dir not found: {args.metrics_dir}")
     else:
         for path in sorted(metrics_dir.rglob("*.json")):
             validate_metrics(path, errors)
 
-    # проверяем сохраненные веса моделей
     checkpoints = collect_checkpoints(checkpoints_dir or PROJECT_ROOT / "outputs/models", args.checkpoint)
     if not checkpoints and not args.allow_empty_checkpoints:
         errors.append("no checkpoints found, use --allow-empty-checkpoints for a dry check")

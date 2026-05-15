@@ -13,7 +13,6 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
 def add_project_root_to_path() -> None:
-    """Добавляет корень проекта в sys.path"""
     import sys
 
     root = str(PROJECT_ROOT)
@@ -22,7 +21,6 @@ def add_project_root_to_path() -> None:
 
 
 def resolve_project_path(path: Path | str | None) -> Path | None:
-    """Делает путь абсолютным относительно проекта"""
     if path is None:
         return None
 
@@ -33,7 +31,6 @@ def resolve_project_path(path: Path | str | None) -> Path | None:
 
 
 def to_project_relative_path(path: Path | str | None) -> str | None:
-    """Возвращает путь относительно проекта"""
     if path is None:
         return None
 
@@ -45,20 +42,18 @@ def to_project_relative_path(path: Path | str | None) -> str | None:
 
 
 def save_json(data: Any, path: Path) -> None:
-    """Сохраняет JSON в UTF-8"""
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
 
 
 def load_json(path: Path, default: Any = None) -> Any:
-    """Читает JSON или возвращает default"""
     if not path.exists():
         return default
     return json.loads(path.read_text(encoding="utf-8"))
 
 
 def set_seed(seed: int) -> None:
-    """Фиксирует seed для повторяемых запусков"""
+    """Seed для экспериментов."""
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -77,7 +72,7 @@ def build_checkpoint(
     checkpoint_path: Path | str | None = None,
     extra: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Собирает checkpoint в общем формате"""
+    """Checkpoint dict."""
     checkpoint: dict[str, Any] = {
         "model_name": model_name,
         "model_state_dict": model.state_dict(),
