@@ -43,6 +43,7 @@ EFFICIENTNET_B1_CHECKPOINT_PATH = Path(
         ROOT_DIR / "outputs" / "models" / "efficientnet" / "efficientnet_b1_best.pt",
     )
 )
+PREVIEW_WIDTH_PX = 300
 RESNET50_MODEL_PATH = ROOT_DIR / "outputs" / "models" / "resnet50" / "resnet50_best.pt"
 RESNET18_MODEL_PATH = ROOT_DIR / "outputs" / "models" / "resnet18" / "resnet18_best.pt"
 DENSENET121_MODEL_PATH = ROOT_DIR / "outputs" / "models" / "densenet121" / "densenet121_best.pt"
@@ -692,7 +693,11 @@ def render_results(uploaded_files: list[st.runtime.uploaded_file_manager.Uploade
         columns = st.columns(min(3, len(uploaded_files)))
         for index, uploaded_file in enumerate(uploaded_files):
             with columns[index % len(columns)]:
-                st.image(uploaded_file.getvalue(), caption=uploaded_file.name, use_container_width=True)
+                st.image(
+                    uploaded_file.getvalue(), 
+                    caption=uploaded_file.name, 
+                    width=PREVIEW_WIDTH_PX
+                )
 
 
 def main() -> None:
