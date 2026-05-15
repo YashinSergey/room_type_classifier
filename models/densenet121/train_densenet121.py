@@ -38,7 +38,6 @@ _CLASS_WEIGHT_BOOSTS: dict[int, float] = {
 
 
 def parse_args() -> argparse.Namespace:
-    """Читает параметры запуска из командной строки"""
     parser = argparse.ArgumentParser(description="Train DenseNet121 on room type dataset")
     parser.add_argument("--num-classes", type=int, default=19)
     parser.add_argument("--batch-size", type=int, default=32)
@@ -64,7 +63,7 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Не сохранять веса модели, оставить только JSON с F1-метриками",
     )
-    # Трехэтапная стратегия обучения
+    # 3 stages, как в последних экспериментах
     parser.add_argument("--epochs-stage1", type=int, default=2, help="Эпох для head-only")
     parser.add_argument("--epochs-stage2", type=int, default=8, help="Эпох для full fine-tuning")
     parser.add_argument("--epochs-stage3", type=int, default=5, help="Эпох для дожига")
@@ -88,7 +87,6 @@ def parse_args() -> argparse.Namespace:
 
 
 def validate_paths(args: argparse.Namespace) -> None:
-    """Проверяет входные CSV и папки с изображениями"""
     paths = {
         "--train-csv": args.train_csv,
         "--val-csv": args.val_csv,
@@ -101,7 +99,6 @@ def validate_paths(args: argparse.Namespace) -> None:
 
 
 def get_class_weights(csv_path: Path, num_classes: int, device: torch.device) -> torch.Tensor:
-    """Считает веса классов для CrossEntropyLoss"""
     targets = pd.read_csv(csv_path)["result"].astype(int)
     counts = torch.bincount(torch.tensor(targets.to_list()), minlength=num_classes).float()
 
@@ -123,7 +120,6 @@ def train_one_epoch(
     optimizer: torch.optim.Optimizer,
     device: torch.device,
 ) -> float:
-    """Обучает модель одну эпоху"""
     model.train()
     total_loss = 0.0
 
@@ -150,7 +146,6 @@ def validate(
     device: torch.device,
     num_classes: int,
 ) -> tuple[float, float, float, list[dict[str, object]], list[int], list[int]]:
-    """Проверяет модель на validation"""
     model.eval()
     total_loss = 0.0
     per_class_loss_sum = torch.zeros(num_classes, dtype=torch.float64)
@@ -194,7 +189,6 @@ def validate(
 
 
 def add_label_names(per_class_f1: list[dict[str, object]]) -> list[dict[str, object]]:
-    """Добавляет названия классов к per-class F1"""
     label_mapping = load_label_mapping()
     return [
         {**item, "label": label_mapping.get(int(item["class_id"]), str(item["class_id"]))}
@@ -203,7 +197,6 @@ def add_label_names(per_class_f1: list[dict[str, object]]) -> list[dict[str, obj
 
 
 def save_metrics_report(metrics: dict[str, object], metrics_dir: Path) -> tuple[Path, Path]:
-    """Сохраняет JSON с метриками и список запусков"""
     metrics_dir.mkdir(parents=True, exist_ok=True)
     run_id = str(metrics.get("run_id") or datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
 
@@ -289,7 +282,6 @@ def _run_stage(
     idx_to_class: dict[str, str],
     epoch_offset: int = 0,
 ) -> tuple[float, int | str, dict[str, object], str, list[dict]]:
-    """Запускает один этап обучения"""
     epochs_without_improvement = 0
     stop_reason = "max_epochs"
     history: list[dict] = []
@@ -445,7 +437,6 @@ def main() -> None:
 
     criterion = nn.CrossEntropyLoss(weight=class_weights, label_smoothing=args.label_smoothing)
 
-    # В MLflow сохраняем параметры запуска и метрики всех этапов
     start_mlflow_run(
         "densenet121",
         f"densenet121_{run_id}",
@@ -470,9 +461,8 @@ def main() -> None:
         },
     )
 
-    # промежуточный чекпоинт после этапа 1 (head-only)
+    # after head-only
     head_checkpoint = args.output_dir / "densenet121_head_best.pt"
-    # Финальный чекпоинт за этапы 2 и 3
     finetune_checkpoint = args.output_dir / "densenet121_best.pt"
 
     best_macro_f1 = -1.0
@@ -482,7 +472,7 @@ def main() -> None:
     idx_to_class = {str(class_id): label for class_id, label in load_label_mapping().items()}
     stop_reason = "max_epochs"
 
-    # Этап 1: обучаем только classifier
+    # stage 1: classifier only
     for param in model.parameters():
         param.requires_grad = False
     for param in model.classifier.parameters():
@@ -508,14 +498,14 @@ def main() -> None:
         best_macro_f1=best_macro_f1,
         best_epoch=best_epoch,
         best_epoch_metrics=best_epoch_metrics,
-        early_stopping_patience=0,  # этап 1 всегда проходит полностью
+        early_stopping_patience=0,
         early_stopping_min_delta=args.early_stopping_min_delta,
         idx_to_class=idx_to_class,
         epoch_offset=0,
     )
     full_history.extend(history_s1)
 
-    # Этап 2: размораживаем всю модель
+    # stage 2: full fine-tuning
     if not args.no_save_checkpoint and head_checkpoint.exists():
         ckpt = torch.load(head_checkpoint, map_location=device, weights_only=True)
         model.load_state_dict(ckpt["model_state_dict"])
@@ -552,7 +542,7 @@ def main() -> None:
     full_history.extend(history_s2)
     stop_reason = stop_reason_s2
 
-    # Этап 3: продолжаем от лучшего чекпоинта
+    # stage 3: smaller lr from best checkpoint
     if not args.no_save_checkpoint and finetune_checkpoint.exists():
         ckpt = torch.load(finetune_checkpoint, map_location=device, weights_only=True)
         model.load_state_dict(ckpt["model_state_dict"])
@@ -584,11 +574,9 @@ def main() -> None:
         epoch_offset=args.epochs_stage1 + args.epochs_stage2,
     )
     full_history.extend(history_s3)
-    # stop_reason берём у последнего сработавшего этапа
     if stop_reason_s3 == "early_stopping":
         stop_reason = "early_stopping"
 
-    # Сохранение метрик
     metrics = {
         "run_id": run_id,
         "model": "densenet121",

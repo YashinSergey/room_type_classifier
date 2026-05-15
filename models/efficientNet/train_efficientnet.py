@@ -36,7 +36,6 @@ MODEL_BUILDERS = {
 
 
 def parse_args() -> argparse.Namespace:
-    """Читает параметры запуска из командной строки"""
     parser = argparse.ArgumentParser(description="Train EfficientNet baseline")
     parser.add_argument("--variant", choices=MODEL_BUILDERS.keys(), default="b0")
     parser.add_argument("--num-classes", type=int, default=19)
@@ -110,18 +109,14 @@ def parse_args() -> argparse.Namespace:
 
 
 def build_model(variant: str, num_classes: int) -> nn.Module:
-    """Собирает EfficientNet под нужное число классов"""
     builder, weights = MODEL_BUILDERS[variant]
-    # Берем предобученные веса ImageNet
     model = builder(weights=weights)
-    # Меняем последний Linear слой
     in_features = model.classifier[-1].in_features
     model.classifier[-1] = nn.Linear(in_features, num_classes)
     return model
 
 
 def get_class_weights(csv_path: Path, target_col: str, num_classes: int, device: torch.device) -> torch.Tensor:
-    """Считает веса классов для CrossEntropyLoss"""
     targets = pd.read_csv(csv_path)[target_col].astype(int)
     max_target = int(targets.max())
     if max_target >= num_classes:
@@ -138,7 +133,6 @@ def get_class_weights(csv_path: Path, target_col: str, num_classes: int, device:
 
 
 def validate_paths(args: argparse.Namespace) -> None:
-    """Проверяем, что входные файлы/папки действительно существуют."""
     paths = {
         "--train-csv": args.train_csv,
         "--val-csv": args.val_csv,
@@ -161,12 +155,10 @@ def train_one_epoch(
     epoch: int,
     log_every: int = 0,
 ) -> float:
-    """Обучает модель одну эпоху"""
     model.train()
     total_loss = 0.0
 
     for batch_idx, (images, targets) in enumerate(loader, start=1):
-        # Переносим батч на нужное устройство (CPU/CUDA/MPS).
         images = images.to(device)
         targets = targets.to(device)
 
@@ -176,7 +168,6 @@ def train_one_epoch(
         loss.backward()
         optimizer.step()
 
-        # Усредняем loss по всем картинкам
         total_loss += loss.item() * images.size(0)
 
         if log_every and batch_idx % log_every == 0:
@@ -193,7 +184,6 @@ def evaluate(
     device: torch.device,
     num_classes: int,
 ) -> tuple[float, float, list[dict[str, object]]]:
-    """Считает loss и macro-F1 на validation"""
     model.eval()
     total_loss = 0.0
     y_true: list[int] = []
@@ -205,15 +195,12 @@ def evaluate(
 
         outputs = model(images)
         loss = criterion(outputs, targets)
-        # Самый вероятный класс.
         predictions = outputs.argmax(dim=1)
 
         total_loss += loss.item() * images.size(0)
-        # Собираем ответы для метрик
         y_true.extend(targets.cpu().tolist())
         y_pred.extend(predictions.cpu().tolist())
 
-    # Для macro-F1 используем общую функцию из src
     macro_f1 = calculate_macro_f1(y_true, y_pred)
     per_class_f1 = calculate_per_class_f1(y_true, y_pred, num_classes)
     return total_loss / len(loader.dataset), macro_f1, per_class_f1
@@ -223,7 +210,6 @@ def add_label_names(
     per_class_f1: list[dict[str, object]],
     label_mapping: dict[int, str],
 ) -> list[dict[str, object]]:
-    """Добавляет название класса к per-class метрикам"""
     return [
         {
             **item,
@@ -234,7 +220,6 @@ def add_label_names(
 
 
 def print_per_class_f1(per_class_f1: list[dict[str, object]]) -> None:
-    """Печатает классы от худшего F1 к лучшему"""
     print("per_class_f1:")
     for item in sorted(per_class_f1, key=lambda row: (float(row["f1"]), int(row["class_id"]))):
         print(
@@ -246,7 +231,6 @@ def print_per_class_f1(per_class_f1: list[dict[str, object]]) -> None:
 
 
 def save_comparison_row(metrics_path: Path, row: dict[str, object]) -> None:
-    """Добавляет строку в CSV со сравнениями"""
     metrics_path.parent.mkdir(parents=True, exist_ok=True)
     file_exists = metrics_path.exists()
     fieldnames = ["model", "variant", "num_classes", "best_epoch", "best_macro_f1", "checkpoint"]
@@ -260,18 +244,15 @@ def save_comparison_row(metrics_path: Path, row: dict[str, object]) -> None:
 
 def main() -> None:
     args = parse_args()
-    # Проверяем входные файлы и папки
     validate_paths(args)
     args.output_dir.mkdir(parents=True, exist_ok=True)
     args.metrics_dir.mkdir(parents=True, exist_ok=True)
 
-    # Выбираем устройство через общий helper
     device = get_default_device()
     print(f"Using device: {device}")
     label_mapping = load_label_mapping()
     idx_to_class = {str(class_id): label for class_id, label in label_mapping.items()}
     
-    # Готовим общий даталоадер (читает CSV и берёт картинки из папок).
     train_loader, val_loader = create_dataloaders(
         train_csv_path=args.train_csv,
         val_csv_path=args.val_csv,
@@ -283,24 +264,19 @@ def main() -> None:
         use_weighted_sampling=args.use_weighted_sampling,
     )
 
-    # Собираем модель и переносим её на нужное устройство.
     model = build_model(args.variant, args.num_classes).to(device)
     class_weights = None
     if args.class_balance == "loss":
-        # Веса классов учитываются прямо в функции потерь.
         class_weights = get_class_weights(args.train_csv, args.target_col, args.num_classes, device)
         print(f"class_weights={class_weights.cpu().tolist()}")
 
-    # Loss для многоклассовой классификации
     criterion = nn.CrossEntropyLoss(weight=class_weights)
-    # AdamW с weight decay
     optimizer = torch.optim.AdamW(
         model.parameters(),
         lr=args.learning_rate,
         weight_decay=args.weight_decay,
     )
 
-    # В MLflow сохраняем параметры запуска и метрики эпох
     start_mlflow_run(
         "efficientnet",
         f"efficientnet_{args.variant}",
@@ -330,7 +306,6 @@ def main() -> None:
             min_lr=args.plateau_min_lr,
         )
 
-    # Храним лучший результат по macro-F1
     best_macro_f1 = -1.0
     best_epoch = 0
     best_per_class_f1: list[dict[str, object]] = []
@@ -340,7 +315,6 @@ def main() -> None:
     stop_reason = "max_epochs"
 
     for epoch in range(1, args.epochs + 1):
-        # Обучение и затем проверка на валидации.
         train_loss = train_one_epoch(
             model,
             train_loader,
@@ -382,7 +356,6 @@ def main() -> None:
         )
         improved = macro_f1 > best_macro_f1 + args.early_stopping_min_delta
         if improved:
-            # Если стало лучше, обновляем best
             best_macro_f1 = macro_f1
             best_epoch = epoch
             best_per_class_f1 = per_class_f1
@@ -429,7 +402,6 @@ def main() -> None:
             )
             break
 
-    # Сохраняем метрики и историю обучения
     metrics = {
         "model": "efficientnet",
         "variant": args.variant,
@@ -460,7 +432,6 @@ def main() -> None:
     metrics_path = args.metrics_dir / f"efficientnet_{args.variant}_metrics.json"
     metrics_path.write_text(json.dumps(metrics, indent=2, ensure_ascii=False), encoding="utf-8")
 
-    # Добавляем короткую строку в CSV для сравнения запусков
     comparison_path = args.metrics_dir / "model_comparison.csv"
     save_comparison_row(
         comparison_path,

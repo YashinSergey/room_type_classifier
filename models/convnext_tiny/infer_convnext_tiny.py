@@ -1,5 +1,3 @@
-"""Инференс ConvNeXt-Tiny по чекпоинту train_convnext_tiny (processed test CSV + raw test_images)."""
-
 from __future__ import annotations
 
 import argparse
@@ -23,7 +21,6 @@ from src.labels import load_label_mapping
 
 
 def _take_batch_field(batch, j):
-    """Достаёт j-й элемент из батча (tensor, list или tuple) после collate DataLoader."""
     if isinstance(batch, torch.Tensor):
         return batch[j].item()
     if isinstance(batch, (list, tuple)):
@@ -32,19 +29,16 @@ def _take_batch_field(batch, j):
 
 
 def _model_index_to_original(pred_idx: int, excluded_original_class_id: int | None) -> int:
-    """Индекс выхода модели → исходный result (если при обучении исключали класс)."""
     if excluded_original_class_id is None:
         return pred_idx
     return pred_idx if pred_idx < excluded_original_class_id else pred_idx + 1
 
 
 def _softmax_vector_std(prob_row: torch.Tensor) -> float:
-    """Std вероятностей по классам (ddof=0): малый std ≈ «плоское», неуверенное распределение."""
     return float(torch.std(prob_row, unbiased=False).item())
 
 
 def _load_ckpt(path: Path, map_location: str | torch.device) -> dict:
-    """Загружает dict чекпоинта; учитывает разные версии torch.load (weights_only)."""
     try:
         return torch.load(path, map_location=map_location, weights_only=False)
     except TypeError:
@@ -52,7 +46,6 @@ def _load_ckpt(path: Path, map_location: str | torch.device) -> dict:
 
 
 def parse_args() -> argparse.Namespace:
-    """Парсит аргументы CLI для инференса (чекпоинт, test CSV, выходной CSV, top-k)."""
     p = argparse.ArgumentParser(description="Predict with ConvNeXt-Tiny checkpoint")
     p.add_argument("--checkpoint", type=Path, required=True, help="convnext_tiny_best.pt")
     p.add_argument(
@@ -96,7 +89,6 @@ def parse_args() -> argparse.Namespace:
 
 @torch.inference_mode()
 def main() -> None:
-    """Загружает модель, прогоняет test_dataloader, сохраняет предсказания в CSV и JSON-отчёт в reports/metrics."""
     args = parse_args()
     if not args.checkpoint.is_file():
         raise FileNotFoundError(args.checkpoint)

@@ -18,7 +18,6 @@ YOLO_FILENAME = "best.pt"
 
 
 def parse_args() -> argparse.Namespace:
-    """Читает настройки YOLO-инференса"""
     parser = argparse.ArgumentParser(description="Run YOLO scene classifier")
     parser.add_argument("--images-dir", type=Path, default=Path("data/raw/val_images"))
     parser.add_argument(
@@ -35,7 +34,6 @@ def parse_args() -> argparse.Namespace:
 
 
 def download_checkpoint(checkpoint_path: Path) -> Path:
-    """Скачивает YOLO checkpoint, если его нет локально"""
     if checkpoint_path.exists():
         print(f"YOLO checkpoint найден: {checkpoint_path}")
         return checkpoint_path
@@ -53,7 +51,6 @@ def download_checkpoint(checkpoint_path: Path) -> Path:
 
 
 def get_image_paths(images_dir: Path, max_images: int) -> list[Path]:
-    """Возвращает список картинок для проверки"""
     image_paths = [
         path
         for path in sorted(images_dir.iterdir())
@@ -63,7 +60,7 @@ def get_image_paths(images_dir: Path, max_images: int) -> list[Path]:
 
 
 def run_predictions(model: YOLO, image_paths: list[Path]) -> tuple[list[dict], float]:
-    """Запускает предсказания и собирает топ-2 класса"""
+    """Top-2 predictions for a small folder."""
     start = time.perf_counter()
     rows: list[dict] = []
 
@@ -86,7 +83,6 @@ def run_predictions(model: YOLO, image_paths: list[Path]) -> tuple[list[dict], f
 
 
 def write_log(predictions: list[dict], log_path: Path) -> None:
-    """Пишет простой текстовый лог для ручной проверки"""
     lines: list[str] = []
     for prediction in predictions:
         lines.append(f"\nФайл: {prediction['image']}")
@@ -106,7 +102,6 @@ def save_metrics(
     predict_time: float,
     confidence: float,
 ) -> None:
-    """Сохраняет JSON-метрики YOLO в общем стиле"""
     top1_confidences = [
         item["top_predictions"][0]["confidence"]
         for item in predictions
@@ -137,7 +132,6 @@ def save_project_checkpoint(
     source_checkpoint: Path,
     best_metric: float,
 ) -> None:
-    """Сохраняет YOLO checkpoint в общем формате проекта"""
     checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
     torch.save(
         {
@@ -154,7 +148,6 @@ def save_project_checkpoint(
 
 
 def main() -> int:
-    """Запускает YOLO и сохраняет лог с метриками"""
     args = parse_args()
     images_dir = resolve_project_path(args.images_dir)
     checkpoint_path = resolve_project_path(args.checkpoint)
@@ -167,7 +160,7 @@ def main() -> int:
     if checkpoint_path is None or output_dir is None or metrics_dir is None or project_checkpoint is None:
         raise ValueError("paths are not configured")
 
-    # Для YOLO логируем inference-run, а не обучение модели
+    # inference run, not training
     start_mlflow_run(
         "yolo",
         "yolo_inference",

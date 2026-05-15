@@ -96,7 +96,6 @@ def main():
     metrics_path = args.metrics_dir / "convnext_nano_metrics.json"
     idx_to_class = {str(class_id): label for class_id, label in load_label_mapping().items()}
 
-    # В MLflow сохраняем параметры запуска и метрики эпох
     start_mlflow_run(
         "convnext_nano",
         "convnext_nano",

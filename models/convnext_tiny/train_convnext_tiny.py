@@ -1,5 +1,3 @@
-"""Обучение ConvNeXt-Tiny: метрики и отчёты как у ResNet18. Настройки — в train_config.json рядом со скриптом."""
-
 from __future__ import annotations
 
 import argparse
@@ -356,7 +354,6 @@ def _f1_improved(cur: float, best: float, delta: float) -> bool:
 
 
 def _log_torch_and_device(device: torch.device) -> None:
-    """Печатает версию torch и доступность CUDA (uv/pip без cu-индекса дают CPU-сборку)."""
     print(f"torch {torch.__version__}", flush=True)
     print(f"torch.version.cuda (сборка) = {torch.version.cuda}", flush=True)
     print(f"torch.cuda.is_available() = {torch.cuda.is_available()}", flush=True)
@@ -562,7 +559,6 @@ def main() -> None:
         print(f"Нечего делать: start_ep={start_ep} > epochs={epochs} (увеличь epochs в JSON)", flush=True)
         return
 
-    # В MLflow сохраняем параметры запуска и метрики эпох
     start_mlflow_run(
         model_name,
         f"{model_name}_{run_id}",

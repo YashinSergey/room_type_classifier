@@ -27,7 +27,6 @@ from src.training_helpers import build_checkpoint, set_seed, to_project_relative
 
 
 def parse_args() -> argparse.Namespace:
-    """Читает параметры запуска из командной строки"""
     parser = argparse.ArgumentParser(description="Train ResNet18 on room type dataset")
     parser.add_argument("--num-classes", type=int, default=19)
     parser.add_argument("--epochs", type=int, default=30)
@@ -71,7 +70,6 @@ def parse_args() -> argparse.Namespace:
 
 
 def validate_paths(args: argparse.Namespace) -> None:
-    """Проверяет входные CSV и папки с изображениями"""
     paths = {
         "--train-csv": args.train_csv,
         "--val-csv": args.val_csv,
@@ -84,11 +82,10 @@ def validate_paths(args: argparse.Namespace) -> None:
 
 
 def get_class_weights(csv_path: Path, num_classes: int, device: torch.device) -> torch.Tensor:
-    """Считает веса классов для CrossEntropyLoss"""
     targets = pd.read_csv(csv_path)["result"].astype(int)
     counts = torch.bincount(torch.tensor(targets.to_list()), minlength=num_classes).float()
 
-    # Редкие классы получают больший вес
+    # inverse class frequency
     weights = torch.zeros(num_classes, dtype=torch.float32)
     existing_classes = counts > 0
     weights[existing_classes] = counts.sum() / (existing_classes.sum() * counts[existing_classes])
@@ -102,12 +99,10 @@ def train_one_epoch(
     optimizer: torch.optim.Optimizer,
     device: torch.device,
 ) -> float:
-    """Обучает модель одну эпоху"""
     model.train()
     total_loss = 0.0
 
     for images, targets in loader:
-        # Переносим данные на тот же device, где модель
         images = images.to(device)
         targets = targets.to(device)
 
@@ -130,7 +125,6 @@ def validate(
     device: torch.device,
     num_classes: int,
 ) -> tuple[float, float, float, list[dict[str, object]]]:
-    """Проверяет модель на validation"""
     model.eval()
     total_loss = 0.0
     per_class_loss_sum = torch.zeros(num_classes, dtype=torch.float64)
@@ -174,7 +168,6 @@ def validate(
 
 
 def add_label_names(per_class_f1: list[dict[str, object]]) -> list[dict[str, object]]:
-    """Добавляет названия классов к per-class F1"""
     label_mapping = load_label_mapping()
     return [
         {
@@ -186,7 +179,6 @@ def add_label_names(per_class_f1: list[dict[str, object]]) -> list[dict[str, obj
 
 
 def save_metrics_report(metrics: dict[str, object], metrics_dir: Path) -> tuple[Path, Path]:
-    """Сохраняет JSON с метриками и список запусков"""
     metrics_dir.mkdir(parents=True, exist_ok=True)
     run_id = str(metrics.get("run_id") or datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
     metrics_with_run = {
@@ -245,11 +237,9 @@ def main() -> None:
     run_id = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     set_seed(args.seed)
 
-    # Выбираем устройство через общий helper
     device = get_default_device()
     print(f"Using device: {device}")
 
-    # Берем общий DataLoader для processed CSV
     train_loader, val_loader = create_dataloaders(
         train_csv_path=args.train_csv,
         val_csv_path=args.val_csv,
@@ -271,7 +261,6 @@ def main() -> None:
     if not args.no_class_weights:
         class_weights = get_class_weights(args.train_csv, args.num_classes, device)
 
-    # CrossEntropyLoss
     criterion = nn.CrossEntropyLoss(weight=class_weights)
     optimizer = torch.optim.AdamW(
         model.parameters(),
@@ -279,7 +268,6 @@ def main() -> None:
         weight_decay=args.weight_decay,
     )
 
-    # В MLflow сохраняем параметры запуска и метрики эпох
     start_mlflow_run(
         "resnet18",
         f"resnet18_{run_id}",
@@ -321,7 +309,6 @@ def main() -> None:
 
         improved = macro_f1 > best_macro_f1 + args.early_stopping_min_delta
         if improved:
-            # Сохраняем только лучший чекпоинт
             best_macro_f1 = macro_f1
             best_epoch = epoch
             epochs_without_improvement = 0
@@ -338,7 +325,6 @@ def main() -> None:
                         "f1": item["f1"],
                         "accuracy": item["accuracy"],
                         "loss": item["loss"],
-                        # support - число validation-объектов этого класса
                         "support": item["support"],
                     }
                     for item in per_class_f1
