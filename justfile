@@ -75,6 +75,19 @@ install-convnext_nano: install-convnext-nano
 install-convnext-tiny: setup
     uv sync --group convnext_tiny
 
+# Зависимости для ансамбля ensemble_i (nano + resnet50 + densenet121, stacking)
+[windows]
+install-ensemble-i: setup
+    powershell.exe -NoProfile -File "{{justfile_directory()}}/scripts/uv.ps1" sync --group ensemble_i --group convnext_nano --group resnet50 --group densenet121
+
+[linux]
+install-ensemble-i: setup
+    uv sync --group ensemble_i --group convnext_nano --group resnet50 --group densenet121
+
+[macos]
+install-ensemble-i: setup
+    uv sync --group ensemble_i --group convnext_nano --group resnet50 --group densenet121
+
 # Установить все группы зависимостей
 install-all: setup
     uv sync --all-groups
@@ -108,6 +121,16 @@ compare-models:
     uv run --group tracking python -m src.compare_mlflow_models
 
 # Скачать лучшие чекпоинты из MLflow (DagsHub) в outputs/models для Streamlit
+
+[windows]
+pull-checkpoints *ARGS:
+    powershell.exe -NoProfile -Command "Set-Location -LiteralPath '{{justfile_directory()}}'; uv run --group tracking python -m src.pull_mlflow_checkpoints {{ARGS}}"
+
+[linux]
+pull-checkpoints *ARGS:
+    uv run --group tracking python -m src.pull_mlflow_checkpoints {{ARGS}}
+
+[macos]
 pull-checkpoints *ARGS:
     uv run --group tracking python -m src.pull_mlflow_checkpoints {{ARGS}}
 
@@ -179,6 +202,62 @@ train-convnext_nano EPOCHS="30" BATCH="32":
 # Обучить ConvNeXt Tiny по JSON-конфигу
 train-convnext-tiny CONFIG="models/convnext_tiny/train_config.json":
     uv run --group convnext_tiny --group tracking python -m models.convnext_tiny.train_convnext_tiny --config {{CONFIG}}
+
+# Оценить ensemble_i на val и сохранить per-class веса
+
+[windows]
+tune-ensemble-i CONFIG="models/ensemble_i/ensemble_config.json":
+    powershell.exe -NoProfile -File "{{justfile_directory()}}/scripts/uv.ps1" run --group ensemble_i --group convnext_nano --group resnet50 --group densenet121 --group tracking python -m models.ensemble_i.tune_ensemble_i --config {{CONFIG}}
+
+[linux]
+tune-ensemble-i CONFIG="models/ensemble_i/ensemble_config.json":
+    uv run --group ensemble_i --group convnext_nano --group resnet50 --group densenet121 --group tracking python -m models.ensemble_i.tune_ensemble_i --config {{CONFIG}}
+
+[macos]
+tune-ensemble-i CONFIG="models/ensemble_i/ensemble_config.json":
+    uv run --group ensemble_i --group convnext_nano --group resnet50 --group densenet121 --group tracking python -m models.ensemble_i.tune_ensemble_i --config {{CONFIG}}
+
+# Пересчитать веса ensemble_i из metrics_json базовых моделей
+
+[windows]
+tune-ensemble-i-refresh CONFIG="models/ensemble_i/ensemble_config.json":
+    powershell.exe -NoProfile -File "{{justfile_directory()}}/scripts/uv.ps1" run --group ensemble_i --group convnext_nano --group resnet50 --group densenet121 --group tracking python -m models.ensemble_i.tune_ensemble_i --config {{CONFIG}} --refresh-weights-from-metrics
+
+[linux]
+tune-ensemble-i-refresh CONFIG="models/ensemble_i/ensemble_config.json":
+    uv run --group ensemble_i --group convnext_nano --group resnet50 --group densenet121 --group tracking python -m models.ensemble_i.tune_ensemble_i --config {{CONFIG}} --refresh-weights-from-metrics
+
+[macos]
+tune-ensemble-i-refresh CONFIG="models/ensemble_i/ensemble_config.json":
+    uv run --group ensemble_i --group convnext_nano --group resnet50 --group densenet121 --group tracking python -m models.ensemble_i.tune_ensemble_i --config {{CONFIG}} --refresh-weights-from-metrics
+
+# Инференс ensemble_i на test (submission)
+
+[windows]
+infer-ensemble-i CONFIG="models/ensemble_i/ensemble_config.json":
+    powershell.exe -NoProfile -File "{{justfile_directory()}}/scripts/uv.ps1" run --group ensemble_i --group convnext_nano --group resnet50 --group densenet121 --group tracking python -m models.ensemble_i.infer_ensemble_i --config {{CONFIG}} --split test
+
+[linux]
+infer-ensemble-i CONFIG="models/ensemble_i/ensemble_config.json":
+    uv run --group ensemble_i --group convnext_nano --group resnet50 --group densenet121 --group tracking python -m models.ensemble_i.infer_ensemble_i --config {{CONFIG}} --split test
+
+[macos]
+infer-ensemble-i CONFIG="models/ensemble_i/ensemble_config.json":
+    uv run --group ensemble_i --group convnext_nano --group resnet50 --group densenet121 --group tracking python -m models.ensemble_i.infer_ensemble_i --config {{CONFIG}} --split test
+
+# Инференс ensemble_i на val
+
+[windows]
+infer-ensemble-i-val CONFIG="models/ensemble_i/ensemble_config.json":
+    powershell.exe -NoProfile -File "{{justfile_directory()}}/scripts/uv.ps1" run --group ensemble_i --group convnext_nano --group resnet50 --group densenet121 --group tracking python -m models.ensemble_i.infer_ensemble_i --config {{CONFIG}} --split val
+
+[linux]
+infer-ensemble-i-val CONFIG="models/ensemble_i/ensemble_config.json":
+    uv run --group ensemble_i --group convnext_nano --group resnet50 --group densenet121 --group tracking python -m models.ensemble_i.infer_ensemble_i --config {{CONFIG}} --split val
+
+[macos]
+infer-ensemble-i-val CONFIG="models/ensemble_i/ensemble_config.json":
+    uv run --group ensemble_i --group convnext_nano --group resnet50 --group densenet121 --group tracking python -m models.ensemble_i.infer_ensemble_i --config {{CONFIG}} --split val
 
 # Открыть локальный MLflow UI в fallback-режиме
 mlflow-ui:
@@ -263,6 +342,14 @@ docker-train-convnext-nano EPOCHS="30" BATCH="32":
 # Обучить ConvNeXt Tiny в Docker
 docker-train-convnext-tiny CONFIG="models/convnext_tiny/train_config.json":
     just _docker-compose-run train-convnext-tiny -e CONFIG={{CONFIG}}
+
+# Оценить ensemble_i в Docker
+docker-tune-ensemble-i CONFIG="models/ensemble_i/ensemble_config.json":
+    just _docker-compose-run tune-ensemble-i -e CONFIG={{CONFIG}}
+
+# Инференс ensemble_i на test в Docker
+docker-infer-ensemble-i CONFIG="models/ensemble_i/ensemble_config.json":
+    just _docker-compose-run infer-ensemble-i -e CONFIG={{CONFIG}}
 
 # Запустить YOLO в Docker
 docker-run-yolo:
