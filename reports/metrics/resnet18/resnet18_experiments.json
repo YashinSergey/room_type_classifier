@@ -218,5 +218,28 @@
     "early_stopping_patience": 3,
     "early_stopping_min_delta": 0.0001,
     "metrics_json": "reports/metrics/resnet18/resnet18_metrics.json"
+  },
+  {
+    "run_id": "2026-05-16_13-53-52",
+    "model": "resnet18",
+    "best_epoch": 11,
+    "best_macro_f1": 0.703781837673438,
+    "best_accuracy": 0.7169811320754716,
+    "best_train_loss": 0.06007275602978128,
+    "best_val_loss": 1.0586636383828376,
+    "stop_reason": "early_stopping",
+    "checkpoint": "outputs/models/resnet18/resnet18_best.pt",
+    "epochs": 60,
+    "batch_size": 32,
+    "image_size": 224,
+    "learning_rate": 0.0001,
+    "weight_decay": 0.0001,
+    "seed": 42,
+    "pretrained": true,
+    "class_weights": true,
+    "weighted_sampling": true,
+    "early_stopping_patience": 3,
+    "early_stopping_min_delta": 0.0001,
+    "metrics_json": "reports/metrics/resnet18/resnet18_metrics.json"
   }
 ]

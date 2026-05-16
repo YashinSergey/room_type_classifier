@@ -180,6 +180,11 @@ train-convnext_nano EPOCHS="30" BATCH="32":
 train-convnext-tiny CONFIG="models/convnext_tiny/train_config.json":
     uv run --group convnext_tiny --group tracking python -m models.convnext_tiny.train_convnext_tiny --config {{CONFIG}}
 
+# Проверить компактный ансамбль на validation и отправить эксперимент в DagsHub MLflow
+eval-ensemble:
+    uv run --group convnext_nano --group resnet50 --group resnet18 --group tracking python -m src.evaluate_ensemble \
+      --weighting val_f1 --run-name ensemble_convnext_nano_resnet50_resnet18 --log-mlflow --no-mlflow-local
+
 # Открыть локальный MLflow UI в fallback-режиме
 mlflow-ui:
     uv run --group tracking mlflow ui --backend-store-uri sqlite:///mlflow.db

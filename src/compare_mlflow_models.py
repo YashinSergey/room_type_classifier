@@ -16,6 +16,7 @@ KNOWN_MODELS = {
     "efficientnet",
     "convnext_nano",
     "convnext_tiny",
+    "ensemble",
     "yolo",
 }
 
