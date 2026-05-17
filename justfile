@@ -36,7 +36,7 @@ dagshub-login:
 dagshub-experiments:
     @echo "https://dagshub.com/YashinSergey/room_type_classifier/experiments"
 
-# Зависимости для Streamlit-приложения
+# Зависимости для Streamlit
 install-streamlit: setup
     uv sync --group streamlit --group yolo --group efficientnet --group resnet18 --group resnet50 --group densenet121 --group convnext_nano --group convnext_tiny
 
@@ -127,8 +127,6 @@ pytorch-cu130:
 run-yolo:
     uv run --group yolo --group tracking python -m models.yolo.main_yolo
 
-# Локальное обучение
-
 # Обучить EfficientNet B0
 train-efficientnet-b0 EPOCHS="80" BATCH="32" EARLY_STOPPING_PATIENCE="8" LR_SCHEDULER="plateau":
     uv run --group efficientnet --group tracking python -m models.efficientNet.train_efficientnet \
@@ -180,6 +178,15 @@ train-convnext_nano EPOCHS="30" BATCH="32":
 train-convnext-tiny CONFIG="models/convnext_tiny/train_config.json":
     uv run --group convnext_tiny --group tracking python -m models.convnext_tiny.train_convnext_tiny --config {{CONFIG}}
 
+# Проверить компактный ансамбль на validation и отправить эксперимент в DagsHub MLflow
+eval-ensemble:
+    uv run --group convnext_nano --group resnet50 --group resnet18 --group tracking python -m src.evaluate_ensemble \
+      --weighting val_f1 --run-name ensemble_convnext_nano_resnet50_resnet18 --log-mlflow --no-mlflow-local
+
+# Сделать submission ансамблем ConvNeXt Nano + ResNet50 + ResNet18 в data/submissions
+make-submission:
+    uv run --group convnext_nano --group resnet50 --group resnet18 python -m src.infer_ensemble
+
 # Открыть локальный MLflow UI в fallback-режиме
 mlflow-ui:
     uv run --group tracking mlflow ui --backend-store-uri sqlite:///mlflow.db
@@ -194,7 +201,11 @@ run-streamlit:
 
 # Запустить произвольную команду через uv
 run *ARGS:
-    uv run {{ARGS}}
+    @if [ "{{ARGS}}" = "yolo" ]; then \
+        just run-yolo; \
+    else \
+        uv run {{ARGS}}; \
+    fi
 
 # Docker
 
