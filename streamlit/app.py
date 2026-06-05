@@ -22,7 +22,8 @@ if str(ROOT_DIR) not in sys.path:
 from models.convnext_tiny.model import build_convnext_tiny
 from models.densenet121.densenet121 import build_densenet121
 from src.device import get_default_device
-from src.labels import load_label_mapping
+from src.labels import load_english_label_mapping
+from src.training_helpers import load_torch_checkpoint
 from src.transforms import get_val_transforms
 from models.resnet18.resnet18 import build_resnet18
 
@@ -62,14 +63,14 @@ class ModelConfig:
 
 
 def load_rgb_image(image_bytes: bytes) -> Image.Image:
-    """Open uploaded image."""
+    """Open uploaded image"""
     image = Image.open(io.BytesIO(image_bytes))
     return ImageOps.exif_transpose(image).convert("RGB")
 
 
 @st.cache_data(show_spinner=False)
 def load_room_type_labels() -> dict[int, str]:
-    return load_label_mapping()
+    return load_english_label_mapping()
 
 
 @st.cache_resource(show_spinner="Loading YOLO model...")
@@ -157,7 +158,7 @@ def load_efficientnet_model(checkpoint_path: str) -> tuple[object, object, int] 
         return None
 
     device = get_default_device()
-    checkpoint = torch.load(path, map_location=device, weights_only=False)
+    checkpoint = load_torch_checkpoint(path, map_location=device, weights_only=False)
     variant = checkpoint.get("variant", "b0")
     num_classes = int(checkpoint.get("num_classes", 20))
     image_size = int(checkpoint.get("image_size", get_default_image_size(variant)))
@@ -221,7 +222,7 @@ def load_resnet50_model(checkpoint_path: str) -> tuple[object, object, int] | No
         return None
 
     device = get_default_device()
-    checkpoint = torch.load(path, map_location=device, weights_only=False)
+    checkpoint = load_torch_checkpoint(path, map_location=device, weights_only=False)
 
     if isinstance(checkpoint, dict) and "model_state_dict" in checkpoint:
         state_dict = checkpoint["model_state_dict"]
@@ -284,7 +285,7 @@ def load_resnet18_model(checkpoint_path: str) -> tuple[object, object, int] | No
         return None
 
     device = get_default_device()
-    checkpoint = torch.load(path, map_location=device, weights_only=False)
+    checkpoint = load_torch_checkpoint(path, map_location=device, weights_only=False)
 
     if isinstance(checkpoint, dict) and "model_state_dict" in checkpoint:
         state_dict = checkpoint["model_state_dict"]
@@ -345,7 +346,7 @@ def load_densenet121_model(checkpoint_path: str) -> tuple[object, object, int] |
         return None
 
     device = get_default_device()
-    checkpoint = torch.load(path, map_location=device, weights_only=False)
+    checkpoint = load_torch_checkpoint(path, map_location=device, weights_only=False)
     if not isinstance(checkpoint, dict) or "model_state_dict" not in checkpoint:
         return None
 
@@ -416,7 +417,7 @@ def load_convnext_nano_model(checkpoint_path: str) -> tuple[object, object, int]
         return None
 
     device = get_default_device()
-    checkpoint = torch.load(path, map_location=device, weights_only=False)
+    checkpoint = load_torch_checkpoint(path, map_location=device, weights_only=False)
 
     if isinstance(checkpoint, dict) and "model_state_dict" in checkpoint:
         state_dict = checkpoint["model_state_dict"]
@@ -485,7 +486,7 @@ def load_convnext_tiny_model(checkpoint_path: str) -> tuple[object, object, int]
         return None
 
     device = get_default_device()
-    checkpoint = torch.load(path, map_location=device, weights_only=False)
+    checkpoint = load_torch_checkpoint(path, map_location=device, weights_only=False)
     if not isinstance(checkpoint, dict) or "model_state_dict" not in checkpoint:
         return None
 

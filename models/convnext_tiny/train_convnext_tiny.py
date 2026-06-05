@@ -24,10 +24,10 @@ if str(ROOT_DIR) not in sys.path:
 from models.convnext_tiny.model import build_convnext_tiny
 from src.dataloaders import create_dataloaders
 from src.device import get_default_device
-from src.labels import load_label_mapping
+from src.labels import load_english_label_mapping
 from src.mlflow_utils import end_mlflow_run, log_mlflow_artifacts, log_mlflow_metrics, log_mlflow_params, start_mlflow_run
 from src.metrics import calculate_accuracy, calculate_macro_f1, calculate_per_class_f1
-from src.training_helpers import build_checkpoint, to_project_relative_path
+from src.training_helpers import build_checkpoint, load_torch_checkpoint, to_project_relative_path
 
 _CONFIG_DIR = Path(__file__).resolve().parent
 _DEFAULT_CONFIG = _CONFIG_DIR / "train_config.json"
@@ -216,7 +216,7 @@ def _orig_class(mid: int, excluded: int | None) -> int:
 
 
 def add_label_names(per: list[dict[str, object]], excluded: int | None) -> list[dict[str, object]]:
-    lm = load_label_mapping()
+    lm = load_english_label_mapping()
     out = []
     for item in per:
         oid = _orig_class(int(item["class_id"]), excluded)
@@ -236,9 +236,9 @@ def _atomic_torch_save(obj: dict, path: Path) -> None:
 
 def _load_ckpt(path: Path) -> dict[str, Any]:
     try:
-        return torch.load(path, map_location="cpu", weights_only=False)
+        return load_torch_checkpoint(path, map_location="cpu", weights_only=False)
     except TypeError:
-        return torch.load(path, map_location="cpu")
+        return load_torch_checkpoint(path, map_location="cpu")
 
 
 def _build_ckpt_payload(
@@ -411,7 +411,7 @@ def main() -> None:
         if num_classes != inferred:
             print(f"num_classes {num_classes} -> {inferred} (from train after exclude)", flush=True)
             num_classes = inferred
-        print(f"Excluded class {excluded}: train {nt} (−{dt}), val {nv} (−{dv})", flush=True)
+        print(f"Excluded class {excluded}: train {nt} (-{dt}), val {nv} (-{dv})", flush=True)
 
     out_dir = (_p(ROOT_DIR, cfg.get("output_dir")) or (ROOT_DIR / "outputs/models" / model_name)).resolve()
     met_dir = (_p(ROOT_DIR, cfg.get("metrics_dir")) or (ROOT_DIR / "reports/metrics" / model_name)).resolve()
@@ -512,7 +512,7 @@ def main() -> None:
         "excluded_original_class_id": excluded,
         "config_path": to_project_relative_path(args.config),
         "model_name": model_name,
-        "idx_to_class": {str(class_id): label for class_id, label in load_label_mapping().items()},
+        "idx_to_class": {str(class_id): label for class_id, label in load_english_label_mapping().items()},
     }
 
     start_ep = 1
@@ -589,7 +589,7 @@ def main() -> None:
             model, val_loader, crit, device, num_classes, use_amp=use_amp, show_progress=show_progress, epoch=ep
         )
         if not math.isfinite(macro):
-            print("macro_f1 is not a number; using 0.0 so the checkpoint can be saved", flush=True)
+            print("macro_f1 is not a number, using 0.0 so the checkpoint can be saved", flush=True)
             macro = 0.0
         per = add_label_names(per, excluded)
 

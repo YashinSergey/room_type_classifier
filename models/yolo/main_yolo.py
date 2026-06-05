@@ -62,7 +62,7 @@ def get_image_paths(images_dir: Path, max_images: int) -> list[Path]:
 
 
 def run_predictions(model: YOLO, image_paths: list[Path]) -> tuple[list[dict], float]:
-    """Top-2 predictions for a small folder."""
+    """Top-2 predictions for a small folder"""
     start = time.perf_counter()
     rows: list[dict] = []
 

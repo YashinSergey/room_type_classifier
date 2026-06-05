@@ -38,17 +38,14 @@ HEURISTICS = {
     "cabinet": {
         "csv": "heuristics_cabinet.csv",
         "result": 5,
-        "label": "study",
     },
     "detskaya": {
         "csv": "heuristics_detskaya.csv",
         "result": 6,
-        "label": "children's room",
     },
     "dressing_room": {
         "csv": "heuristics_dressing_room.csv",
         "result": 11,
-        "label": "walk-in closet / pantry / laundry",
     },
 }
 RECOMMENDED_HEURISTICS = ["cabinet", "dressing_room"]
@@ -85,7 +82,7 @@ def parse_args():
 
 
 def is_valid_image(image_path):
-    """PIL image.verify check."""
+    """PIL image.verify check"""
     try:
         with Image.open(image_path) as image:
             image.verify()
@@ -151,7 +148,7 @@ def normalize_title(title):
 
 
 def preprocess_train_val(split, raw_dir, processed_dir, image_ext, verify_images):
-    """Train/val cleanup."""
+    """Train/val cleanup"""
     csv_path = os.path.join(raw_dir, f"{split}_df.csv")
     image_root = os.path.join(raw_dir, f"{split}_images")
     df = pd.read_csv(csv_path)
@@ -189,8 +186,8 @@ def preprocess_train_val(split, raw_dir, processed_dir, image_ext, verify_images
     return rows_before, len(df)
 
 
-def read_heuristic_dataset(name, raw_dir, image_ext, verify_images):
-    """Heuristic csv -> train-like df."""
+def read_heuristic_dataset(name, raw_dir, image_ext, verify_images, label):
+    """Heuristic csv -> train-like df"""
     config = HEURISTICS[name]
     csv_path = os.path.join(raw_dir, config["csv"])
     image_root = os.path.join(raw_dir, "heuristics_images")
@@ -203,7 +200,7 @@ def read_heuristic_dataset(name, raw_dir, image_ext, verify_images):
     df = df.dropna(subset=["image_id_ext"])
 
     df["result"] = config["result"]
-    df["label"] = config["label"]
+    df["label"] = label
 
     df = check_images(df, image_root, image_ext, verify_images)
     df = df[df["can_predict"]].copy()
@@ -245,11 +242,18 @@ def add_heuristics_to_train(train_df, heuristic_names, raw_dir, image_ext, verif
     if class_counts.empty:
         raise ValueError("no train rows left after cleanup")
     target_count = round(class_counts.mean())
+    labels_by_result = (
+        train_df.dropna(subset=["result", "label"])
+        .drop_duplicates(subset=["result"], keep="first")
+        .set_index("result")["label"]
+        .to_dict()
+    )
     frames = [train_df]
 
     for name in heuristic_names:
         config = HEURISTICS[name]
         class_id = config["result"]
+        label = labels_by_result.get(class_id, str(class_id))
         current_count = int((train_df["result"] == class_id).sum())
         need_count = max(target_count - current_count, 0)
 
@@ -261,6 +265,7 @@ def add_heuristics_to_train(train_df, heuristic_names, raw_dir, image_ext, verif
             raw_dir,
             image_ext,
             verify_images,
+            label,
         )
 
         if need_count > 0 and len(heuristic_df) > need_count:
@@ -285,7 +290,7 @@ def add_heuristics_to_train(train_df, heuristic_names, raw_dir, image_ext, verif
 
 
 def preprocess_test(raw_dir, processed_dir, image_ext, verify_images):
-    """Test stays the same length."""
+    """Test stays the same length"""
     csv_path = os.path.join(raw_dir, "test_df.csv")
     image_root = os.path.join(raw_dir, "test_images")
     df = pd.read_csv(csv_path)

@@ -20,10 +20,10 @@ if str(ROOT_DIR) not in sys.path:
 from models.densenet121.densenet121 import build_densenet121
 from src.dataloaders import create_dataloaders
 from src.device import get_default_device
-from src.labels import load_label_mapping
+from src.labels import load_english_label_mapping
 from src.mlflow_utils import end_mlflow_run, log_mlflow_artifacts, log_mlflow_metrics, log_mlflow_params, start_mlflow_run
 from src.metrics import calculate_accuracy, calculate_macro_f1, calculate_per_class_f1
-from src.training_helpers import build_checkpoint, set_seed, to_project_relative_path
+from src.training_helpers import build_checkpoint, load_torch_checkpoint, set_seed, to_project_relative_path
 
 
 
@@ -61,7 +61,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--no-save-checkpoint",
         action="store_true",
-        help="Do not save model weights; keep only JSON with F1 metrics",
+        help="Do not save model weights, keep only JSON with F1 metrics",
     )
     # 3 stages, as in the latest experiments
     parser.add_argument("--epochs-stage1", type=int, default=2, help="Epochs for head-only training")
@@ -189,7 +189,7 @@ def validate(
 
 
 def add_label_names(per_class_f1: list[dict[str, object]]) -> list[dict[str, object]]:
-    label_mapping = load_label_mapping()
+    label_mapping = load_english_label_mapping()
     return [
         {**item, "label": label_mapping.get(int(item["class_id"]), str(item["class_id"]))}
         for item in per_class_f1
@@ -300,7 +300,7 @@ def _run_stage(
             model, val_loader, criterion, device, num_classes
         )
         per_class_f1 = add_label_names(per_class_f1)
-        label_mapping = load_label_mapping()
+        label_mapping = load_english_label_mapping()
         target_names = [label_mapping.get(i, str(i)) for i in range(num_classes)]
 
         history.append({
@@ -475,7 +475,7 @@ def main() -> None:
     best_epoch = 0
     best_epoch_metrics: dict[str, object] = {}
     full_history: list[dict] = []
-    idx_to_class = {str(class_id): label for class_id, label in load_label_mapping().items()}
+    idx_to_class = {str(class_id): label for class_id, label in load_english_label_mapping().items()}
     stop_reason = "max_epochs"
 
     # stage 1: classifier only
@@ -513,7 +513,7 @@ def main() -> None:
 
     # stage 2: full fine-tuning
     if not args.no_save_checkpoint and head_checkpoint.exists():
-        ckpt = torch.load(head_checkpoint, map_location=device, weights_only=True)
+        ckpt = load_torch_checkpoint(head_checkpoint, map_location=device, weights_only=True)
         model.load_state_dict(ckpt["model_state_dict"])
 
     for param in model.parameters():
@@ -550,7 +550,7 @@ def main() -> None:
 
     # stage 3: smaller lr from best checkpoint
     if not args.no_save_checkpoint and finetune_checkpoint.exists():
-        ckpt = torch.load(finetune_checkpoint, map_location=device, weights_only=True)
+        ckpt = load_torch_checkpoint(finetune_checkpoint, map_location=device, weights_only=True)
         model.load_state_dict(ckpt["model_state_dict"])
 
     optimizer_s3 = torch.optim.Adam(

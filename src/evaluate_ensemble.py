@@ -26,7 +26,7 @@ from models.densenet121.densenet121 import build_densenet121
 from models.resnet18.resnet18 import build_resnet18
 from src.dataloaders import create_dataloaders
 from src.device import get_default_device
-from src.labels import load_label_mapping
+from src.labels import load_english_label_mapping
 from src.metrics import calculate_accuracy, calculate_macro_f1, calculate_per_class_f1
 from src.mlflow_utils import (
     end_mlflow_run,
@@ -35,7 +35,7 @@ from src.mlflow_utils import (
     log_mlflow_params,
     start_mlflow_run,
 )
-from src.training_helpers import load_json, save_json, to_project_relative_path
+from src.training_helpers import load_json, load_torch_checkpoint, save_json, to_project_relative_path
 
 DEFAULT_CHECKPOINTS = [
     ROOT_DIR / "outputs" / "models" / "convnext_nano" / "convnext_nano_best.pt",
@@ -63,7 +63,7 @@ def parse_args() -> argparse.Namespace:
         "--weighting",
         choices=["uniform", "val_f1"],
         default="uniform",
-        help="uniform: equal weights; val_f1: weights from checkpoint macro-F1.",
+        help="uniform: equal weights, val_f1: weights from checkpoint macro-F1",
     )
     parser.add_argument(
         "--weights",
@@ -91,7 +91,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def load_checkpoint(path: Path) -> dict:
-    return torch.load(path, map_location="cpu", weights_only=False)
+    return load_torch_checkpoint(path, map_location="cpu", weights_only=False)
 
 
 def build_convnext_nano(num_classes: int) -> nn.Module:
@@ -212,7 +212,7 @@ def normalize_weights(weights: list[float]) -> list[float]:
 
 def calculate_metrics(y_true: np.ndarray, probs: np.ndarray, num_classes: int) -> dict:
     y_pred = probs.argmax(axis=1)
-    label_mapping = load_label_mapping()
+    label_mapping = load_english_label_mapping()
     per_class_metrics = calculate_per_class_f1(y_true, y_pred, num_classes)
 
     eps = 1e-12

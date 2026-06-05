@@ -13,7 +13,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from src.device import get_default_device 
 from src.dataloaders import create_dataloaders
-from src.labels import load_label_mapping
+from src.labels import load_english_label_mapping
 from src.mlflow_utils import end_mlflow_run, log_mlflow_artifacts, log_mlflow_metrics, log_mlflow_params, start_mlflow_run
 from src.training_helpers import build_checkpoint, save_json, set_seed, to_project_relative_path
 
@@ -95,7 +95,7 @@ def main():
     best_epoch_metrics = {}
     checkpoint_path = args.output_dir / "convnext_nano_best.pt"
     metrics_path = args.metrics_dir / "convnext_nano_metrics.json"
-    idx_to_class = {str(class_id): label for class_id, label in load_label_mapping().items()}
+    idx_to_class = {str(class_id): label for class_id, label in load_english_label_mapping().items()}
 
     start_mlflow_run(
         "convnext_nano",

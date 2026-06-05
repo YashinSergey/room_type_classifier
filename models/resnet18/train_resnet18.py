@@ -20,7 +20,7 @@ if str(ROOT_DIR) not in sys.path:
 from models.resnet18.resnet18 import build_resnet18
 from src.dataloaders import create_dataloaders
 from src.device import get_default_device
-from src.labels import load_label_mapping
+from src.labels import load_english_label_mapping
 from src.mlflow_utils import end_mlflow_run, log_mlflow_artifacts, log_mlflow_metrics, log_mlflow_params, start_mlflow_run
 from src.metrics import calculate_accuracy, calculate_macro_f1, calculate_per_class_f1
 from src.training_helpers import build_checkpoint, set_seed, to_project_relative_path
@@ -52,7 +52,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--no-save-checkpoint",
         action="store_true",
-        help="Do not save model weights; keep only JSON with F1 metrics",
+        help="Do not save model weights, keep only JSON with F1 metrics",
     )
     parser.add_argument(
         "--early-stopping-patience",
@@ -168,7 +168,7 @@ def validate(
 
 
 def add_label_names(per_class_f1: list[dict[str, object]]) -> list[dict[str, object]]:
-    label_mapping = load_label_mapping()
+    label_mapping = load_english_label_mapping()
     return [
         {
             **item,
@@ -292,7 +292,7 @@ def main() -> None:
     best_epoch_metrics: dict[str, object] = {}
     checkpoint_path = args.output_dir / "resnet18_best.pt"
     checkpoint_json_path = to_project_relative_path(checkpoint_path)
-    idx_to_class = {str(class_id): label for class_id, label in load_label_mapping().items()}
+    idx_to_class = {str(class_id): label for class_id, label in load_english_label_mapping().items()}
     epochs_without_improvement = 0
     stop_reason = "max_epochs"
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import pathlib
 import random
 from pathlib import Path
 from typing import Any
@@ -53,12 +54,43 @@ def load_json(path: Path, default: Any = None) -> Any:
 
 
 def set_seed(seed: int) -> None:
-    """Seed for experiments."""
+    """Seed for experiments"""
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
+
+
+def load_torch_checkpoint(
+    path: Path | str,
+    *,
+    map_location: str | torch.device | None = "cpu",
+    weights_only: bool | None = False,
+) -> Any:
+    """Load torch checkpoint with WindowsPath compatibility"""
+
+    def _load() -> Any:
+        kwargs: dict[str, Any] = {"map_location": map_location}
+        if weights_only is not None:
+            kwargs["weights_only"] = weights_only
+        try:
+            return torch.load(path, **kwargs)
+        except TypeError:
+            kwargs.pop("weights_only", None)
+            return torch.load(path, **kwargs)
+
+    try:
+        return _load()
+    except NotImplementedError as exc:
+        if "WindowsPath" not in str(exc):
+            raise
+        original_windows_path = pathlib.WindowsPath
+        try:
+            pathlib.WindowsPath = pathlib.PosixPath
+            return _load()
+        finally:
+            pathlib.WindowsPath = original_windows_path
 
 
 def build_checkpoint(
@@ -72,7 +104,7 @@ def build_checkpoint(
     checkpoint_path: Path | str | None = None,
     extra: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Checkpoint dict."""
+    """Checkpoint dict"""
     checkpoint: dict[str, Any] = {
         "model_name": model_name,
         "model_state_dict": model.state_dict(),
