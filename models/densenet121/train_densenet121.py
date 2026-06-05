@@ -27,13 +27,13 @@ from src.training_helpers import build_checkpoint, set_seed, to_project_relative
 
 
 
-# Буст-множители весов классов
+# Class-weight boost multipliers
 
 _CLASS_WEIGHT_BOOSTS: dict[int, float] = {
-    2: 3.0, # универсальная комната (низкий recall)
-    4: 0.7, # спальня (слишком жадная)
-    5: 1.5, # кабинет
-    11: 1.5, # гардеробная
+    2: 3.0, # multi-purpose room (low recall)
+    4: 0.7, # bedroom (too dominant)
+    5: 1.5, # study
+    11: 1.5, # walk-in closet
 }
 
 
@@ -51,37 +51,37 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--val-images", type=Path, default=ROOT_DIR / "data" / "raw" / "val_images")
     parser.add_argument("--output-dir", type=Path, default=ROOT_DIR / "outputs" / "models" / "densenet121")
     parser.add_argument("--metrics-dir", type=Path, default=ROOT_DIR / "reports" / "metrics" / "densenet121")
-    parser.add_argument("--no-pretrained", action="store_true", help="Не использовать веса ImageNet")
-    parser.add_argument("--no-class-weights", action="store_true", help="Отключить веса классов в loss")
+    parser.add_argument("--no-pretrained", action="store_true", help="Do not use ImageNet weights")
+    parser.add_argument("--no-class-weights", action="store_true", help="Disable class weights in the loss")
     parser.add_argument(
         "--no-weighted-sampling",
         action="store_true",
-        help="Отключить WeightedRandomSampler для train DataLoader",
+        help="Disable WeightedRandomSampler for the train DataLoader",
     )
     parser.add_argument(
         "--no-save-checkpoint",
         action="store_true",
-        help="Не сохранять веса модели, оставить только JSON с F1-метриками",
+        help="Do not save model weights; keep only JSON with F1 metrics",
     )
-    # 3 stages, как в последних экспериментах
-    parser.add_argument("--epochs-stage1", type=int, default=2, help="Эпох для head-only")
-    parser.add_argument("--epochs-stage2", type=int, default=8, help="Эпох для full fine-tuning")
-    parser.add_argument("--epochs-stage3", type=int, default=5, help="Эпох для дожига")
-    parser.add_argument("--lr-stage1", type=float, default=1e-3, help="LR для head-only")
-    parser.add_argument("--lr-stage2", type=float, default=1e-4, help="LR для full fine-tuning")
-    parser.add_argument("--lr-stage3", type=float, default=3e-5, help="LR для дожига")
-    parser.add_argument("--label-smoothing", type=float, default=0.1, help="Label smoothing для CrossEntropyLoss")
+    # 3 stages, as in the latest experiments
+    parser.add_argument("--epochs-stage1", type=int, default=2, help="Epochs for head-only training")
+    parser.add_argument("--epochs-stage2", type=int, default=8, help="Epochs for full fine-tuning")
+    parser.add_argument("--epochs-stage3", type=int, default=5, help="Epochs for final fine-tuning")
+    parser.add_argument("--lr-stage1", type=float, default=1e-3, help="LR for head-only training")
+    parser.add_argument("--lr-stage2", type=float, default=1e-4, help="LR for full fine-tuning")
+    parser.add_argument("--lr-stage3", type=float, default=3e-5, help="LR for final fine-tuning")
+    parser.add_argument("--label-smoothing", type=float, default=0.1, help="Label smoothing for CrossEntropyLoss")
     parser.add_argument(
         "--early-stopping-patience",
         type=int,
         default=3,
-        help="Сколько эпох ждать улучшения macro-F1, 0 = не останавливать",
+        help="How many epochs to wait for macro-F1 improvement, 0 = never stop",
     )
     parser.add_argument(
         "--early-stopping-min-delta",
         type=float,
         default=1e-4,
-        help="Минимальный прирост macro-F1, который считается улучшением",
+        help="Minimum macro-F1 increase counted as an improvement",
     )
     return parser.parse_args()
 
@@ -95,7 +95,7 @@ def validate_paths(args: argparse.Namespace) -> None:
     }
     missing = [f"{name}: {path}" for name, path in paths.items() if not path.exists()]
     if missing:
-        raise FileNotFoundError("Не найдены входные файлы/папки:\n" + "\n".join(missing))
+        raise FileNotFoundError("Input files/directories not found:\n" + "\n".join(missing))
 
 
 def get_class_weights(csv_path: Path, num_classes: int, device: torch.device) -> torch.Tensor:
@@ -289,7 +289,7 @@ def _run_stage(
     history: list[dict] = []
 
     print(f"\n{'='*60}")
-    print(f"Этап {stage_name}: {num_epochs} эпох, lr={optimizer.param_groups[0]['lr']:.2e}")
+    print(f"Stage {stage_name}: {num_epochs} epochs, lr={optimizer.param_groups[0]['lr']:.2e}")
     print(f"{'='*60}")
 
     for local_epoch in range(1, num_epochs + 1):
@@ -395,19 +395,19 @@ def _run_stage(
         if early_stopping_patience > 0 and epochs_without_improvement >= early_stopping_patience:
             stop_reason = "early_stopping"
             print(
-                f"  early stopping: macro_f1 не улучшался {early_stopping_patience} эпох, "
+                f"  early stopping: macro_f1 did not improve for {early_stopping_patience} epochs, "
                 f"best={best_macro_f1:.4f}"
             )
             break
 
-    print(f"Этап {stage_name} завершён. best_macro_f1={best_macro_f1:.4f}")
+    print(f"Stage {stage_name} finished. best_macro_f1={best_macro_f1:.4f}")
     return best_macro_f1, best_epoch, best_epoch_metrics, stop_reason, history
 
 
 def main() -> None:
     args = parse_args()
     if args.epochs_stage1 < 1 or args.epochs_stage2 < 1 or args.epochs_stage3 < 1:
-        raise ValueError("Все --epochs-stage* должны быть >= 1")
+        raise ValueError("All --epochs-stage* values must be >= 1")
     total_epochs = args.epochs_stage1 + args.epochs_stage2 + args.epochs_stage3
 
     validate_paths(args)
@@ -648,7 +648,7 @@ def main() -> None:
 
     print(f"\nbest_macro_f1={best_macro_f1:.4f}")
     if args.no_save_checkpoint:
-        print("checkpoint=не сохранялся")
+        print("checkpoint=not saved")
     else:
         print(f"checkpoint={finetune_checkpoint}")
     print(f"metrics={metrics_path}")

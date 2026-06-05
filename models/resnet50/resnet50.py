@@ -53,7 +53,7 @@ def validate_paths(args: argparse.Namespace) -> None:
     }
     missing = [f"{name}: {path}" for name, path in paths.items() if not path.exists()]
     if missing:
-        raise FileNotFoundError("Не найдены входные файлы/папки:\n" + "\n".join(missing))
+        raise FileNotFoundError("Input files/directories not found:\n" + "\n".join(missing))
 
 
 def load_dataset(args: argparse.Namespace):
@@ -172,7 +172,7 @@ def evaluate_and_print_report(model, loader, criterion, device, classes):
     )
     print(report)
 
-    # оставляю для быстрой ручной проверки
+    # kept for a quick manual check
     # print('Confusion matrix:')
     # cm = confusion_matrix(all_targets, all_preds)
     # print(cm)

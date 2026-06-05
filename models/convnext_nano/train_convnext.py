@@ -49,7 +49,7 @@ def validate_paths(args):
     }
     missing = [f"{name}: {path}" for name, path in paths.items() if not path.exists()]
     if missing:
-        raise FileNotFoundError("Не найдены входные файлы/папки:\n" + "\n".join(missing))
+        raise FileNotFoundError("Input files/directories not found:\n" + "\n".join(missing))
 
 def main():
     args = parse_args()
@@ -59,7 +59,7 @@ def main():
     set_seed(args.seed)
 
     DEVICE = get_default_device()
-    print(f"Используемое устройство: {DEVICE}")
+    print(f"Using device: {DEVICE}")
 
     train_loader, val_loader = create_dataloaders(
         batch_size=args.batch_size,
@@ -73,9 +73,9 @@ def main():
         seed=args.seed,
     )
 
-    print(f"ИТОГО: Объектов в Train: {len(train_loader.dataset)}")
+    print(f"TOTAL: train objects: {len(train_loader.dataset)}")
 
-    print(f"Инициализация ConvNeXt Nano...")
+    print(f"Initializing ConvNeXt Nano...")
     model = timm.create_model(
         'convnext_nano', 
         pretrained=not args.no_pretrained, 
@@ -88,7 +88,7 @@ def main():
     optimizer = optim.AdamW(model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay)
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='max', factor=0.2, patience=3)
 
-    print(f"Начало обучения на {args.epochs} эпох...")
+    print(f"Starting training for {args.epochs} epochs...")
     
     best_macro_f1 = 0.0
     best_epoch = 0
@@ -118,7 +118,7 @@ def main():
         train_loss = 0.0
         for images, targets in train_loader:
             images, targets = images.to(DEVICE), targets.to(DEVICE)
-            
+
             optimizer.zero_grad()
             outputs = model(images)
             loss = criterion(outputs, targets)
@@ -137,7 +137,7 @@ def main():
             for images, targets in val_loader:
                 images, targets = images.to(DEVICE), targets.to(DEVICE)
                 outputs = model(images)
-                
+
                 loss = criterion(outputs, targets)
                 val_loss += loss.item()
 
@@ -152,7 +152,7 @@ def main():
 
         scheduler.step(macro_f1)
 
-        print(f"Эпоха {epoch+1}/{args.epochs} | Train Loss: {epoch_train_loss:.4f}")
+        print(f"Epoch {epoch+1}/{args.epochs} | Train Loss: {epoch_train_loss:.4f}")
         print(f"Val Loss: {epoch_val_loss:.4f} | Acc: {val_acc:.2f}% | Macro F1: {macro_f1:.4f}")
 
         if macro_f1 > best_macro_f1:
@@ -210,7 +210,7 @@ def main():
                 },
             }
             save_json(metrics, metrics_path)
-            print(f"Найдена лучшая модель (F1: {best_macro_f1:.4f})")
+            print(f"Found the best model (F1: {best_macro_f1:.4f})")
 
         log_mlflow_metrics(
             {

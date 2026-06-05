@@ -37,7 +37,7 @@ def parse_args() -> argparse.Namespace:
 
 def download_checkpoint(checkpoint_path: Path) -> Path:
     if checkpoint_path.exists():
-        print(f"YOLO checkpoint найден: {checkpoint_path}")
+        print(f"YOLO checkpoint found: {checkpoint_path}")
         return checkpoint_path
 
     hf_token = os.getenv("HF_TOKEN") or os.getenv("HUGGINGFACE_HUB_TOKEN")
@@ -48,7 +48,7 @@ def download_checkpoint(checkpoint_path: Path) -> Path:
         local_dir_use_symlinks=False,
         token=hf_token,
     )
-    print(f"YOLO checkpoint скачан: {downloaded_path}")
+    print(f"YOLO checkpoint downloaded: {downloaded_path}")
     return Path(downloaded_path)
 
 
@@ -87,7 +87,7 @@ def run_predictions(model: YOLO, image_paths: list[Path]) -> tuple[list[dict], f
 def write_log(predictions: list[dict], log_path: Path) -> None:
     lines: list[str] = []
     for prediction in predictions:
-        lines.append(f"\nФайл: {prediction['image']}")
+        lines.append(f"\nFile: {prediction['image']}")
         for item in prediction["top_predictions"]:
             lines.append(f"\t{item['class_name']}: {item['confidence']:.3f}")
 
@@ -233,11 +233,11 @@ def main() -> int:
     end_mlflow_run()
 
     print(f"YOLO checkpoint: {to_project_relative_path(checkpoint_path)}")
-    print(f"Изображений: {len(image_paths)}")
-    print(f"Загрузка модели: {load_time:.2f}с")
-    print(f"Предсказания: {predict_time:.2f}с")
-    print(f"Лог: {to_project_relative_path(log_path)}")
-    print(f"Метрики: {to_project_relative_path(metrics_path)}")
+    print(f"Images: {len(image_paths)}")
+    print(f"Model loading: {load_time:.2f}s")
+    print(f"Predictions: {predict_time:.2f}s")
+    print(f"Log: {to_project_relative_path(log_path)}")
+    print(f"Metrics: {to_project_relative_path(metrics_path)}")
     print(f"Project checkpoint: {to_project_relative_path(project_checkpoint)}")
     return 0
 
