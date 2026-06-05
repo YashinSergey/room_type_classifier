@@ -53,7 +53,7 @@ def load_json(path: Path, default: Any = None) -> Any:
 
 
 def set_seed(seed: int) -> None:
-    """Seed для экспериментов."""
+    """Seed for experiments."""
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)

@@ -42,12 +42,12 @@ def parse_args() -> argparse.Namespace:
         "--output",
         type=Path,
         default=PROJECT_ROOT / "reports" / "model_comparison.csv",
-        help="Куда сохранить CSV с таблицей сравнения",
+        help="Where to save the comparison table CSV",
     )
     parser.add_argument(
         "--all-runs",
         action="store_true",
-        help="Сохранить все запуски, а не только лучший запуск каждой модели",
+        help="Save all runs, not only the best run for each model",
     )
     return parser.parse_args()
 
@@ -56,7 +56,7 @@ def _load_mlflow():
     try:
         import mlflow
     except ImportError as exc:
-        raise RuntimeError("MLflow не установлен. Выполните `just install-tracking`") from exc
+        raise RuntimeError("MLflow is not installed. Run `just install-tracking`") from exc
     return mlflow
 
 
@@ -182,7 +182,7 @@ def main() -> int:
     args = parse_args()
     output_path = resolve_project_path(args.output)
     if output_path is None:
-        raise ValueError("--output не должен быть пустым")
+        raise ValueError("--output must not be empty")
 
     rows = load_rows(all_runs=args.all_runs)
     save_csv(rows, output_path)
@@ -190,7 +190,7 @@ def main() -> int:
     print(f"rows={len(rows)}")
     print(f"output={to_project_relative_path(output_path)}")
     if not rows:
-        print("В MLflow пока нет запусков обучающих моделей")
+        print("MLflow has no training runs yet")
     return 0
 
 

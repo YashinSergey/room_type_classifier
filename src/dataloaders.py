@@ -46,7 +46,7 @@ def create_dataloaders(
         transform=get_train_transforms(image_size=image_size)
     )
 
-    # validation без random augmentations
+    # validation without random augmentations
     val_dataset = RoomTypeDataset(
         csv_path=val_csv_path,
         image_root=val_image_root,

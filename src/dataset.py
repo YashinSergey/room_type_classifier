@@ -21,7 +21,7 @@ class RoomTypeDataset(Dataset):
         self.target_col = target_col
         self.df = pd.read_csv(csv_path)
 
-        # processed csv хранит image_path относительно data/raw
+        # processed CSV stores image_path relative to data/raw
         self.raw_root = os.path.dirname(image_root)
         if filter_can_predict and "can_predict" in self.df.columns:
             self.df = self.df[self.df["can_predict"]].reset_index(drop=True)
@@ -32,7 +32,7 @@ class RoomTypeDataset(Dataset):
             missing_count = int((~exists_mask).sum())
             if missing_count:
                 warnings.warn(
-                    f"Пропущено строк без локального изображения: {missing_count}",
+                    f"Skipped rows without a local image: {missing_count}",
                     stacklevel=2,
                 )
                 self.df = self.df.loc[exists_mask].reset_index(drop=True)

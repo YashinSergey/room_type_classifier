@@ -12,6 +12,27 @@ DEFAULT_LABEL_CSV_PATHS = [
     ROOT_DIR / "data" / "raw" / "val_df.csv",
 ]
 DEFAULT_CLASS_MAPPING_PATH = ROOT_DIR / "data" / "processed" / "class_mapping.json"
+DEFAULT_ROOM_TYPE_LABELS = {
+    0: "kitchen / dining room",
+    1: "kitchen-living room",
+    2: "multi-purpose room",
+    3: "living room",
+    4: "bedroom",
+    5: "study",
+    6: "children's room",
+    7: "bathroom",
+    8: "toilet",
+    9: "combined bathroom",
+    10: "hallway / entryway",
+    11: "walk-in closet / pantry / laundry",
+    12: "balcony / loggia",
+    13: "view from window / balcony",
+    14: "building exterior / yard",
+    15: "entrance / stair landing",
+    16: "other",
+    17: "interior items / home appliances",
+    18: "unfurnished room",
+}
 
 
 def load_label_mapping(
@@ -39,7 +60,7 @@ def load_label_mapping(
         except ValueError:
             continue
     if not frames:
-        return {}
+        return DEFAULT_ROOM_TYPE_LABELS.copy()
 
     labels = pd.concat(frames, ignore_index=True)
     labels = labels.dropna(subset=["result", "label"])
@@ -47,4 +68,8 @@ def load_label_mapping(
     if old_to_new is not None:
         labels = labels[labels["result"].isin(old_to_new)].copy()
         labels["result"] = labels["result"].map(old_to_new).astype(int)
-    return labels.groupby("result")["label"].agg(lambda values: values.mode().iat[0]).to_dict()
+    result_ids = labels["result"].unique()
+    return {
+        int(result_id): DEFAULT_ROOM_TYPE_LABELS.get(int(result_id), f"class_{int(result_id)}")
+        for result_id in result_ids
+    }
