@@ -20,6 +20,7 @@ if str(PROJECT_ROOT) not in sys.path:
 from src.dataloaders import create_dataloaders
 from src.metrics import calculate_macro_f1
 from src.device import get_default_device
+from src.labels import translate_label_to_english
 from src.mlflow_utils import end_mlflow_run, log_mlflow_artifacts, log_mlflow_metrics, log_mlflow_params, start_mlflow_run
 from src.training_helpers import build_checkpoint, save_json, set_seed, to_project_relative_path
 
@@ -53,7 +54,7 @@ def validate_paths(args: argparse.Namespace) -> None:
     }
     missing = [f"{name}: {path}" for name, path in paths.items() if not path.exists()]
     if missing:
-        raise FileNotFoundError("Не найдены входные файлы/папки:\n" + "\n".join(missing))
+        raise FileNotFoundError("Input files/directories not found:\n" + "\n".join(missing))
 
 
 def load_dataset(args: argparse.Namespace):
@@ -172,7 +173,7 @@ def evaluate_and_print_report(model, loader, criterion, device, classes):
     )
     print(report)
 
-    # оставляю для быстрой ручной проверки
+    # kept for a quick manual check
     # print('Confusion matrix:')
     # cm = confusion_matrix(all_targets, all_preds)
     # print(cm)
@@ -223,7 +224,10 @@ def train_model(
                         extra={
                             "num_classes": len(classes),
                             "image_size": args.image_size,
-                            "idx_to_class": {str(i): class_name for i, class_name in enumerate(classes)},
+                            "idx_to_class": {
+                                str(i): translate_label_to_english(class_name)
+                                for i, class_name in enumerate(classes)
+                            },
                         },
                     ),
                     checkpoint_path,

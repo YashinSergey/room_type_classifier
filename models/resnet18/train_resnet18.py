@@ -20,7 +20,7 @@ if str(ROOT_DIR) not in sys.path:
 from models.resnet18.resnet18 import build_resnet18
 from src.dataloaders import create_dataloaders
 from src.device import get_default_device
-from src.labels import load_label_mapping
+from src.labels import load_english_label_mapping
 from src.mlflow_utils import end_mlflow_run, log_mlflow_artifacts, log_mlflow_metrics, log_mlflow_params, start_mlflow_run
 from src.metrics import calculate_accuracy, calculate_macro_f1, calculate_per_class_f1
 from src.training_helpers import build_checkpoint, set_seed, to_project_relative_path
@@ -35,36 +35,36 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--image-size", type=int, default=224)
     parser.add_argument("--learning-rate", type=float, default=1e-4)
     parser.add_argument("--weight-decay", type=float, default=1e-4)
-    parser.add_argument("--seed", type=int, default=42, help="Seed для воспроизводимого обучения")
+    parser.add_argument("--seed", type=int, default=42, help="Seed for reproducible training")
     parser.add_argument("--train-csv", type=Path, default=ROOT_DIR / "data" / "processed" / "train_df.csv")
     parser.add_argument("--val-csv", type=Path, default=ROOT_DIR / "data" / "processed" / "val_df.csv")
     parser.add_argument("--train-images", type=Path, default=ROOT_DIR / "data" / "raw" / "train_images")
     parser.add_argument("--val-images", type=Path, default=ROOT_DIR / "data" / "raw" / "val_images")
     parser.add_argument("--output-dir", type=Path, default=ROOT_DIR / "outputs" / "models" / "resnet18")
     parser.add_argument("--metrics-dir", type=Path, default=ROOT_DIR / "reports" / "metrics" / "resnet18")
-    parser.add_argument("--no-pretrained", action="store_true", help="Не использовать веса ImageNet")
-    parser.add_argument("--no-class-weights", action="store_true", help="Отключить веса классов в loss")
+    parser.add_argument("--no-pretrained", action="store_true", help="Do not use ImageNet weights")
+    parser.add_argument("--no-class-weights", action="store_true", help="Disable class weights in the loss")
     parser.add_argument(
         "--no-weighted-sampling",
         action="store_true",
-        help="Отключить WeightedRandomSampler для train DataLoader",
+        help="Disable WeightedRandomSampler for the train DataLoader",
     )
     parser.add_argument(
         "--no-save-checkpoint",
         action="store_true",
-        help="Не сохранять веса модели, оставить только JSON с F1-метриками",
+        help="Do not save model weights, keep only JSON with F1 metrics",
     )
     parser.add_argument(
         "--early-stopping-patience",
         type=int,
         default=3,
-        help="Сколько эпох ждать улучшения macro-F1 перед остановкой, 0 = не останавливать",
+        help="How many epochs to wait for macro-F1 improvement before stopping, 0 = never stop",
     )
     parser.add_argument(
         "--early-stopping-min-delta",
         type=float,
         default=1e-4,
-        help="Минимальный прирост macro-F1, который считается улучшением",
+        help="Minimum macro-F1 increase counted as an improvement",
     )
     return parser.parse_args()
 
@@ -78,7 +78,7 @@ def validate_paths(args: argparse.Namespace) -> None:
     }
     missing = [f"{name}: {path}" for name, path in paths.items() if not path.exists()]
     if missing:
-        raise FileNotFoundError("Не найдены входные файлы/папки:\n" + "\n".join(missing))
+        raise FileNotFoundError("Input files/directories not found:\n" + "\n".join(missing))
 
 
 def get_class_weights(csv_path: Path, num_classes: int, device: torch.device) -> torch.Tensor:
@@ -168,7 +168,7 @@ def validate(
 
 
 def add_label_names(per_class_f1: list[dict[str, object]]) -> list[dict[str, object]]:
-    label_mapping = load_label_mapping()
+    label_mapping = load_english_label_mapping()
     return [
         {
             **item,
@@ -229,7 +229,7 @@ def save_metrics_report(metrics: dict[str, object], metrics_dir: Path) -> tuple[
 def main() -> None:
     args = parse_args()
     if args.epochs < 1:
-        raise ValueError("--epochs должен быть >= 1")
+        raise ValueError("--epochs must be >= 1")
 
     validate_paths(args)
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -292,7 +292,7 @@ def main() -> None:
     best_epoch_metrics: dict[str, object] = {}
     checkpoint_path = args.output_dir / "resnet18_best.pt"
     checkpoint_json_path = to_project_relative_path(checkpoint_path)
-    idx_to_class = {str(class_id): label for class_id, label in load_label_mapping().items()}
+    idx_to_class = {str(class_id): label for class_id, label in load_english_label_mapping().items()}
     epochs_without_improvement = 0
     stop_reason = "max_epochs"
 
@@ -374,7 +374,7 @@ def main() -> None:
         if args.early_stopping_patience > 0 and epochs_without_improvement >= args.early_stopping_patience:
             stop_reason = "early_stopping"
             print(
-                f"early stopping: macro_f1 не улучшался {args.early_stopping_patience} эпох, "
+                f"early stopping: macro_f1 did not improve for {args.early_stopping_patience} epochs, "
                 f"best_macro_f1={best_macro_f1:.4f}"
             )
             break
@@ -433,7 +433,7 @@ def main() -> None:
 
     print(f"best_macro_f1={best_macro_f1:.4f}")
     if args.no_save_checkpoint:
-        print("checkpoint=не сохранялся")
+        print("checkpoint=not saved")
     else:
         print(f"checkpoint={checkpoint_path}")
     print(f"metrics={metrics_path}")

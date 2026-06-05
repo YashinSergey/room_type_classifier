@@ -16,8 +16,9 @@ ROOT_DIR = Path(__file__).resolve().parents[2]
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-from src.labels import load_label_mapping
+from src.labels import load_english_label_mapping
 from src.device import get_default_device
+from src.training_helpers import load_torch_checkpoint
 from src.transforms import get_val_transforms
 
 
@@ -57,7 +58,7 @@ def build_model(variant: str, num_classes: int) -> torch.nn.Module:
 
 
 def get_sample_from_split(split: str, sample_index: int) -> tuple[Path, int | None]:
-    """Sample from raw train/val csv."""
+    """Sample from raw train/val csv"""
     csv_path = ROOT_DIR / "data" / "raw" / f"{split}_df.csv"
     image_root = ROOT_DIR / "data" / "raw" / f"{split}_images"
     df = pd.read_csv(csv_path)
@@ -80,7 +81,7 @@ def main() -> None:
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
     device = get_default_device()
-    checkpoint = torch.load(args.checkpoint, map_location=device, weights_only=False)
+    checkpoint = load_torch_checkpoint(args.checkpoint, map_location=device, weights_only=False)
     variant = checkpoint.get("variant", "b0")
     num_classes = int(checkpoint.get("num_classes", 20))
     image_size = int(checkpoint.get("image_size", get_default_image_size(variant)))
@@ -120,7 +121,7 @@ def main() -> None:
     rgb_image = np.asarray(image.resize((image_size, image_size))).astype(np.float32) / 255.0
     visualization = show_cam_on_image(rgb_image, grayscale_cam, use_rgb=True)
 
-    labels = load_label_mapping()
+    labels = load_english_label_mapping()
     stem = f"{image_path.stem}_{variant}_target_{target_class}"
     output_path = args.output_dir / f"{stem}_grad_cam.jpg"
     metadata_path = args.output_dir / f"{stem}_metadata.json"

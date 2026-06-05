@@ -41,7 +41,7 @@ def _load_mlflow():
     try:
         import mlflow
     except ImportError as exc:
-        raise RuntimeError("MLflow не установлен. Выполните `just install-tracking`") from exc
+        raise RuntimeError("MLflow is not installed. Run `just install-tracking`") from exc
     return mlflow
 
 
@@ -121,7 +121,7 @@ def main() -> int:
         rows = [row for row in rows if row["model"] in selected]
 
     if not rows:
-        print("Нет подходящих MLflow run'ов. Проверьте авторизацию: just dagshub-login")
+        print("No matching MLflow runs found. Check authorization: just dagshub-login")
         return 1
 
     downloaded = 0

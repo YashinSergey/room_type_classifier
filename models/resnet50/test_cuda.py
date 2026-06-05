@@ -1,6 +1,6 @@
 import torch
 
-# Проверка подключения GPU
+# GPU connection check
 print(torch.__version__)
 print(torch.cuda.is_available())
 print(torch.cuda.device_count())

@@ -7,7 +7,7 @@ from typing import Any
 
 import torch
 
-from src.training_helpers import PROJECT_ROOT, resolve_project_path
+from src.training_helpers import PROJECT_ROOT, load_torch_checkpoint, resolve_project_path
 
 
 CLASSIFIER_METRIC_KEYS = {"best_macro_f1", "checkpoint"}
@@ -31,7 +31,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def is_absolute_path(value: str) -> bool:
-    """Unix or Windows absolute path."""
+    """Unix or Windows absolute path"""
     return Path(value).is_absolute() or PureWindowsPath(value).is_absolute()
 
 
@@ -77,11 +77,8 @@ def validate_metrics(path: Path, errors: list[str]) -> None:
 
 
 def load_checkpoint(path: Path) -> dict[str, Any]:
-    """torch.load wrapper."""
-    try:
-        return torch.load(path, map_location="cpu", weights_only=False)
-    except TypeError:
-        return torch.load(path, map_location="cpu")
+    """Load checkpoint"""
+    return load_torch_checkpoint(path, map_location="cpu", weights_only=False)
 
 
 def validate_checkpoint(path: Path, errors: list[str]) -> None:

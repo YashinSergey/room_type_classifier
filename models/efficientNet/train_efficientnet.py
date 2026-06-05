@@ -23,7 +23,7 @@ if str(ROOT_DIR) not in sys.path:
 
 from src.dataloaders import create_dataloaders
 from src.device import get_default_device
-from src.labels import load_label_mapping
+from src.labels import load_english_label_mapping
 from src.mlflow_utils import end_mlflow_run, log_mlflow_artifacts, log_mlflow_metrics, log_mlflow_params, start_mlflow_run
 from src.metrics import calculate_accuracy, calculate_macro_f1, calculate_per_class_f1
 from src.training_helpers import build_checkpoint, to_project_relative_path
@@ -56,54 +56,54 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--use-weighted-sampling",
         action="store_false",
-        help="Использовать WeightedRandomSampler для балансировки train DataLoader",
+        help="Use WeightedRandomSampler to balance the train DataLoader",
     )
     parser.add_argument(
         "--log-every",
         type=int,
         default=0,
-        help="Печатать прогресс обучения каждые N батчей (0 = выключено).",
+        help="Print training progress every N batches (0 = disabled).",
     )
     parser.add_argument(
         "--early-stopping-patience",
         type=int,
         default=0,
-        help="Сколько эпох без улучшения macro-F1 на val до остановки (0 = выключено).",
+        help="How many epochs without validation macro-F1 improvement before stopping (0 = disabled).",
     )
     parser.add_argument(
         "--early-stopping-min-delta",
         type=float,
         default=1e-4,
-        help="Минимальный прирост macro-F1, чтобы считать эпоху улучшением",
+        help="Minimum macro-F1 increase required to count an epoch as improved",
     )
     parser.add_argument(
         "--lr-scheduler",
         choices=["none", "plateau"],
         default="none",
-        help="После эпохи: none или ReduceLROnPlateau по val_loss",
+        help="After each epoch: none or ReduceLROnPlateau on val_loss",
     )
     parser.add_argument(
         "--plateau-patience",
         type=int,
         default=3,
-        help="Параметр patience у ReduceLROnPlateau (эпох без снижения val_loss).",
+        help="ReduceLROnPlateau patience parameter (epochs without val_loss decrease).",
     )
     parser.add_argument(
         "--plateau-factor",
         type=float,
         default=0.1,
-        help="Множитель lr при срабатывании ReduceLROnPlateau.",
+        help="LR multiplier when ReduceLROnPlateau triggers.",
     )
     parser.add_argument(
         "--plateau-min-lr",
         type=float,
         default=1e-7,
-        help="Нижняя граница lr для ReduceLROnPlateau.",
+        help="Lower LR bound for ReduceLROnPlateau.",
     )
     parser.add_argument(
         "--no-save-checkpoint",
         action="store_true",
-        help="Не сохранять веса модели, оставить только JSON с метриками.",
+        help="Do not save model weights, keep only JSON with metrics",
     )
     return parser.parse_args()
 
@@ -271,7 +271,7 @@ def main() -> None:
 
     device = get_default_device()
     print(f"Using device: {device}")
-    label_mapping = load_label_mapping()
+    label_mapping = load_english_label_mapping()
     idx_to_class = {str(class_id): label for class_id, label in label_mapping.items()}
     
     train_loader, val_loader = create_dataloaders(
@@ -429,8 +429,8 @@ def main() -> None:
         if args.early_stopping_patience > 0 and epochs_without_improvement >= args.early_stopping_patience:
             stop_reason = "early_stopping"
             print(
-                f"Ранняя остановка, т.к. нет улучшения macro-F1 > {best_macro_f1:.4f} "
-                f"на {args.early_stopping_patience} эпох (min_delta={args.early_stopping_min_delta})"
+                f"Early stopping because there is no macro-F1 improvement > {best_macro_f1:.4f} "
+                f"for {args.early_stopping_patience} epochs (min_delta={args.early_stopping_min_delta})"
             )
             break
 
@@ -511,7 +511,7 @@ def main() -> None:
     print(f"best_macro_f1={best_macro_f1:.4f}")
     print_per_class_f1(best_per_class_f1)
     if args.no_save_checkpoint:
-        print("checkpoint=не сохранялся")
+        print("checkpoint=not saved")
     else:
         print(f"checkpoint={checkpoint_path}")
     print(f"metrics={metrics_path}")

@@ -27,20 +27,20 @@ DEFAULT_WEIGHTS = [0.34349677767909004, 0.3383500954431325, 0.3181531268777774]
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Сделать submission ансамблем моделей")
+    parser = argparse.ArgumentParser(description="Generate a submission with a model ensemble")
     parser.add_argument(
         "--checkpoints",
         type=Path,
         nargs="+",
         default=[path for path in DEFAULT_CHECKPOINTS if path.exists()],
-        help="Пути к checkpoint-файлам моделей.",
+        help="Paths to model checkpoint files.",
     )
     parser.add_argument(
         "--weights",
         type=float,
         nargs="+",
         default=DEFAULT_WEIGHTS,
-        help="Веса моделей в том же порядке, что и --checkpoints.",
+        help="Model weights in the same order as --checkpoints.",
     )
     parser.add_argument("--test-csv", type=Path, default=ROOT_DIR / "data" / "processed" / "test_df.csv")
     parser.add_argument("--test-images", type=Path, default=ROOT_DIR / "data" / "raw" / "test_images")
@@ -49,7 +49,7 @@ def parse_args() -> argparse.Namespace:
         "--details-output",
         type=Path,
         default=None,
-        help="Опциональный CSV с confidence по каждой строке. По умолчанию не сохраняется.",
+        help="Optional per-row confidence CSV. Not saved by default.",
     )
     parser.add_argument(
         "--summary-output",
@@ -86,7 +86,7 @@ def get_missing_image_ids(test_df: pd.DataFrame, test_images_dir: Path) -> list[
 
 def download_missing_images(test_df: pd.DataFrame, test_images_dir: Path, timeout: int) -> int:
     if "image" not in test_df.columns:
-        raise ValueError("В test_csv нет колонки 'image' для скачивания недостающих картинок")
+        raise ValueError("test_csv has no 'image' column for downloading missing images")
 
     test_images_dir.mkdir(parents=True, exist_ok=True)
     downloaded_count = 0
@@ -100,7 +100,7 @@ def download_missing_images(test_df: pd.DataFrame, test_images_dir: Path, timeou
 
         image_url = row.get("image")
         if pd.isna(image_url) or not str(image_url).strip():
-            raise ValueError(f"Нет локальной картинки и нет url в колонке image для image_id_ext={image_id}")
+            raise ValueError(f"No local image and no URL in the image column for image_id_ext={image_id}")
 
         response = requests.get(str(image_url).strip(), timeout=timeout)
         response.raise_for_status()
@@ -121,8 +121,8 @@ def prepare_test_images(test_df: pd.DataFrame, test_images_dir: Path, timeout: i
     if missing_after:
         sample = ", ".join(missing_after[:20])
         more_count = len(missing_after) - 20
-        suffix = f" и еще {more_count}" if more_count > 0 else ""
-        raise FileNotFoundError("После скачивания все еще не найдены картинки: " + sample + suffix)
+        suffix = f" and {more_count}" if more_count > 0 else ""
+        raise FileNotFoundError("Images are still missing after download: " + sample + suffix)
 
     return downloaded_count
 
@@ -198,13 +198,13 @@ def write_details(path: Path, image_ids: list[str], preds: np.ndarray, confidenc
 def main() -> int:
     args = parse_args()
     if not args.checkpoints:
-        raise ValueError("Не найдено ни одного checkpoint-файла")
+        raise ValueError("No checkpoint files found")
     if len(args.weights) != len(args.checkpoints):
-        raise ValueError("Количество --weights должно совпадать с количеством --checkpoints")
+        raise ValueError("The number of --weights must match the number of --checkpoints")
 
     missing_checkpoints = [str(path) for path in args.checkpoints if not path.exists()]
     if missing_checkpoints:
-        raise FileNotFoundError("Не найдены checkpoint-файлы: " + ", ".join(missing_checkpoints))
+        raise FileNotFoundError("Checkpoint files not found: " + ", ".join(missing_checkpoints))
 
     test_df = pd.read_csv(args.test_csv)
     full_image_ids = test_df["image_id_ext"].astype(str).tolist()
@@ -224,7 +224,7 @@ def main() -> int:
         if base_image_ids is None:
             base_image_ids = image_ids
         elif base_image_ids != image_ids:
-            raise ValueError("Порядок test-объектов отличается между моделями")
+            raise ValueError("Test object order differs between models")
 
     ensemble_probs = np.zeros_like(all_probs[0], dtype=float)
     for weight, probs in zip(weights, all_probs, strict=True):
@@ -237,8 +237,8 @@ def main() -> int:
     if image_ids != full_image_ids:
         missing_predictions = sorted(set(full_image_ids) - set(image_ids))
         if missing_predictions:
-            raise ValueError("Не получены предсказания для test-строк: " + ", ".join(missing_predictions[:20]))
-        raise ValueError("Порядок test-строк в submission не совпал с test_csv")
+            raise ValueError("No predictions were produced for test rows: " + ", ".join(missing_predictions[:20]))
+        raise ValueError("Test row order in submission does not match test_csv")
 
     write_submission(args.output, full_image_ids, preds)
     if args.details_output is not None:

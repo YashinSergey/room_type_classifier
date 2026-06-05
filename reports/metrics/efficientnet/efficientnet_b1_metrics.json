@@ -9,115 +9,115 @@
       "class_id": 0,
       "f1": 0.7894736842105263,
       "support": 34,
-      "label": "кухня / столовая"
+      "label": "kitchen / dining room"
     },
     {
       "class_id": 1,
       "f1": 0.4166666666666667,
       "support": 15,
-      "label": "кухня-гостиная"
+      "label": "kitchen-living room"
     },
     {
       "class_id": 2,
       "f1": 0.425531914893617,
       "support": 23,
-      "label": "универсальная комната"
+      "label": "multi-purpose room"
     },
     {
       "class_id": 3,
       "f1": 0.6666666666666666,
       "support": 30,
-      "label": "гостиная"
+      "label": "living room"
     },
     {
       "class_id": 4,
       "f1": 0.7719298245614035,
       "support": 24,
-      "label": "спальня"
+      "label": "bedroom"
     },
     {
       "class_id": 5,
       "f1": 0.6976744186046512,
       "support": 21,
-      "label": "кабинет"
+      "label": "study"
     },
     {
       "class_id": 6,
       "f1": 0.5925925925925926,
       "support": 31,
-      "label": "детская"
+      "label": "children's room"
     },
     {
       "class_id": 7,
       "f1": 0.8695652173913043,
       "support": 23,
-      "label": "ванная комната"
+      "label": "bathroom"
     },
     {
       "class_id": 8,
       "f1": 0.76,
       "support": 28,
-      "label": "туалет"
+      "label": "toilet"
     },
     {
       "class_id": 9,
       "f1": 0.7936507936507936,
       "support": 30,
-      "label": "совмещенный санузел"
+      "label": "combined bathroom"
     },
     {
       "class_id": 10,
       "f1": 0.8214285714285714,
       "support": 28,
-      "label": "коридор / прихожая"
+      "label": "hallway / entryway"
     },
     {
       "class_id": 11,
       "f1": 0.6530612244897959,
       "support": 23,
-      "label": "гардеробная / кладовая / постирочная"
+      "label": "walk-in closet / pantry / laundry"
     },
     {
       "class_id": 12,
       "f1": 0.8372093023255814,
       "support": 22,
-      "label": "балкон / лоджия"
+      "label": "balcony / loggia"
     },
     {
       "class_id": 13,
       "f1": 0.9090909090909091,
       "support": 21,
-      "label": "вид из окна / с балкона"
+      "label": "view from window / balcony"
     },
     {
       "class_id": 14,
       "f1": 0.8333333333333334,
       "support": 21,
-      "label": "дом снаружи / двор"
+      "label": "building exterior / yard"
     },
     {
       "class_id": 15,
       "f1": 0.8852459016393442,
       "support": 31,
-      "label": "подъезд / лестничная площадка"
+      "label": "entrance / stair landing"
     },
     {
       "class_id": 16,
       "f1": 0.7307692307692307,
       "support": 28,
-      "label": "другое"
+      "label": "other"
     },
     {
       "class_id": 17,
       "f1": 0.4,
       "support": 23,
-      "label": "предметы интерьера / быт.техника"
+      "label": "interior items / home appliances"
     },
     {
       "class_id": 18,
       "f1": 0.9130434782608695,
       "support": 21,
-      "label": "комната без мебели"
+      "label": "unfurnished room"
     }
   ],
   "checkpoint": "outputs/models/efficientnet/efficientnet_b1_best.pt",
@@ -132,115 +132,115 @@
           "class_id": 0,
           "f1": 0.6428571428571429,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.23255813953488372,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.2,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.36363636363636365,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.576271186440678,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.47368421052631576,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.7142857142857143,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.7333333333333333,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.6451612903225806,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.6071428571428571,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.5217391304347826,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.5660377358490566,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8636363636363636,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8235294117647058,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.676923076923077,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.13333333333333333,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.07692307692307693,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.7317073170731707,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 0.0001
@@ -255,115 +255,115 @@
           "class_id": 0,
           "f1": 0.7012987012987013,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.30303030303030304,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.42857142857142855,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.5217391304347826,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.65625,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.5142857142857142,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5454545454545454,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.7727272727272727,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.7659574468085106,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.782608695652174,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.676923076923077,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.6530612244897959,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.7692307692307693,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8837209302325582,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8076923076923077,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.8,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.43243243243243246,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.3157894736842105,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.8695652173913043,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 0.0001
@@ -378,115 +378,115 @@
           "class_id": 0,
           "f1": 0.7435897435897436,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.3870967741935484,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.4117647058823529,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.59375,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7333333333333333,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.631578947368421,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.6538461538461539,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.7346938775510204,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.7692307692307693,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.7368421052631579,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.7333333333333333,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.64,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.7843137254901961,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8444444444444444,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8235294117647058,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.8070175438596491,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.5714285714285714,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.29411764705882354,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.8571428571428571,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 0.0001
@@ -501,115 +501,115 @@
           "class_id": 0,
           "f1": 0.7368421052631579,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.3870967741935484,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.3684210526315789,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.5964912280701754,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7419354838709677,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.631578947368421,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.6296296296296297,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.7916666666666666,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.7272727272727273,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.6909090909090909,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.7636363636363637,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.7037037037037037,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.7755102040816326,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8837209302325582,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8333333333333334,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.9375,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.6222222222222222,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.2857142857142857,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.8936170212765957,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 0.0001
@@ -624,115 +624,115 @@
           "class_id": 0,
           "f1": 0.717948717948718,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.42424242424242425,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.3333333333333333,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.5,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7457627118644068,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6666666666666666,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.6181818181818182,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.8181818181818182,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.75,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.8307692307692308,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.7777777777777778,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.5769230769230769,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.8,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8837209302325582,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.9180327868852459,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.6808510638297872,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.29411764705882354,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.8936170212765957,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 0.0001
@@ -747,115 +747,115 @@
           "class_id": 0,
           "f1": 0.7297297297297297,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.2962962962962963,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.27906976744186046,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.5806451612903226,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7241379310344828,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6111111111111112,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5964912280701754,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.8181818181818182,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.7272727272727273,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.7457627118644068,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.7924528301886793,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.6181818181818182,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.8085106382978723,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8837209302325582,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8163265306122449,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.8923076923076924,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.6521739130434783,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.23529411764705882,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.8936170212765957,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 0.0001
@@ -870,115 +870,115 @@
           "class_id": 0,
           "f1": 0.759493670886076,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.37037037037037035,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.37209302325581395,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.5862068965517241,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.75,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6486486486486487,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5964912280701754,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.8085106382978723,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.7450980392156863,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.7540983606557377,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.7666666666666667,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.6,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.7916666666666666,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8837209302325582,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8163265306122449,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.9,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.6808510638297872,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.35294117647058826,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.8936170212765957,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 0.0001
@@ -993,115 +993,115 @@
           "class_id": 0,
           "f1": 0.7671232876712328,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.4375,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.3137254901960784,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.5925925925925926,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7586206896551724,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6666666666666666,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.6181818181818182,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.8181818181818182,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.7636363636363637,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.7666666666666667,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.7796610169491526,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.6274509803921569,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.8,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8837209302325582,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8333333333333334,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.8727272727272727,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.723404255319149,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.3333333333333333,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.8571428571428571,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 0.0001
@@ -1116,115 +1116,115 @@
           "class_id": 0,
           "f1": 0.7887323943661971,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.5185185185185185,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.3829787234042553,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6349206349206349,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7241379310344828,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.7441860465116279,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.6037735849056604,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.7916666666666666,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.7368421052631579,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.7058823529411765,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.8,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.6415094339622641,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.8181818181818182,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8888888888888888,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.851063829787234,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.8666666666666667,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.7083333333333334,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.3783783783783784,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.8936170212765957,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 0.0001
@@ -1239,115 +1239,115 @@
           "class_id": 0,
           "f1": 0.7941176470588235,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.5,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.32,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.5185185185185185,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.75,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.65,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5666666666666667,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.8163265306122449,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.72,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.7796610169491526,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.8,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.6666666666666666,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.7916666666666666,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8636363636363636,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.7755102040816326,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.8813559322033898,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.5777777777777777,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.358974358974359,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.9333333333333333,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 0.0001
@@ -1362,115 +1362,115 @@
           "class_id": 0,
           "f1": 0.7631578947368421,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.35714285714285715,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.4186046511627907,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6557377049180327,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7096774193548387,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6829268292682927,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5769230769230769,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.8333333333333334,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.7368421052631579,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.7017543859649122,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.8214285714285714,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.6530612244897959,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.8,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8837209302325582,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.851063829787234,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.9152542372881356,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.7659574468085106,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.3888888888888889,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.8936170212765957,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 0.0001
@@ -1485,115 +1485,115 @@
           "class_id": 0,
           "f1": 0.7848101265822784,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.4,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.3829787234042553,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6071428571428571,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7719298245614035,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.7272727272727273,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5517241379310345,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.8333333333333334,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.7450980392156863,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.7868852459016393,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.7636363636363637,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.5769230769230769,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.8444444444444444,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8636363636363636,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.8852459016393442,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.6363636363636364,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.30303030303030304,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.9090909090909091,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 0.0001
@@ -1608,115 +1608,115 @@
           "class_id": 0,
           "f1": 0.7837837837837838,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.4444444444444444,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.3829787234042553,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6896551724137931,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7586206896551724,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.7272727272727273,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5454545454545454,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.851063829787234,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.72,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.7868852459016393,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.8148148148148148,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.6274509803921569,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.782608695652174,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8444444444444444,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8163265306122449,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.9,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.6808510638297872,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.36363636363636365,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.875,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 1e-05
@@ -1731,115 +1731,115 @@
           "class_id": 0,
           "f1": 0.7692307692307693,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.4,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.4444444444444444,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6666666666666666,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7719298245614035,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.7272727272727273,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5818181818181818,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.8260869565217391,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.72,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.7868852459016393,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.7777777777777778,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.6037735849056604,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.8333333333333334,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8636363636363636,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8163265306122449,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.8852459016393442,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.6938775510204082,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.25806451612903225,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.8936170212765957,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 1e-05
@@ -1854,115 +1854,115 @@
           "class_id": 0,
           "f1": 0.7894736842105263,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.4166666666666667,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.46808510638297873,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6779661016949152,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7586206896551724,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6976744186046512,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5660377358490566,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.8333333333333334,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.7169811320754716,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.7457627118644068,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.8214285714285714,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.6415094339622641,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.8260869565217391,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.9047619047619048,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8163265306122449,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.8709677419354839,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.6666666666666666,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.25,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.9130434782608695,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 1e-05
@@ -1977,115 +1977,115 @@
           "class_id": 0,
           "f1": 0.7837837837837838,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.38461538461538464,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.46808510638297873,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6666666666666666,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7719298245614035,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6829268292682927,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5925925925925926,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.851063829787234,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.7346938775510204,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.7692307692307693,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.8,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.6666666666666666,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.8444444444444444,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.9047619047619048,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8163265306122449,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.9,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.7083333333333334,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.43243243243243246,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.8888888888888888,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 1e-05
@@ -2100,115 +2100,115 @@
           "class_id": 0,
           "f1": 0.7894736842105263,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.4,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.425531914893617,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6779661016949152,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7586206896551724,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6666666666666666,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5555555555555556,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.8695652173913043,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.7346938775510204,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.78125,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.8070175438596491,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.6530612244897959,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.8181818181818182,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8837209302325582,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8333333333333334,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.9,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.76,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.43243243243243246,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.9130434782608695,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 1.0000000000000002e-06
@@ -2223,115 +2223,115 @@
           "class_id": 0,
           "f1": 0.7894736842105263,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.4166666666666667,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.36363636363636365,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6551724137931034,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7719298245614035,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6976744186046512,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5423728813559322,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.851063829787234,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.76,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.8064516129032258,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.8,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.64,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.8181818181818182,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8837209302325582,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8333333333333334,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.9,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.7450980392156863,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.43243243243243246,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.9130434782608695,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 1.0000000000000002e-06
@@ -2346,115 +2346,115 @@
           "class_id": 0,
           "f1": 0.7733333333333333,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.4,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.4166666666666667,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6666666666666666,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7719298245614035,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6976744186046512,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5818181818181818,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.851063829787234,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.723404255319149,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.8,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.8,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.6530612244897959,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.8,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8837209302325582,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8163265306122449,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.9,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.72,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.4,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.9130434782608695,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 1.0000000000000002e-06
@@ -2469,115 +2469,115 @@
           "class_id": 0,
           "f1": 0.7733333333333333,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.4166666666666667,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.425531914893617,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6779661016949152,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7719298245614035,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6976744186046512,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5818181818181818,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.8260869565217391,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.723404255319149,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.8125,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.8275862068965517,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.6538461538461539,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.8,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8837209302325582,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8333333333333334,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.9,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.76,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.4,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.9130434782608695,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 1.0000000000000002e-06
@@ -2592,115 +2592,115 @@
           "class_id": 0,
           "f1": 0.7733333333333333,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.4,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.425531914893617,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6440677966101694,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7719298245614035,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6976744186046512,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5925925925925926,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.851063829787234,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.723404255319149,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.8,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.8,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.6530612244897959,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.8181818181818182,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8837209302325582,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8163265306122449,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.9,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.7346938775510204,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.4444444444444444,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.8888888888888888,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 1.0000000000000002e-07
@@ -2715,115 +2715,115 @@
           "class_id": 0,
           "f1": 0.7733333333333333,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.4,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.4489795918367347,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6779661016949152,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7719298245614035,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6976744186046512,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5925925925925926,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.851063829787234,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.7083333333333334,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.78125,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.8148148148148148,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.6274509803921569,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.8260869565217391,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.9047619047619048,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8333333333333334,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.9,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.7450980392156863,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.34285714285714286,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.9130434782608695,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 1.0000000000000002e-07
@@ -2838,115 +2838,115 @@
           "class_id": 0,
           "f1": 0.7894736842105263,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.4166666666666667,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.43478260869565216,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6666666666666666,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7586206896551724,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6976744186046512,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5660377358490566,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.851063829787234,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.7083333333333334,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.78125,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.8070175438596491,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.6530612244897959,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.8181818181818182,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.9047619047619048,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8163265306122449,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.8852459016393442,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.6923076923076923,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.4,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.9130434782608695,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 1.0000000000000002e-07
@@ -2961,115 +2961,115 @@
           "class_id": 0,
           "f1": 0.8,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.46153846153846156,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.4583333333333333,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6779661016949152,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7586206896551724,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6976744186046512,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5660377358490566,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.8333333333333334,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.7083333333333334,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.78125,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.8070175438596491,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.6530612244897959,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.8444444444444444,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.9047619047619048,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8333333333333334,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.9,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.72,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.4,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.9130434782608695,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 1.0000000000000002e-07
@@ -3084,115 +3084,115 @@
           "class_id": 0,
           "f1": 0.7466666666666667,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.38461538461538464,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.40816326530612246,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6666666666666666,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.75,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6976744186046512,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5925925925925926,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.8444444444444444,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.7083333333333334,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.7692307692307693,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.8070175438596491,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.6530612244897959,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.8181818181818182,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8837209302325582,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8163265306122449,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.9,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.72,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.4,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.9130434782608695,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 1.0000000000000002e-07
@@ -3207,115 +3207,115 @@
           "class_id": 0,
           "f1": 0.7792207792207793,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.4166666666666667,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.425531914893617,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6551724137931034,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7719298245614035,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6666666666666666,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5818181818181818,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.8333333333333334,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.72,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.7741935483870968,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.8,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.6666666666666666,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.8181818181818182,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8837209302325582,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8163265306122449,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.9,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.7083333333333334,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.42105263157894735,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.9130434782608695,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 1.0000000000000002e-07
@@ -3330,115 +3330,115 @@
           "class_id": 0,
           "f1": 0.7894736842105263,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.45454545454545453,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.4166666666666667,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6666666666666666,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7719298245614035,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6976744186046512,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5818181818181818,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.851063829787234,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.7450980392156863,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.7868852459016393,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.7857142857142857,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.6530612244897959,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.8372093023255814,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.9090909090909091,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8333333333333334,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.9,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.7307692307692307,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.3888888888888889,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.9130434782608695,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 1.0000000000000002e-07
@@ -3453,115 +3453,115 @@
           "class_id": 0,
           "f1": 0.7567567567567568,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.4444444444444444,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.44,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6896551724137931,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7719298245614035,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6976744186046512,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5925925925925926,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.851063829787234,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.7083333333333334,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.7692307692307693,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.8,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.64,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.7906976744186046,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8837209302325582,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8333333333333334,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.9,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.7346938775510204,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.43243243243243246,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.9130434782608695,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 1.0000000000000002e-07
@@ -3576,115 +3576,115 @@
           "class_id": 0,
           "f1": 0.7894736842105263,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.4166666666666667,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.425531914893617,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6666666666666666,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7719298245614035,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6976744186046512,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5925925925925926,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.8695652173913043,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.76,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.7936507936507936,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.8214285714285714,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.6530612244897959,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.8372093023255814,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.9090909090909091,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8333333333333334,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.8852459016393442,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.7307692307692307,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.4,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.9130434782608695,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 1.0000000000000002e-07
@@ -3699,115 +3699,115 @@
           "class_id": 0,
           "f1": 0.7631578947368421,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.4166666666666667,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.44,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6896551724137931,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7719298245614035,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6976744186046512,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.6037735849056604,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.851063829787234,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.7083333333333334,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.78125,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.8,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.64,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.7906976744186046,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8837209302325582,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.851063829787234,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.9,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.7692307692307693,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.42105263157894735,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.9130434782608695,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 1.0000000000000002e-07
@@ -3822,115 +3822,115 @@
           "class_id": 0,
           "f1": 0.7631578947368421,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.4166666666666667,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.4489795918367347,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6428571428571429,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7719298245614035,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.7272727272727273,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5818181818181818,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.851063829787234,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.7058823529411765,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.7540983606557377,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.7636363636363637,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.64,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.8181818181818182,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.9047619047619048,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.851063829787234,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.9,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.7407407407407407,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.4,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.8936170212765957,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 1.0000000000000002e-07
@@ -3945,115 +3945,115 @@
           "class_id": 0,
           "f1": 0.7792207792207793,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.4,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.4489795918367347,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6666666666666666,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7719298245614035,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6976744186046512,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5925925925925926,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.851063829787234,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.72,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.7619047619047619,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.8363636363636363,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.64,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.8,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8837209302325582,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8163265306122449,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.9,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.7083333333333334,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.4444444444444444,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.9130434782608695,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 1.0000000000000002e-07
@@ -4068,115 +4068,115 @@
           "class_id": 0,
           "f1": 0.7631578947368421,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.4166666666666667,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.4583333333333333,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6551724137931034,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7719298245614035,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6976744186046512,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.6037735849056604,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.8333333333333334,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.7346938775510204,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.7936507936507936,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.8070175438596491,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.6530612244897959,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.8,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8837209302325582,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8163265306122449,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.9,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.68,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.3888888888888889,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.9130434782608695,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 1.0000000000000002e-07
@@ -4191,115 +4191,115 @@
           "class_id": 0,
           "f1": 0.7631578947368421,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.4,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.40816326530612246,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6779661016949152,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7719298245614035,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6976744186046512,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5818181818181818,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.8260869565217391,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.7307692307692307,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.7666666666666667,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.7857142857142857,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.6530612244897959,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.8181818181818182,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8837209302325582,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8163265306122449,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.9,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.72,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.4,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.9130434782608695,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 1.0000000000000002e-07
@@ -4314,115 +4314,115 @@
           "class_id": 0,
           "f1": 0.7671232876712328,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.46153846153846156,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.4166666666666667,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6666666666666666,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7586206896551724,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6976744186046512,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5660377358490566,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.851063829787234,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.7346938775510204,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.7936507936507936,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.8301886792452831,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.625,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.8,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.9047619047619048,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8333333333333334,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.8852459016393442,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.7037037037037037,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.3888888888888889,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.8936170212765957,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 1.0000000000000002e-07
@@ -4437,115 +4437,115 @@
           "class_id": 0,
           "f1": 0.759493670886076,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.4166666666666667,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.35555555555555557,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6551724137931034,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7719298245614035,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6976744186046512,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5517241379310345,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.8260869565217391,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.7083333333333334,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.78125,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.7857142857142857,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.64,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.7906976744186046,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8837209302325582,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8333333333333334,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.9,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.76,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.43243243243243246,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.8888888888888888,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 1.0000000000000002e-07
@@ -4560,115 +4560,115 @@
           "class_id": 0,
           "f1": 0.7692307692307693,
           "support": 34,
-          "label": "кухня / столовая"
+          "label": "kitchen / dining room"
         },
         {
           "class_id": 1,
           "f1": 0.4,
           "support": 15,
-          "label": "кухня-гостиная"
+          "label": "kitchen-living room"
         },
         {
           "class_id": 2,
           "f1": 0.4583333333333333,
           "support": 23,
-          "label": "универсальная комната"
+          "label": "multi-purpose room"
         },
         {
           "class_id": 3,
           "f1": 0.6551724137931034,
           "support": 30,
-          "label": "гостиная"
+          "label": "living room"
         },
         {
           "class_id": 4,
           "f1": 0.7586206896551724,
           "support": 24,
-          "label": "спальня"
+          "label": "bedroom"
         },
         {
           "class_id": 5,
           "f1": 0.6976744186046512,
           "support": 21,
-          "label": "кабинет"
+          "label": "study"
         },
         {
           "class_id": 6,
           "f1": 0.5769230769230769,
           "support": 31,
-          "label": "детская"
+          "label": "children's room"
         },
         {
           "class_id": 7,
           "f1": 0.851063829787234,
           "support": 23,
-          "label": "ванная комната"
+          "label": "bathroom"
         },
         {
           "class_id": 8,
           "f1": 0.7083333333333334,
           "support": 28,
-          "label": "туалет"
+          "label": "toilet"
         },
         {
           "class_id": 9,
           "f1": 0.78125,
           "support": 30,
-          "label": "совмещенный санузел"
+          "label": "combined bathroom"
         },
         {
           "class_id": 10,
           "f1": 0.8070175438596491,
           "support": 28,
-          "label": "коридор / прихожая"
+          "label": "hallway / entryway"
         },
         {
           "class_id": 11,
           "f1": 0.6530612244897959,
           "support": 23,
-          "label": "гардеробная / кладовая / постирочная"
+          "label": "walk-in closet / pantry / laundry"
         },
         {
           "class_id": 12,
           "f1": 0.7906976744186046,
           "support": 22,
-          "label": "балкон / лоджия"
+          "label": "balcony / loggia"
         },
         {
           "class_id": 13,
           "f1": 0.8837209302325582,
           "support": 21,
-          "label": "вид из окна / с балкона"
+          "label": "view from window / balcony"
         },
         {
           "class_id": 14,
           "f1": 0.8333333333333334,
           "support": 21,
-          "label": "дом снаружи / двор"
+          "label": "building exterior / yard"
         },
         {
           "class_id": 15,
           "f1": 0.9,
           "support": 31,
-          "label": "подъезд / лестничная площадка"
+          "label": "entrance / stair landing"
         },
         {
           "class_id": 16,
           "f1": 0.76,
           "support": 28,
-          "label": "другое"
+          "label": "other"
         },
         {
           "class_id": 17,
           "f1": 0.43243243243243246,
           "support": 23,
-          "label": "предметы интерьера / быт.техника"
+          "label": "interior items / home appliances"
         },
         {
           "class_id": 18,
           "f1": 0.9130434782608695,
           "support": 21,
-          "label": "комната без мебели"
+          "label": "unfurnished room"
         }
       ],
       "lr": 1.0000000000000002e-07

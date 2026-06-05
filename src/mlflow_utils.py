@@ -99,7 +99,7 @@ def log_mlflow_artifacts(paths: list[Path | str | None]) -> None:
 
 
 def setup_mlflow_tracking(mlflow: Any) -> None:
-    """DagsHub by default, local sqlite with RTC_MLFLOW_LOCAL=1."""
+    """DagsHub by default, local sqlite with RTC_MLFLOW_LOCAL=1"""
     if os.getenv("RTC_MLFLOW_LOCAL") == "1":
         ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
         mlflow.set_tracking_uri(f"sqlite:///{TRACKING_DB}")
@@ -112,7 +112,7 @@ def setup_mlflow_tracking(mlflow: Any) -> None:
     try:
         import dagshub
     except ImportError as exc:
-        raise RuntimeError("DagsHub не установлен. Выполните `just install-tracking`") from exc
+        raise RuntimeError("DagsHub is not installed. Run `just install-tracking`") from exc
 
     dagshub.init(repo_owner=REPO_OWNER, repo_name=REPO_NAME, mlflow=True)
     mlflow.set_experiment(EXPERIMENT_NAME)
@@ -121,7 +121,7 @@ def setup_mlflow_tracking(mlflow: Any) -> None:
 def start_mlflow_run(model_name: str, run_name: str, params: dict[str, Any]) -> Any:
     mlflow = _load_mlflow()
     if mlflow is None:
-        print("MLflow не установлен, логирование пропущено")
+        print("MLflow is not installed, logging was skipped")
         return None
 
     setup_mlflow_tracking(mlflow)

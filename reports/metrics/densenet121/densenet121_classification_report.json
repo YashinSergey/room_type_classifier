@@ -1,113 +1,113 @@
 {
-  "кухня / столовая": {
+  "kitchen / dining room": {
     "precision": 0.9166666666666666,
     "recall": 0.6470588235294118,
     "f1-score": 0.7586206896551724,
     "support": 34.0
   },
-  "кухня-гостиная": {
+  "kitchen-living room": {
     "precision": 0.5,
     "recall": 0.6666666666666666,
     "f1-score": 0.5714285714285714,
     "support": 15.0
   },
-  "универсальная комната": {
+  "multi-purpose room": {
     "precision": 0.3055555555555556,
     "recall": 0.4782608695652174,
     "f1-score": 0.3728813559322034,
     "support": 23.0
   },
-  "гостиная": {
+  "living room": {
     "precision": 0.6060606060606061,
     "recall": 0.6666666666666666,
     "f1-score": 0.6349206349206349,
     "support": 30.0
   },
-  "спальня": {
+  "bedroom": {
     "precision": 0.7407407407407407,
     "recall": 0.8333333333333334,
     "f1-score": 0.7843137254901961,
     "support": 24.0
   },
-  "кабинет": {
+  "study": {
     "precision": 0.7368421052631579,
     "recall": 0.6666666666666666,
     "f1-score": 0.7,
     "support": 21.0
   },
-  "детская": {
+  "children's room": {
     "precision": 0.6666666666666666,
     "recall": 0.5161290322580645,
     "f1-score": 0.5818181818181818,
     "support": 31.0
   },
-  "ванная комната": {
+  "bathroom": {
     "precision": 0.9473684210526315,
     "recall": 0.782608695652174,
     "f1-score": 0.8571428571428571,
     "support": 23.0
   },
-  "туалет": {
+  "toilet": {
     "precision": 0.8214285714285714,
     "recall": 0.8214285714285714,
     "f1-score": 0.8214285714285714,
     "support": 28.0
   },
-  "совмещенный санузел": {
+  "combined bathroom": {
     "precision": 0.7058823529411765,
     "recall": 0.8,
     "f1-score": 0.75,
     "support": 30.0
   },
-  "коридор / прихожая": {
+  "hallway / entryway": {
     "precision": 0.8518518518518519,
     "recall": 0.8214285714285714,
     "f1-score": 0.8363636363636363,
     "support": 28.0
   },
-  "гардеробная / кладовая / постирочная": {
+  "walk-in closet / pantry / laundry": {
     "precision": 0.6666666666666666,
     "recall": 0.6956521739130435,
     "f1-score": 0.6808510638297872,
     "support": 23.0
   },
-  "балкон / лоджия": {
+  "balcony / loggia": {
     "precision": 0.9090909090909091,
     "recall": 0.9090909090909091,
     "f1-score": 0.9090909090909091,
     "support": 22.0
   },
-  "вид из окна / с балкона": {
+  "view from window / balcony": {
     "precision": 0.9090909090909091,
     "recall": 0.9523809523809523,
     "f1-score": 0.9302325581395349,
     "support": 21.0
   },
-  "дом снаружи / двор": {
+  "building exterior / yard": {
     "precision": 0.7407407407407407,
     "recall": 0.9523809523809523,
     "f1-score": 0.8333333333333334,
     "support": 21.0
   },
-  "подъезд / лестничная площадка": {
+  "entrance / stair landing": {
     "precision": 0.90625,
     "recall": 0.9354838709677419,
     "f1-score": 0.9206349206349206,
     "support": 31.0
   },
-  "другое": {
+  "other": {
     "precision": 0.75,
     "recall": 0.5357142857142857,
     "f1-score": 0.625,
     "support": 28.0
   },
-  "предметы интерьера / быт.техника": {
+  "interior items / home appliances": {
     "precision": 0.42857142857142855,
     "recall": 0.2608695652173913,
     "f1-score": 0.32432432432432434,
     "support": 23.0
   },
-  "комната без мебели": {
+  "unfurnished room": {
     "precision": 0.76,
     "recall": 0.9047619047619048,
     "f1-score": 0.8260869565217391,

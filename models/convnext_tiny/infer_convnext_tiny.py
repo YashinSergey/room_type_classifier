@@ -17,7 +17,8 @@ if str(ROOT_DIR) not in sys.path:
 from models.convnext_tiny.model import build_convnext_tiny
 from src.dataloaders import create_test_dataloader
 from src.device import get_default_device
-from src.labels import load_label_mapping
+from src.labels import load_english_label_mapping
+from src.training_helpers import load_torch_checkpoint
 
 
 def _take_batch_field(batch, j):
@@ -40,9 +41,9 @@ def _softmax_vector_std(prob_row: torch.Tensor) -> float:
 
 def _load_ckpt(path: Path, map_location: str | torch.device) -> dict:
     try:
-        return torch.load(path, map_location=map_location, weights_only=False)
+        return load_torch_checkpoint(path, map_location=map_location, weights_only=False)
     except TypeError:
-        return torch.load(path, map_location=map_location)
+        return load_torch_checkpoint(path, map_location=map_location)
 
 
 def parse_args() -> argparse.Namespace:
@@ -52,13 +53,13 @@ def parse_args() -> argparse.Namespace:
         "--model-name",
         type=str,
         default="convnext_tiny",
-        help="Имя модели: отчёт инференса в reports/metrics/<model-name>/",
+        help="Model name: inference report in reports/metrics/<model-name>/",
     )
     p.add_argument(
         "--metrics-dir",
         type=Path,
         default=None,
-        help="По умолчанию: reports/metrics/<model-name>/",
+        help="Default: reports/metrics/<model-name>/",
     )
     p.add_argument("--test-csv", type=Path, default=ROOT_DIR / "data" / "processed" / "test_df.csv")
     p.add_argument("--test-images", type=Path, default=ROOT_DIR / "data" / "raw" / "test_images")
@@ -70,19 +71,19 @@ def parse_args() -> argparse.Namespace:
         "--ambiguous-class-id",
         type=int,
         default=18,
-        help="Исходный result для «неуверенного» случая (плоский softmax).",
+        help="Original result id for the uncertain case (flat softmax).",
     )
     p.add_argument(
         "--ambiguous-std-threshold",
         type=float,
         default=0.03,
-        help="Если std(prob по классам) < порога, pred принудительно = --ambiguous-class-id. "
-        "Меньше порог → чаще класс «неуверенности».",
+        help="If std(prob across classes) < threshold, pred is forced to --ambiguous-class-id. "
+        "Lower threshold -> the uncertainty class is used more often.",
     )
     p.add_argument(
         "--no-ambiguous-from-std",
         action="store_true",
-        help="Не применять правило по std; только argmax (с учётом excluded_original_class_id).",
+        help="Do not apply the std rule, use only argmax (respecting excluded_original_class_id)",
     )
     return p.parse_args()
 
@@ -116,7 +117,7 @@ def main() -> None:
         image_size=image_size,
     )
 
-    label_map = load_label_mapping()
+    label_map = load_english_label_mapping()
     rows: list[dict] = []
     k = min(max(1, args.top_k), num_classes)
     use_ambiguous_rule = not args.no_ambiguous_from_std
@@ -187,7 +188,7 @@ def main() -> None:
     print(f"Inference report: {summary_path}")
     if use_ambiguous_rule:
         print(
-            f"ambiguous_std: класс {ambiguous_id} при std<{amb_thr} — назначено строк: {ambiguous_count} / {len(rows)}",
+            f"ambiguous_std: class {ambiguous_id} when std<{amb_thr}, assigned rows: {ambiguous_count} / {len(rows)}",
             flush=True,
         )
 

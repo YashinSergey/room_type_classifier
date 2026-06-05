@@ -1,25 +1,25 @@
 # Room Type Classifier
 
-Проект по классификации типа комнаты по изображению
-Кейс: Avito, определение одного из 19 типов помещений по фотографии
-Основная метрика качества: Macro F1
-Лучший одиночный вариант: ConvNeXt Nano
-Итоговое решение для submission: ансамбль ConvNeXt Nano, ResNet50 и ResNet18
+Image classification project for room-type recognition.
+Case: Avito, predicting one of 19 room or property photo categories from an image.
+Primary quality metric: Macro F1.
+Best single model: ConvNeXt Nano.
+Final submission solution: an ensemble of ConvNeXt Nano, ResNet50, and ResNet18.
 
-## Что сделано
+## What is included
 
-- подготовлен preprocessing для train, val и test
-- удален лишний train-класс, которого нет в задании и validation
-- классы приведены к диапазону 0-18
-- обучены несколько CNN-моделей
-- эксперименты залогированы в MLflow через DagsHub
-- собран итоговый ансамбль из трех моделей
-- подготовлен submission на test
-- сделан Streamlit-прототип для проверки изображений
+- preprocessing for train, validation, and test splits
+- removal of an extra train-only class that is not part of the task or validation set
+- class ids normalized to the 0-18 range
+- several CNN models trained and compared
+- experiments logged to MLflow through DagsHub
+- final three-model ensemble assembled
+- test submission generated
+- Streamlit prototype for checking images interactively
 
-## Данные
+## Data
 
-Raw-данные ожидаются в таком виде:
+Raw data is expected in this layout:
 
 ```text
 data/raw/
@@ -31,42 +31,42 @@ data/raw/
   test_images/
 ```
 
-Препроцессинг:
+Preprocessing:
 
 ```bash
 just prepare-data-with-heuristics
 ```
 
-Processed-файлы сохраняются в:
+Processed files are saved to:
 
 ```text
 data/processed/
 ```
 
-## Установка
+## Setup
 
-Нужны Python 3.12, `uv` и `just`.
+The project expects Python 3.12, `uv`, and `just`.
 
 ```bash
 pip install uv
 uv tool install rust-just
 ```
 
-Установа зависимостей:
+Install dependencies:
 
 ```bash
 just install-all
 ```
 
-Установка зависимостей для Streamlit:
+Install Streamlit dependencies:
 
 ```bash
 just install-streamlit
 ```
 
-## Обучение
+## Training
 
-Примеры команд:
+Example commands:
 
 ```bash
 just train-resnet18 30
@@ -78,13 +78,13 @@ just train-convnext-nano 25 32
 just train-convnext-tiny
 ```
 
-Сравнение моделей(MLflow):
+Compare models through MLflow:
 
 ```bash
 just compare-models
 ```
 
-Оценка итогового ансамбля:
+Evaluate the final ensemble:
 
 ```bash
 just eval-ensemble
@@ -92,13 +92,13 @@ just eval-ensemble
 
 ## Submission
 
-Генерация submission:
+Generate the submission:
 
 ```bash
 just make-submission
 ```
 
-Файл сохраняется локально:
+The file is saved locally:
 
 ```text
 data/submissions/submission_ensemble.csv
@@ -106,25 +106,25 @@ data/submissions/submission_ensemble.csv
 
 ## Streamlit
 
-Запуск streamlit-интерфейса:
+Run the Streamlit interface:
 
 ```bash
 just run-streamlit
 ```
 
-Интерфейс позволяет загрузить изображение и получить предсказания выбранных моделей. В нем доступен финальный ансамбль и отдельные модели
+The interface lets you upload an image and compare predictions from selected models. It includes the final ensemble as well as individual models.
 
-## Эксперименты
+## Experiments
 
-Эксперименты логируются в MLflow через DagsHub
+Experiments are logged to MLflow through DagsHub.
 
-Ссылка:
+Link:
 
 ```text
 https://dagshub.com/YashinSergey/room_type_classifier/experiments
 ```
 
-Основные метрики:
+Main metrics:
 
 - best_macro_f1
 - best_accuracy
@@ -132,7 +132,7 @@ https://dagshub.com/YashinSergey/room_type_classifier/experiments
 - best_val_loss
 - best_epoch
 
-## Структура проекта
+## Project structure
 
 ```text
 src/
@@ -160,10 +160,6 @@ outputs/models/
 data/
 ```
 
-Чекпоинты моделей сохраняются в `outputs/models/`.
+Model checkpoints are saved to `outputs/models/`.
 
-Метрики сохраняются в `reports/metrics/`.
-
-Итоговый отчет: https://docs.google.com/document/d/1LT4T90vRei1lcjus16heISa5xYsl4cUo/edit?usp=sharing&ouid=103046931125072858111&rtpof=true&sd=true
-
-Презентация: https://docs.google.com/presentation/d/1Wa8_ZrLCPGx9kds4LiGtT-41lT_W1HoH/edit?usp=sharing&ouid=103046931125072858111&rtpof=true&sd=true
+Metrics are saved to `reports/metrics/`.

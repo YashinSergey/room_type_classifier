@@ -26,7 +26,7 @@ from models.densenet121.densenet121 import build_densenet121
 from models.resnet18.resnet18 import build_resnet18
 from src.dataloaders import create_dataloaders
 from src.device import get_default_device
-from src.labels import load_label_mapping
+from src.labels import load_english_label_mapping
 from src.metrics import calculate_accuracy, calculate_macro_f1, calculate_per_class_f1
 from src.mlflow_utils import (
     end_mlflow_run,
@@ -35,7 +35,7 @@ from src.mlflow_utils import (
     log_mlflow_params,
     start_mlflow_run,
 )
-from src.training_helpers import load_json, save_json, to_project_relative_path
+from src.training_helpers import load_json, load_torch_checkpoint, save_json, to_project_relative_path
 
 DEFAULT_CHECKPOINTS = [
     ROOT_DIR / "outputs" / "models" / "convnext_nano" / "convnext_nano_best.pt",
@@ -45,15 +45,15 @@ DEFAULT_CHECKPOINTS = [
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Проверка ансамбля на валидации", add_help=False)
-    parser._optionals.title = "Аргументы"
-    parser.add_argument("-h", "--help", action="help", help="Показать справку и выйти.")
+    parser = argparse.ArgumentParser(description="Validate an ensemble on the validation set", add_help=False)
+    parser._optionals.title = "Arguments"
+    parser.add_argument("-h", "--help", action="help", help="Show help and exit.")
     parser.add_argument(
         "--checkpoints",
         type=Path,
         nargs="+",
         default=[path for path in DEFAULT_CHECKPOINTS if path.exists()],
-        help="Пути к checkpoint-файлам моделей.",
+        help="Paths to model checkpoint files.",
     )
     parser.add_argument("--val-csv", type=Path, default=ROOT_DIR / "data" / "processed" / "val_df.csv")
     parser.add_argument("--val-images", type=Path, default=ROOT_DIR / "data" / "raw" / "val_images")
@@ -63,35 +63,35 @@ def parse_args() -> argparse.Namespace:
         "--weighting",
         choices=["uniform", "val_f1"],
         default="uniform",
-        help="uniform: равные веса; val_f1: веса по macro-F1 из checkpoint.",
+        help="uniform: equal weights, val_f1: weights from checkpoint macro-F1",
     )
     parser.add_argument(
         "--weights",
         type=float,
         nargs="+",
         default=None,
-        help="Свои веса моделей в том же порядке, что и --checkpoints.",
+        help="Custom model weights in the same order as --checkpoints.",
     )
     parser.add_argument("--output-dir", type=Path, default=ROOT_DIR / "reports" / "metrics" / "ensemble")
     parser.add_argument("--run-name", default=None)
-    parser.add_argument("--save-predictions", action="store_true", help="Сохранить предсказания на валидации.")
-    parser.add_argument("--log-mlflow", action="store_true", help="Залогировать результат в MLflow.")
+    parser.add_argument("--save-predictions", action="store_true", help="Save validation predictions.")
+    parser.add_argument("--log-mlflow", action="store_true", help="Log the result to MLflow.")
     parser.add_argument(
         "--search-subsets",
         action="store_true",
-        help="Перебрать все подмножества моделей и найти лучший ансамбль.",
+        help="Try all model subsets and find the best ensemble.",
     )
     parser.add_argument(
         "--mlflow-local",
         action=argparse.BooleanOptionalAction,
         default=True,
-        help="При --log-mlflow писать в локальный mlflow.db/mlruns.",
+        help="With --log-mlflow, write to local mlflow.db/mlruns.",
     )
     return parser.parse_args()
 
 
 def load_checkpoint(path: Path) -> dict:
-    return torch.load(path, map_location="cpu", weights_only=False)
+    return load_torch_checkpoint(path, map_location="cpu", weights_only=False)
 
 
 def build_convnext_nano(num_classes: int) -> nn.Module:
@@ -112,7 +112,7 @@ def build_efficientnet(variant: str, num_classes: int) -> nn.Module:
     elif variant == "b1":
         model = efficientnet_b1(weights=None)
     else:
-        raise ValueError(f"Неизвестный EfficientNet: {variant}")
+        raise ValueError(f"Unknown EfficientNet variant: {variant}")
 
     in_features = model.classifier[-1].in_features
     model.classifier[-1] = nn.Linear(in_features, num_classes)
@@ -149,7 +149,7 @@ def get_model_name(path: Path, checkpoint: dict) -> str:
     if "efficientnet_b1" in name:
         return "efficientnet_b1"
 
-    raise ValueError(f"Не удалось понять тип модели: {path}")
+    raise ValueError(f"Could not infer model type: {path}")
 
 
 def build_model(model_name: str, num_classes: int) -> nn.Module:
@@ -166,7 +166,7 @@ def build_model(model_name: str, num_classes: int) -> nn.Module:
     if model_name.startswith("efficientnet_"):
         return build_efficientnet(model_name.replace("efficientnet_", ""), num_classes)
 
-    raise ValueError(f"Модель не поддерживается: {model_name}")
+    raise ValueError(f"Model is not supported: {model_name}")
 
 
 def make_val_loader(args: argparse.Namespace, image_size: int):
@@ -201,18 +201,18 @@ def predict_probs(model: nn.Module, loader, device: torch.device) -> tuple[np.nd
 def normalize_weights(weights: list[float]) -> list[float]:
     weights_array = np.array(weights, dtype=float)
     if (weights_array < 0).any():
-        raise ValueError("Веса не должны быть отрицательными")
+        raise ValueError("Weights must not be negative")
 
     total = weights_array.sum()
     if total <= 0:
-        raise ValueError("Сумма весов должна быть больше нуля")
+        raise ValueError("Sum of weights must be greater than zero")
 
     return (weights_array / total).tolist()
 
 
 def calculate_metrics(y_true: np.ndarray, probs: np.ndarray, num_classes: int) -> dict:
     y_pred = probs.argmax(axis=1)
-    label_mapping = load_label_mapping()
+    label_mapping = load_english_label_mapping()
     per_class_metrics = calculate_per_class_f1(y_true, y_pred, num_classes)
 
     eps = 1e-12
@@ -380,16 +380,16 @@ def save_experiment(report: dict, metrics_path: Path, experiments_path: Path) ->
 def main() -> None:
     args = parse_args()
     if not args.checkpoints:
-        raise ValueError("Не найдено ни одного checkpoint-файла")
+        raise ValueError("No checkpoint files found")
     if args.weights is not None and len(args.weights) != len(args.checkpoints):
-        raise ValueError("Количество --weights должно совпадать с количеством --checkpoints")
+        raise ValueError("The number of --weights must match the number of --checkpoints")
 
     run_id = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     run_name = args.run_name or f"ensemble_val_{run_id}"
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
     device = get_default_device()
-    print(f"Устройство: {device}")
+    print(f"Device: {device}")
 
     model_results = []
     all_model_probs = []
@@ -405,11 +405,11 @@ def main() -> None:
         if num_classes_base is None:
             num_classes_base = num_classes
         elif num_classes != num_classes_base:
-            raise ValueError("У моделей разное количество классов")
+            raise ValueError("Models have different numbers of classes")
 
         print(
-            f"Модель: {model_name}, "
-            f"checkpoint-файл: {to_project_relative_path(checkpoint_path)}, "
+            f"Model: {model_name}, "
+            f"checkpoint file: {to_project_relative_path(checkpoint_path)}, "
             f"image_size={image_size}"
         )
 
@@ -423,7 +423,7 @@ def main() -> None:
         if y_true_base is None:
             y_true_base = y_true
         elif not np.array_equal(y_true_base, y_true):
-            raise ValueError("Порядок объектов в val изменился между моделями")
+            raise ValueError("Validation object order changed between models")
 
         metrics = calculate_metrics(y_true, probs, num_classes)
         checkpoint_macro_f1 = checkpoint.get("best_macro_f1", checkpoint.get("macro_f1"))
@@ -504,28 +504,28 @@ def main() -> None:
 
     log_to_mlflow(args, report, artifacts)
 
-    print("\nРезультаты моделей:")
+    print("\nModel results:")
     for row, weight in zip(model_results, weights, strict=True):
         print(
-            f"  {row['name']:<16} вес={weight:.4f} "
+            f"  {row['name']:<16} weight={weight:.4f} "
             f"macro_f1={row['macro_f1']:.4f} accuracy={row['accuracy']:.4f}"
         )
 
     print(
-        f"\nАнсамбль ({weighting}): "
+        f"\nEnsemble ({weighting}): "
         f"macro_f1={ensemble_metrics['macro_f1']:.4f}, "
         f"accuracy={ensemble_metrics['accuracy']:.4f}"
     )
     if subset_results is not None:
-        print("\nЛучшие подмножества:")
+        print("\nBest subsets:")
         for row in subset_results[:10]:
             print(
-                f"  моделей={row['size']} "
+                f"  models={row['size']} "
                 f"macro_f1={row['macro_f1']:.4f} "
                 f"accuracy={row['accuracy']:.4f} "
-                f"состав={', '.join(row['models'])}"
+                f"members={', '.join(row['models'])}"
             )
-    print(f"Отчёт сохранён: {to_project_relative_path(metrics_path)}")
+    print(f"Report saved: {to_project_relative_path(metrics_path)}")
 
 
 if __name__ == "__main__":

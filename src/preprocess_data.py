@@ -33,59 +33,56 @@ OLD_TO_NEW_CLASS = {
     19: 18,
 }
 
-# дополнительные csv для слабых классов
+# additional CSV files for underrepresented classes
 HEURISTICS = {
     "cabinet": {
         "csv": "heuristics_cabinet.csv",
         "result": 5,
-        "label": "кабинет",
     },
     "detskaya": {
         "csv": "heuristics_detskaya.csv",
         "result": 6,
-        "label": "детская",
     },
     "dressing_room": {
         "csv": "heuristics_dressing_room.csv",
         "result": 11,
-        "label": "гардеробная / кладовая / постирочная",
     },
 }
 RECOMMENDED_HEURISTICS = ["cabinet", "dressing_room"]
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Подготовить raw CSV-файлы для обучения модели")
+    parser = argparse.ArgumentParser(description="Prepare raw CSV files for model training")
     parser.add_argument("--raw-dir", default=DEFAULT_RAW_DIR)
     parser.add_argument("--processed-dir", default=DEFAULT_PROCESSED_DIR)
     parser.add_argument("--image-ext", default=".jpg")
     parser.add_argument(
         "--skip-image-verify",
         action="store_true",
-        help="Проверять только наличие файлов, не открывая изображения через PIL",
+        help="Only check that files exist, without opening images through PIL",
     )
     parser.add_argument(
         "--include-heuristics",
         default="none",
-        help="none, recommended, all или список через запятую: cabinet,dressing_room",
+        help="none, recommended, all, or a comma-separated list: cabinet,dressing_room",
     )
     parser.add_argument(
         "--max-heuristics-per-source",
         type=int,
         default=None,
-        help="Дополнительный лимит строк из каждого heuristics-датасета",
+        help="Additional row limit for each heuristic dataset",
     )
     parser.add_argument(
         "--heuristics-seed",
         type=int,
         default=42,
-        help="Seed для случайного выбора строк из heuristics",
+        help="Seed for random row sampling from heuristics",
     )
     return parser.parse_args()
 
 
 def is_valid_image(image_path):
-    """PIL image.verify check."""
+    """PIL image.verify check"""
     try:
         with Image.open(image_path) as image:
             image.verify()
@@ -106,7 +103,7 @@ def choose_heuristics(value):
     names = [name.strip() for name in value.split(",") if name.strip()]
     wrong_names = [name for name in names if name not in HEURISTICS]
     if wrong_names:
-        raise ValueError(f"Неизвестные heuristics-датасеты: {', '.join(wrong_names)}")
+        raise ValueError(f"Unknown heuristic datasets: {', '.join(wrong_names)}")
     return names
 
 
@@ -151,7 +148,7 @@ def normalize_title(title):
 
 
 def preprocess_train_val(split, raw_dir, processed_dir, image_ext, verify_images):
-    """Train/val cleanup."""
+    """Train/val cleanup"""
     csv_path = os.path.join(raw_dir, f"{split}_df.csv")
     image_root = os.path.join(raw_dir, f"{split}_images")
     df = pd.read_csv(csv_path)
@@ -189,8 +186,8 @@ def preprocess_train_val(split, raw_dir, processed_dir, image_ext, verify_images
     return rows_before, len(df)
 
 
-def read_heuristic_dataset(name, raw_dir, image_ext, verify_images):
-    """Heuristic csv -> train-like df."""
+def read_heuristic_dataset(name, raw_dir, image_ext, verify_images, label):
+    """Heuristic csv -> train-like df"""
     config = HEURISTICS[name]
     csv_path = os.path.join(raw_dir, config["csv"])
     image_root = os.path.join(raw_dir, "heuristics_images")
@@ -203,7 +200,7 @@ def read_heuristic_dataset(name, raw_dir, image_ext, verify_images):
     df = df.dropna(subset=["image_id_ext"])
 
     df["result"] = config["result"]
-    df["label"] = config["label"]
+    df["label"] = label
 
     df = check_images(df, image_root, image_ext, verify_images)
     df = df[df["can_predict"]].copy()
@@ -243,13 +240,20 @@ def add_heuristics_to_train(train_df, heuristic_names, raw_dir, image_ext, verif
 
     class_counts = train_df["result"].value_counts()
     if class_counts.empty:
-        raise ValueError("после очистки train не осталось строк")
+        raise ValueError("no train rows left after cleanup")
     target_count = round(class_counts.mean())
+    labels_by_result = (
+        train_df.dropna(subset=["result", "label"])
+        .drop_duplicates(subset=["result"], keep="first")
+        .set_index("result")["label"]
+        .to_dict()
+    )
     frames = [train_df]
 
     for name in heuristic_names:
         config = HEURISTICS[name]
         class_id = config["result"]
+        label = labels_by_result.get(class_id, str(class_id))
         current_count = int((train_df["result"] == class_id).sum())
         need_count = max(target_count - current_count, 0)
 
@@ -261,6 +265,7 @@ def add_heuristics_to_train(train_df, heuristic_names, raw_dir, image_ext, verif
             raw_dir,
             image_ext,
             verify_images,
+            label,
         )
 
         if need_count > 0 and len(heuristic_df) > need_count:
@@ -285,7 +290,7 @@ def add_heuristics_to_train(train_df, heuristic_names, raw_dir, image_ext, verif
 
 
 def preprocess_test(raw_dir, processed_dir, image_ext, verify_images):
-    """Test stays the same length."""
+    """Test stays the same length"""
     csv_path = os.path.join(raw_dir, "test_df.csv")
     image_root = os.path.join(raw_dir, "test_images")
     df = pd.read_csv(csv_path)
@@ -371,16 +376,16 @@ def main():
     with open(manifest_path, "w", encoding="utf-8") as file:
         json.dump(manifest, file, indent=2, ensure_ascii=False)
 
-    print(f"Папка с обработанными данными: {args.processed_dir}")
-    print(f"Mapping классов: {class_mapping_path}")
+    print(f"Processed data directory: {args.processed_dir}")
+    print(f"Class mapping: {class_mapping_path}")
     print(f"Manifest preprocessing: {manifest_path}")
-    print(f"train: строк до={train_before}, строк после={train_after}")
-    print(f"train: строк после heuristics={len(train_df)}")
-    print(f"train: включены heuristics={heuristic_names or 'нет'}")
-    print(f"train: целевой размер класса для heuristics={target_count or 'нет'}")
-    print(f"val: строк до={val_before}, строк после={val_after}")
-    print(f"test: строк до={test_before}, строк после={test_after}")
-    print(f"test: строк для предсказания={test_can_predict} из {test_after}")
+    print(f"train: rows before={train_before}, rows after={train_after}")
+    print(f"train: rows after heuristics={len(train_df)}")
+    print(f"train: enabled heuristics={heuristic_names or 'none'}")
+    print(f"train: target class size for heuristics={target_count or 'none'}")
+    print(f"val: rows before={val_before}, rows after={val_after}")
+    print(f"test: rows before={test_before}, rows after={test_after}")
+    print(f"test: predictable rows={test_can_predict} of {test_after}")
 
 
 if __name__ == "__main__":

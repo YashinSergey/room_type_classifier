@@ -24,29 +24,29 @@ if str(ROOT_DIR) not in sys.path:
 from models.convnext_tiny.model import build_convnext_tiny
 from src.dataloaders import create_dataloaders
 from src.device import get_default_device
-from src.labels import load_label_mapping
+from src.labels import load_english_label_mapping
 from src.mlflow_utils import end_mlflow_run, log_mlflow_artifacts, log_mlflow_metrics, log_mlflow_params, start_mlflow_run
 from src.metrics import calculate_accuracy, calculate_macro_f1, calculate_per_class_f1
-from src.training_helpers import build_checkpoint, to_project_relative_path
+from src.training_helpers import build_checkpoint, load_torch_checkpoint, to_project_relative_path
 
 _CONFIG_DIR = Path(__file__).resolve().parent
 _DEFAULT_CONFIG = _CONFIG_DIR / "train_config.json"
 
 
 def _parse_args() -> argparse.Namespace:
-    p = argparse.ArgumentParser(description="Train ConvNeXt-Tiny (настройки в JSON)")
+    p = argparse.ArgumentParser(description="Train ConvNeXt-Tiny (settings in JSON)")
     p.add_argument(
         "--config",
         type=Path,
         default=_DEFAULT_CONFIG,
-        help=f"JSON с гиперпараметрами и путями (по умолчанию: {_DEFAULT_CONFIG.name} в этой папке).",
+        help=f"JSON with hyperparameters and paths (default: {_DEFAULT_CONFIG.name} in this folder).",
     )
     return p.parse_args()
 
 
 def _load_json(path: Path) -> dict[str, Any]:
     if not path.is_file():
-        raise FileNotFoundError(f"Нет файла конфигурации: {path}")
+        raise FileNotFoundError(f"Configuration file not found: {path}")
     return json.loads(path.read_text(encoding="utf-8"))
 
 
@@ -65,7 +65,7 @@ def _resolve_csv(csv_path: Path, default_file: str) -> Path:
         p = csv_path
     if p.exists() and p.is_dir():
         out = p / default_file
-        print(f"CSV: каталог {csv_path} -> файл {out}", flush=True)
+        print(f"CSV: directory {csv_path} -> file {out}", flush=True)
         return out
     return csv_path
 
@@ -87,7 +87,7 @@ def set_seed(seed: int) -> None:
 def filter_csv_exclude_class(src: Path, dst: Path, exclude_id: int) -> tuple[int, int]:
     df = pd.read_csv(src)
     if "result" not in df.columns:
-        raise ValueError(f"Нет колонки result: {src}")
+        raise ValueError(f"No result column: {src}")
     r = df["result"].astype(int)
     dropped = int((r == exclude_id).sum())
     df = df.loc[r != exclude_id].copy()
@@ -101,19 +101,19 @@ def filter_csv_exclude_class(src: Path, dst: Path, exclude_id: int) -> tuple[int
 def validate_paths(train_csv: Path, val_csv: Path, train_img: Path, val_img: Path) -> None:
     for label, p in (("--train-csv", train_csv), ("--val-csv", val_csv)):
         if not p.is_file():
-            raise FileNotFoundError(f"{label}: ожидается файл CSV: {p}")
+            raise FileNotFoundError(f"{label}: expected a CSV file: {p}")
     for label, p in (("--train-images", train_img), ("--val-images", val_img)):
         if not p.exists():
-            raise FileNotFoundError(f"{label}: не найдено: {p}")
+            raise FileNotFoundError(f"{label}: not found: {p}")
 
 
 def get_class_weights(csv_path: Path, num_classes: int, device: torch.device) -> torch.Tensor:
     t = torch.tensor(pd.read_csv(csv_path)["result"].astype(int).to_list(), dtype=torch.int64)
     if int(t.min()) < 0:
-        raise ValueError("Метки result не могут быть отрицательными")
+        raise ValueError("result labels cannot be negative")
     need = int(t.max().item()) + 1
     if need > num_classes:
-        raise ValueError(f"В train до метки {int(t.max())}, нужно num_classes >= {need}")
+        raise ValueError(f"Train contains labels up to {int(t.max())}, num_classes must be >= {need}")
     counts = torch.bincount(t, minlength=num_classes).float()
     w = torch.zeros(num_classes, dtype=torch.float32)
     ok = counts > 0
@@ -216,7 +216,7 @@ def _orig_class(mid: int, excluded: int | None) -> int:
 
 
 def add_label_names(per: list[dict[str, object]], excluded: int | None) -> list[dict[str, object]]:
-    lm = load_label_mapping()
+    lm = load_english_label_mapping()
     out = []
     for item in per:
         oid = _orig_class(int(item["class_id"]), excluded)
@@ -236,9 +236,9 @@ def _atomic_torch_save(obj: dict, path: Path) -> None:
 
 def _load_ckpt(path: Path) -> dict[str, Any]:
     try:
-        return torch.load(path, map_location="cpu", weights_only=False)
+        return load_torch_checkpoint(path, map_location="cpu", weights_only=False)
     except TypeError:
-        return torch.load(path, map_location="cpu")
+        return load_torch_checkpoint(path, map_location="cpu")
 
 
 def _build_ckpt_payload(
@@ -355,18 +355,18 @@ def _f1_improved(cur: float, best: float, delta: float) -> bool:
 
 def _log_torch_and_device(device: torch.device) -> None:
     print(f"torch {torch.__version__}", flush=True)
-    print(f"torch.version.cuda (сборка) = {torch.version.cuda}", flush=True)
+    print(f"torch.version.cuda (build) = {torch.version.cuda}", flush=True)
     print(f"torch.cuda.is_available() = {torch.cuda.is_available()}", flush=True)
     if torch.cuda.is_available():
         print(f"GPU: {torch.cuda.get_device_name(0)}", flush=True)
-    print(f"выбранное устройство = {device}", flush=True)
+    print(f"selected device = {device}", flush=True)
     if device.type != "cuda" and not torch.cuda.is_available():
         print(
-            "Подсказка: `uv sync --group data` обычно ставит CPU-only torch с PyPI. "
-            "Поставьте CUDA-сборку в тот же venv, из корня room_type_classifier:\n"
+            "Hint: `uv sync --group data` usually installs CPU-only torch from PyPI. "
+            "Install a CUDA build into the same venv from the room_type_classifier root:\n"
             "  uv pip install torch==2.5.1 torchvision==0.20.1 "
             "--extra-index-url https://download.pytorch.org/whl/cu124\n"
-            "Другая версия CUDA у драйвера - см. https://pytorch.org/get-started/locally/ (например cu121: .../whl/cu121)",
+            "For a different driver CUDA version, see https://pytorch.org/get-started/locally/ (for example cu121: .../whl/cu121)",
             flush=True,
         )
 
@@ -390,7 +390,7 @@ def main() -> None:
     tc = cfg.get("train_csv")
     vc = cfg.get("val_csv")
     if not tc or not vc:
-        raise ValueError("В train_config.json нужны непустые train_csv и val_csv")
+        raise ValueError("train_config.json requires non-empty train_csv and val_csv")
     train_csv = _resolve_csv(_p(ROOT_DIR, str(tc)), "train_df.csv")
     val_csv = _resolve_csv(_p(ROOT_DIR, str(vc)), "val_df.csv")
     ti = cfg.get("train_images")
@@ -406,12 +406,12 @@ def main() -> None:
         nt, dt = filter_csv_exclude_class(train_csv, train_eff, excluded)
         nv, dv = filter_csv_exclude_class(val_csv, val_eff, excluded)
         if nt == 0 or nv == 0:
-            raise ValueError(f"После исключения класса {excluded} train={nt}, val={nv}")
+            raise ValueError(f"After excluding class {excluded} train={nt}, val={nv}")
         inferred = int(pd.read_csv(train_eff)["result"].max()) + 1
         if num_classes != inferred:
-            print(f"num_classes {num_classes} -> {inferred} (по train после exclude)", flush=True)
+            print(f"num_classes {num_classes} -> {inferred} (from train after exclude)", flush=True)
             num_classes = inferred
-        print(f"Исключён класс {excluded}: train {nt} (−{dt}), val {nv} (−{dv})", flush=True)
+        print(f"Excluded class {excluded}: train {nt} (-{dt}), val {nv} (-{dv})", flush=True)
 
     out_dir = (_p(ROOT_DIR, cfg.get("output_dir")) or (ROOT_DIR / "outputs/models" / model_name)).resolve()
     met_dir = (_p(ROOT_DIR, cfg.get("metrics_dir")) or (ROOT_DIR / "reports/metrics" / model_name)).resolve()
@@ -425,8 +425,8 @@ def main() -> None:
     _log_torch_and_device(device)
     if _bool(cfg.get("require_cuda"), False) and device.type != "cuda":
         raise RuntimeError(
-            "В train_config.json включено require_cuda, но CUDA недоступна. "
-            "Переустановите torch/torchvision с CUDA (см. сообщение выше) или поставьте require_cuda: false."
+            "require_cuda is enabled in train_config.json, but CUDA is unavailable. "
+            "Reinstall torch/torchvision with CUDA (see the message above) or set require_cuda: false."
         )
 
     pretrained = _bool(cfg.get("pretrained"), True)
@@ -445,7 +445,7 @@ def main() -> None:
         pin_b = _bool(pin_m, False)
         pers_b = _bool(pers_w, False) and num_workers > 0
         if not pin_b:
-            print("Windows+CUDA: pin_memory=False (override в JSON: pin_memory)", flush=True)
+            print("Windows+CUDA: pin_memory=False (override in JSON: pin_memory)", flush=True)
     elif device.type == "cuda":
         pin_b = True if pin_m is None else _bool(pin_m, True)
         pers_b = (num_workers > 0) if pers_w is None else (_bool(pers_w, False) and num_workers > 0)
@@ -473,14 +473,14 @@ def main() -> None:
         persistent_workers=pers_b,
     )
     print(
-        f"train={len(train_loader.dataset)} ({len(train_loader)} батчей) val={len(val_loader.dataset)}",
+        f"train={len(train_loader.dataset)} ({len(train_loader)} batches) val={len(val_loader.dataset)}",
         flush=True,
     )
     try:
         if "image_path" in pd.read_csv(train_eff, nrows=1).columns:
             print(
-                "Данные: CSV после preprocess_data (есть image_path). "
-                "train_images/val_images в JSON - каталоги с jpg (обычно data/raw/..._images)",
+                "Data: CSV after preprocess_data (contains image_path). "
+                "train_images/val_images in JSON are directories with jpg files (usually data/raw/..._images)",
                 flush=True,
             )
     except Exception:
@@ -497,7 +497,7 @@ def main() -> None:
     scaler = amp.GradScaler("cuda", enabled=use_amp)
 
     if use_amp:
-        print("AMP включён", flush=True)
+        print("AMP enabled", flush=True)
 
     best_path = out_dir / f"{model_name}_best.pt"
     last_path = out_dir / f"{model_name}_last.pt"
@@ -512,32 +512,32 @@ def main() -> None:
         "excluded_original_class_id": excluded,
         "config_path": to_project_relative_path(args.config),
         "model_name": model_name,
-        "idx_to_class": {str(class_id): label for class_id, label in load_label_mapping().items()},
+        "idx_to_class": {str(class_id): label for class_id, label in load_english_label_mapping().items()},
     }
 
     start_ep = 1
     if resume_path is not None:
         if not resume_path.is_file():
-            raise FileNotFoundError(f"resume_from: файл не найден: {resume_path}")
+            raise FileNotFoundError(f"resume_from: file not found: {resume_path}")
         ck = _load_ckpt(resume_path)
         if int(ck.get("num_classes", num_classes)) != num_classes:
             raise ValueError(
-                f"num_classes в чекпоинте ({ck.get('num_classes')}) != текущему ({num_classes})"
+                f"num_classes in checkpoint ({ck.get('num_classes')}) != current ({num_classes})"
             )
         model.load_state_dict(ck["model_state_dict"], strict=True)
         if ck.get("optimizer_state_dict"):
             try:
                 opt.load_state_dict(ck["optimizer_state_dict"])
-                print("Загружен optimizer_state_dict", flush=True)
+                print("Loaded optimizer_state_dict", flush=True)
             except Exception as e:
-                print(f"optimizer_state_dict не загружен ({e}), новый AdamW", flush=True)
+                print(f"optimizer_state_dict was not loaded ({e}), new AdamW", flush=True)
         sd = ck.get("scaler_state_dict")
         if sd is not None and scaler.is_enabled():
             try:
                 scaler.load_state_dict(sd)
-                print("Загружен scaler_state_dict", flush=True)
+                print("Loaded scaler_state_dict", flush=True)
             except Exception as e:
-                print(f"scaler не загружен ({e})", flush=True)
+                print(f"scaler was not loaded ({e})", flush=True)
         done = int(ck.get("completed_epoch", ck.get("epoch", 0)))
         start_ep = done + 1
         bf = ck.get("best_macro_f1")
@@ -550,13 +550,13 @@ def main() -> None:
         if ni is not None:
             no_improve = int(ni)
         print(
-            f"Продолжение с {resume_path}: completed_epoch={done} -> старт с эпохи {start_ep}, "
+            f"Resuming from {resume_path}: completed_epoch={done} -> start from epoch {start_ep}, "
             f"best_macro_f1={best_f1} best_epoch={best_ep} no_improve={no_improve}",
             flush=True,
         )
 
     if start_ep > epochs:
-        print(f"Нечего делать: start_ep={start_ep} > epochs={epochs} (увеличь epochs в JSON)", flush=True)
+        print(f"Nothing to do: start_ep={start_ep} > epochs={epochs} (increase epochs in JSON)", flush=True)
         return
 
     start_mlflow_run(
@@ -589,7 +589,7 @@ def main() -> None:
             model, val_loader, crit, device, num_classes, use_amp=use_amp, show_progress=show_progress, epoch=ep
         )
         if not math.isfinite(macro):
-            print("macro_f1 не число - подставляем 0.0 (иначе чекпоинт не сохранится)", flush=True)
+            print("macro_f1 is not a number, using 0.0 so the checkpoint can be saved", flush=True)
             macro = 0.0
         per = add_label_names(per, excluded)
 
@@ -670,7 +670,7 @@ def main() -> None:
 
         if es_pat > 0 and no_improve >= es_pat:
             stop = "early_stopping"
-            print(f"early stopping после {es_pat} эпох без роста macro_f1", flush=True)
+            print(f"early stopping after {es_pat} epochs without macro_f1 improvement", flush=True)
             break
 
     hp = {
