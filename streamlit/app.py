@@ -72,7 +72,7 @@ def load_room_type_labels() -> dict[int, str]:
     return load_label_mapping()
 
 
-@st.cache_resource(show_spinner="Загружаем YOLO модель...")
+@st.cache_resource(show_spinner="Loading YOLO model...")
 def load_yolo_model() -> object | None:
     if not YOLO_MODEL_PATH.exists():
         if os.getenv("STREAMLIT_ALLOW_MODEL_DOWNLOAD") != "1":
@@ -145,7 +145,7 @@ def get_default_image_size(variant: str) -> int:
     return 240 if variant == "b1" else 224
 
 
-@st.cache_resource(show_spinner="Загружаем EfficientNet...")
+@st.cache_resource(show_spinner="Loading EfficientNet...")
 def load_efficientnet_model(checkpoint_path: str) -> tuple[object, object, int] | None:
     path = Path(checkpoint_path)
     if not path.exists():
@@ -209,7 +209,7 @@ def build_resnet50_model(num_classes):
 
     return model
 
-@st.cache_resource(show_spinner="Загружаем ResNet50...")
+@st.cache_resource(show_spinner="Loading ResNet50...")
 def load_resnet50_model(checkpoint_path: str) -> tuple[object, object, int] | None:
     path = Path(checkpoint_path)
     if not path.exists():
@@ -272,7 +272,7 @@ def resnet50_predict(image_bytes: bytes, checkpoint_path: Path) -> tuple[str, fl
     raise RuntimeError(f"ResNet50 checkpoint is unavailable: {checkpoint_path}")
 
 
-@st.cache_resource(show_spinner="Загружаем ResNet18...")
+@st.cache_resource(show_spinner="Loading ResNet18...")
 def load_resnet18_model(checkpoint_path: str) -> tuple[object, object, int] | None:
     path = Path(checkpoint_path)
     if not path.exists():
@@ -333,7 +333,7 @@ def resnet18_predict(image_bytes: bytes, checkpoint_path: Path) -> tuple[str, fl
     raise RuntimeError(f"ResNet18 checkpoint is unavailable: {checkpoint_path}")
 
 
-@st.cache_resource(show_spinner="Загружаем DenseNet121...")
+@st.cache_resource(show_spinner="Loading DenseNet121...")
 def load_densenet121_model(checkpoint_path: str) -> tuple[object, object, int] | None:
     path = Path(checkpoint_path)
     if not path.exists():
@@ -400,11 +400,11 @@ def num_classes_convnext_nano(state_dict: dict) -> int:
         if key in state_dict:
             return int(state_dict[key].shape[0])
     raise ValueError(
-        "Не удалось определить num_classes: нет ключей head.fc.weight / head.weight / classifier.weight"
+        "Could not infer num_classes: missing head.fc.weight / head.weight / classifier.weight keys"
     )
 
 
-@st.cache_resource(show_spinner="Загружаем convnext nano...")
+@st.cache_resource(show_spinner="Loading ConvNeXt Nano...")
 def load_convnext_nano_model(checkpoint_path: str) -> tuple[object, object, int] | None:
     path = Path(checkpoint_path)
     if not path.exists():
@@ -473,7 +473,7 @@ def convnext_nano_predict(image_bytes: bytes, checkpoint_path: Path) -> tuple[st
     raise RuntimeError(f"Convnext Nano checkpoint is unavailable: {checkpoint_path}")
 
 
-@st.cache_resource(show_spinner="Загружаем convnext tiny...")
+@st.cache_resource(show_spinner="Loading ConvNeXt Tiny...")
 def load_convnext_tiny_model(checkpoint_path: str) -> tuple[object, object, int] | None:
     path = Path(checkpoint_path)
     if not path.exists():
@@ -602,63 +602,63 @@ MODELS = [
     ModelConfig(
         key="final_ensemble",
         title="Final ensemble",
-        description="Итоговый ансамбль ConvNeXt Nano + ResNet50 + ResNet18.",
+        description="Final ensemble of ConvNeXt Nano + ResNet50 + ResNet18.",
         predictor=final_ensemble_predict,
         is_available=final_ensemble_is_available,
     ),
     ModelConfig(
         key="yolo_scene_classifier",
         title="YOLO scene classifier",
-        description="Внешний pretrained YOLO scene classifier.",
+        description="External pretrained YOLO scene classifier.",
         predictor=yolo_predict,
         is_available=YOLO_MODEL_PATH.exists,
     ),
     ModelConfig(
         key="efficientnet_b0",
         title="EfficientNet B0",
-        description="Обученный EfficientNet-B0 checkpoint на локальном датасете.",
+        description="EfficientNet-B0 checkpoint trained on the local dataset.",
         predictor=lambda image_bytes: efficientnet_predict(image_bytes, EFFICIENTNET_B0_CHECKPOINT_PATH),
         is_available=EFFICIENTNET_B0_CHECKPOINT_PATH.exists,
     ),
     ModelConfig(
         key="efficientnet_b1",
         title="EfficientNet B1",
-        description="Обученный EfficientNet-B1 checkpoint на локальном датасете.",
+        description="EfficientNet-B1 checkpoint trained on the local dataset.",
         predictor=lambda image_bytes: efficientnet_predict(image_bytes, EFFICIENTNET_B1_CHECKPOINT_PATH),
         is_available=EFFICIENTNET_B1_CHECKPOINT_PATH.exists,
     ),
     ModelConfig(
         key="resnet50",
         title="ResNet50",
-        description="Обученный ResNet50 checkpoint на локальном датасете.",
+        description="ResNet50 checkpoint trained on the local dataset.",
         predictor=lambda image_bytes: resnet50_predict(image_bytes, RESNET50_MODEL_PATH),
         is_available=RESNET50_MODEL_PATH.exists,
     ),
     ModelConfig(
         key="resnet18",
         title="ResNet18",
-        description="Обученный ResNet18 checkpoint на локальном датасете.",
+        description="ResNet18 checkpoint trained on the local dataset.",
         predictor=lambda image_bytes: resnet18_predict(image_bytes, RESNET18_MODEL_PATH),
         is_available=RESNET18_MODEL_PATH.exists,
     ),
     ModelConfig(
         key="densenet121",
         title="DenseNet121",
-        description="Обученный DenseNet121 checkpoint на локальном датасете.",
+        description="DenseNet121 checkpoint trained on the local dataset.",
         predictor=lambda image_bytes: densenet121_predict(image_bytes, DENSENET121_MODEL_PATH),
         is_available=DENSENET121_MODEL_PATH.exists,
     ),
     ModelConfig(
         key="convnext_nano",
         title="ConvNext Nano",
-        description="Обученный ConvNext Nano checkpoint на локальном датасете.",
+        description="ConvNeXt Nano checkpoint trained on the local dataset.",
         predictor=lambda image_bytes: convnext_nano_predict(image_bytes, CONVNEXT_NANO_MODEL_PATH),
         is_available=CONVNEXT_NANO_MODEL_PATH.exists,
     ),
     ModelConfig(
         key="convnext_tiny",
         title="ConvNext Tiny",
-        description="Обученный ConvNext Tiny checkpoint на локальном датасете.",
+        description="ConvNeXt Tiny checkpoint trained on the local dataset.",
         predictor=lambda image_bytes: convnext_tiny_predict(image_bytes, CONVNEXT_TINY_MODEL_PATH),
         is_available=CONVNEXT_TINY_MODEL_PATH.exists,
     ),
@@ -673,7 +673,7 @@ def configure_page() -> None:
 
 
 def render_sidebar() -> list[ModelConfig]:
-    st.sidebar.header("Модели")
+    st.sidebar.header("Models")
     selected_models = []
     for model in MODELS:
         is_available = model.is_available()
@@ -682,50 +682,50 @@ def render_sidebar() -> list[ModelConfig]:
 
     st.sidebar.divider()
     if YOLO_MODEL_PATH.exists():
-        st.sidebar.success("YOLO best.pt найден локально")
+        st.sidebar.success("YOLO best.pt found locally")
     else:
         st.sidebar.info(
-            "YOLO best.pt не найден. Для автозагрузки задайте STREAMLIT_ALLOW_MODEL_DOWNLOAD=1"
+            "YOLO best.pt was not found. Set STREAMLIT_ALLOW_MODEL_DOWNLOAD=1 to enable automatic download"
         )
     if EFFICIENTNET_B0_CHECKPOINT_PATH.exists():
-        st.sidebar.success("EfficientNet B0 checkpoint найден")
+        st.sidebar.success("EfficientNet B0 checkpoint found")
     else:
-        st.sidebar.info("EfficientNet B0 checkpoint не найден")
+        st.sidebar.info("EfficientNet B0 checkpoint not found")
     if EFFICIENTNET_B1_CHECKPOINT_PATH.exists():
-        st.sidebar.success("EfficientNet B1 checkpoint найден")
+        st.sidebar.success("EfficientNet B1 checkpoint found")
     else:
-        st.sidebar.info("EfficientNet B1 checkpoint не найден")
+        st.sidebar.info("EfficientNet B1 checkpoint not found")
     if RESNET50_MODEL_PATH.exists():
-        st.sidebar.success("ResNet50 checkpoint найден")
+        st.sidebar.success("ResNet50 checkpoint found")
     else:
-        st.sidebar.info("ResNet50 checkpoint не найден")
+        st.sidebar.info("ResNet50 checkpoint not found")
     if RESNET18_MODEL_PATH.exists():
-        st.sidebar.success("ResNet18 checkpoint найден")
+        st.sidebar.success("ResNet18 checkpoint found")
     else:
-        st.sidebar.info("ResNet18 checkpoint не найден")
+        st.sidebar.info("ResNet18 checkpoint not found")
     if DENSENET121_MODEL_PATH.exists():
-        st.sidebar.success("DenseNet121 checkpoint найден")
+        st.sidebar.success("DenseNet121 checkpoint found")
     else:
-        st.sidebar.info("DenseNet121 checkpoint не найден")
+        st.sidebar.info("DenseNet121 checkpoint not found")
     if CONVNEXT_NANO_MODEL_PATH.exists():
-        st.sidebar.success("ConvNext Nano checkpoint найден")
+        st.sidebar.success("ConvNeXt Nano checkpoint found")
     else:
-        st.sidebar.info("ConvNext Nano checkpoint не найден")
+        st.sidebar.info("ConvNeXt Nano checkpoint not found")
     if CONVNEXT_TINY_MODEL_PATH.exists():
-        st.sidebar.success("ConvNext Tiny checkpoint найден")
+        st.sidebar.success("ConvNeXt Tiny checkpoint found")
     else:
-        st.sidebar.info("ConvNext Tiny checkpoint не найден")
+        st.sidebar.info("ConvNeXt Tiny checkpoint not found")
     if final_ensemble_is_available():
-        st.sidebar.success("Final ensemble checkpoints найдены")
+        st.sidebar.success("Final ensemble checkpoints found")
     else:
-        st.sidebar.info("Final ensemble требует ConvNext Nano, ResNet50 и ResNet18 checkpoints")
+        st.sidebar.info("Final ensemble requires ConvNeXt Nano, ResNet50, and ResNet18 checkpoints")
 
     return selected_models
 
 
 def render_results(uploaded_files: list[st.runtime.uploaded_file_manager.UploadedFile], selected_models: list[ModelConfig]) -> None:
     rows = []
-    progress = st.progress(0, text="Подготавливаем изображения...")
+    progress = st.progress(0, text="Preparing images...")
     total_steps = len(uploaded_files) * len(selected_models)
     completed_steps = 0
 
@@ -735,30 +735,30 @@ def render_results(uploaded_files: list[st.runtime.uploaded_file_manager.Uploade
             prediction, probability = model.predictor(image_bytes)
             rows.append(
                 {
-                    "Изображение": uploaded_file.name or f"image_{image_index}",
-                    "Номер": image_index,
-                    "Модель": model.title,
-                    "Предсказание": prediction,
-                    "Вероятность": round(probability, 3),
+                    "Image": uploaded_file.name or f"image_{image_index}",
+                    "Index": image_index,
+                    "Model": model.title,
+                    "Prediction": prediction,
+                    "Probability": round(probability, 3),
                 }
             )
             completed_steps += 1
             progress.progress(
                 completed_steps / total_steps,
-                text=f"Распознаем: {uploaded_file.name or image_index}",
+                text=f"Recognizing: {uploaded_file.name or image_index}",
             )
 
     progress.empty()
 
     results = pd.DataFrame(rows)
-    st.subheader("Результаты")
+    st.subheader("Results")
     st.dataframe(
         results,
         use_container_width=True,
         hide_index=True,
         column_config={
-            "Вероятность": st.column_config.ProgressColumn(
-                "Вероятность",
+            "Probability": st.column_config.ProgressColumn(
+                "Probability",
                 min_value=0,
                 max_value=1,
                 format="%.3f",
@@ -766,7 +766,7 @@ def render_results(uploaded_files: list[st.runtime.uploaded_file_manager.Uploade
         },
     )
 
-    with st.expander("Загруженные изображения", expanded=False):
+    with st.expander("Uploaded images", expanded=False):
         columns = st.columns(min(3, len(uploaded_files)))
         for index, uploaded_file in enumerate(uploaded_files):
             with columns[index % len(columns)]:
@@ -781,28 +781,28 @@ def main() -> None:
     configure_page()
 
     st.title("Room Type Classifier")
-    st.caption("Загрузка изображений и сравнение результатов выбранных моделей.")
+    st.caption("Upload images and compare predictions from selected models.")
 
     selected_models = render_sidebar()
     uploaded_files = st.file_uploader(
-        "Изображения",
+        "Images",
         type=["jpg", "jpeg", "png", "webp"],
         accept_multiple_files=True,
     )
 
     recognize = st.button(
-        "Распознать",
+        "Recognize",
         type="primary",
         disabled=not uploaded_files or not selected_models,
         use_container_width=False,
     )
 
     if not uploaded_files:
-        st.info("Загрузите одно или несколько изображений")
+        st.info("Upload one or more images")
         return
 
     if not selected_models:
-        st.warning("Выберите хотя бы одну модель")
+        st.warning("Select at least one model")
         return
 
     if recognize:

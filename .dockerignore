@@ -43,7 +43,7 @@ mlruns/
 wandb/
 runs/
 
-# JSON-артефакты (метрики, эксперименты), только из папок с результатами
+# JSON artifacts (metrics, experiments), only from result folders
 reports/**/*.json
 outputs/**/*.json
 

@@ -1,6 +1,6 @@
 FROM python:3.12-slim
 
-# Устанавливаем системные зависимости для OpenCV, PIL и ML-библиотек
+# Install system dependencies for OpenCV, PIL, and ML libraries
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     libglib2.0-0 \
@@ -11,15 +11,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Устанавливаем uv
+# Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 WORKDIR /app
 
-# Копируем зависимости первыми для кэша Docker
+# Copy dependency files first for Docker cache
 COPY pyproject.toml uv.lock ./
 
-# Ставим группы, которые нужны docker-compose сервисам
+# Install groups required by docker-compose services
 RUN uv sync \
     --group data \
     --group tracking \
@@ -34,11 +34,11 @@ RUN uv sync \
     --no-install-project \
     --frozen
 
-# Добавляем .venv/bin в PATH, python и все пакеты берутся из виртуального окружения
+# Add .venv/bin to PATH so Python and packages come from the virtual environment
 ENV PATH="/app/.venv/bin:$PATH"
 
-# Копируем остальной исходный код
+# Copy the remaining source code
 COPY . .
 
-# Команда по умолчанию переопределяется аргументами docker run
+# Default command can be overridden by docker run arguments
 CMD ["python", "-m", "models.densenet121.train_densenet121"]
