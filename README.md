@@ -1,5 +1,7 @@
 # Room Type Classifier
 
+Русская версия: [README_ru.md](README_ru.md)
+
 Image classification project for room-type recognition.
 Case: Avito, predicting one of 19 room or property photo categories from an image.
 Primary quality metric: Macro F1.
